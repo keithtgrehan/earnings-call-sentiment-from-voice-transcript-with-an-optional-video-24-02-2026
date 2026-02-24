@@ -1,54 +1,13 @@
 [build-system]
-<<<<<<< HEAD
-requires = ["setuptools>=69", "wheel"]
-=======
-requires = ["setuptools>=68", "wheel"]
->>>>>>> 8102379 (Add src layout and installable CLI)
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "earnings-call-sentiment"
-<<<<<<< HEAD
-version = "0.1.0"
-description = "Earnings call sentiment from voice transcript with optional video input."
+version = "0.0.1"
+description = "Earnings call sentiment pipeline (YouTube URL input)."
 readme = "README.md"
 requires-python = ">=3.11"
-authors = [{ name = "Keith" }]
-license = { text = "MIT" }
-
-dependencies = [
-  "faster-whisper>=1.2.1",
-  "transformers>=4.46.0",
-  "torch>=2.0.0",
-  "pandas>=2.0",
-  "numpy>=1.24",
-  "scipy>=1.10",
-  "soundfile>=0.12",
-  "librosa>=0.10",
-  "ffmpeg-python>=0.2",
-  "opensmile>=2.6",
-  "yt-dlp>=2026.2.21"
-]
-
-[project.optional-dependencies]
-dev = [
-  "pytest>=8",
-  "ruff>=0.4",
-  "mypy>=1.10",
-  "ipykernel"
-]
-
-[project.scripts]
-earnings-call-sentiment = "app.cli:main"
-
-[tool.setuptools]
-package-dir = { "" = "src" }
-
-[tool.setuptools.packages.find]
-where = ["src"]
-=======
-version = "0.0.1"
-requires-python = ">=3.10"
 dependencies = [
   "faster-whisper",
   "transformers",
@@ -63,14 +22,11 @@ dependencies = [
   "yt-dlp[default]",
 ]
 
+[project.scripts]
+earnings-call-sentiment = "earnings_call_sentiment.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-
-[project.scripts]
-earnings-call-sentiment = "app.cli:main"
->>>>>>> 8102379 (Add src layout and installable CLI)
