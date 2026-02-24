@@ -3,36 +3,32 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "your-package-name"
+name = "earnings-call-sentiment"
 version = "0.1.0"
-description = "Short description of the project"
+description = "Earnings call sentiment from voice transcript with optional video input."
 readme = "README.md"
 requires-python = ">=3.11"
+authors = [{ name = "Keith" }]
 license = { text = "MIT" }
-authors = [
-  { name = "Your Name", email = "you@example.com" }
-]
-dependencies = [
-  # put runtime deps here, e.g.
-  # "faster-whisper>=1.0.0",
-  # "soundfile>=0.12.1",
-  # "pydantic>=2.6",
-]
 
-[project.optional-dependencies]
-dev = [
-  "pytest>=8",
-  "ruff>=0.4",
-  "mypy>=1.8",
+# Move runtime deps from requirements.txt into here.
+# (If you paste your requirements.txt content, I’ll fill this exactly.)
+dependencies = [
+  # "typer>=0.9",
+  # "rich>=13",
+  # "yt-dlp>=2024.0.0",
+  # "faster-whisper>=1.0.0",
+  # "soundfile>=0.12",
 ]
 
 [project.scripts]
-# This creates a CLI command after install: `your-cli`
-# Format: command = "module_path:function_name"
-your-cli = "your_package.cli:main"
+earnings-call-sentiment = "app.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+app = ["py.typed"]
