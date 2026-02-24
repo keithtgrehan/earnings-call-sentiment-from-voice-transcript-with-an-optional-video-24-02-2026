@@ -1,0 +1,1 @@
+# earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026
