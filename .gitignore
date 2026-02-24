@@ -6,3 +6,13 @@ outputs/
 models/
 cache/
 *.log
+# Packaging / build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Python cache
+__pycache__/
+*.pyc
