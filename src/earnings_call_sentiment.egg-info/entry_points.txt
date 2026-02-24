@@ -1,0 +1,2 @@
+[console_scripts]
+earnings-call-sentiment = app.cli:main

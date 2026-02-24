@@ -1,9 +1,14 @@
 [build-system]
+<<<<<<< HEAD
 requires = ["setuptools>=69", "wheel"]
+=======
+requires = ["setuptools>=68", "wheel"]
+>>>>>>> 8102379 (Add src layout and installable CLI)
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "earnings-call-sentiment"
+<<<<<<< HEAD
 version = "0.1.0"
 description = "Earnings call sentiment from voice transcript with optional video input."
 readme = "README.md"
@@ -41,3 +46,31 @@ package-dir = { "" = "src" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
+=======
+version = "0.0.1"
+requires-python = ">=3.10"
+dependencies = [
+  "faster-whisper",
+  "transformers",
+  "torch",
+  "pandas",
+  "numpy",
+  "scipy",
+  "soundfile",
+  "librosa",
+  "ffmpeg-python",
+  "opensmile",
+  "yt-dlp[default]",
+]
+
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+
+[project.scripts]
+earnings-call-sentiment = "app.cli:main"
+>>>>>>> 8102379 (Add src layout and installable CLI)

@@ -8,5 +8,4 @@ soundfile
 librosa
 ffmpeg-python
 opensmile
-
-yt-dlp
+yt-dlp[default]

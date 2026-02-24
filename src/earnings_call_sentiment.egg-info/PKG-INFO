@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: earnings-call-sentiment
+Version: 0.0.1
+Requires-Python: >=3.10
+Requires-Dist: faster-whisper
+Requires-Dist: transformers
+Requires-Dist: torch
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: soundfile
+Requires-Dist: librosa
+Requires-Dist: ffmpeg-python
+Requires-Dist: opensmile
+Requires-Dist: yt-dlp[default]
