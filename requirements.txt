@@ -1,0 +1,10 @@
+faster-whisper
+transformers
+torch
+pandas
+numpy
+scipy
+soundfile
+librosa
+ffmpeg-python
+opensmile
