@@ -3,16 +3,15 @@ from __future__ import annotations
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 
 @dataclass
 class YouTubeDownloadResult:
     url: str
     audio_path: Path
-    video_path: Optional[Path] = None
-    title: Optional[str] = None
-    id: Optional[str] = None
+    video_path: Path | None = None
+    title: str | None = None
+    id: str | None = None
 
 
 def _run(cmd: list[str]) -> str:
@@ -43,11 +42,15 @@ def download_youtube(
     if audio_only:
         cmd = [
             "yt-dlp",
-            "-f", "bestaudio/best",
+            "-f",
+            "bestaudio/best",
             "--extract-audio",
-            "--audio-format", audio_format,
-            "--postprocessor-args", f"ffmpeg:-ar {sample_rate} -ac 1",
-            "-o", base_tmpl,
+            "--audio-format",
+            audio_format,
+            "--postprocessor-args",
+            f"ffmpeg:-ar {sample_rate} -ac 1",
+            "-o",
+            base_tmpl,
             url,
         ]
         subprocess.run(cmd, check=True)
@@ -55,7 +58,9 @@ def download_youtube(
         if vid:
             audio_path = cache_dir / f"{vid}.{audio_format}"
         else:
-            matches = sorted(cache_dir.glob(f"*.{audio_format}"), key=lambda p: p.stat().st_mtime, reverse=True)
+            matches = sorted(
+                cache_dir.glob(f"*.{audio_format}"), key=lambda p: p.stat().st_mtime, reverse=True
+            )
             if not matches:
                 raise RuntimeError("yt-dlp completed but no audio file was found in cache/")
             audio_path = matches[0]
@@ -64,9 +69,12 @@ def download_youtube(
 
     cmd = [
         "yt-dlp",
-        "-f", "bv*+ba/best",
-        "--merge-output-format", "mp4",
-        "-o", base_tmpl,
+        "-f",
+        "bv*+ba/best",
+        "--merge-output-format",
+        "mp4",
+        "-o",
+        base_tmpl,
         url,
     ]
     subprocess.run(cmd, check=True)
@@ -81,10 +89,23 @@ def download_youtube(
 
     audio_path = cache_dir / (f"{vid}.{audio_format}" if vid else f"audio.{audio_format}")
     subprocess.run(
-        ["ffmpeg", "-y", "-i", str(video_path), "-vn", "-ac", "1", "-ar", str(sample_rate), str(audio_path)],
+        [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(video_path),
+            "-vn",
+            "-ac",
+            "1",
+            "-ar",
+            str(sample_rate),
+            str(audio_path),
+        ],
         check=True,
         capture_output=True,
         text=True,
     )
 
-    return YouTubeDownloadResult(url=url, audio_path=audio_path, video_path=video_path, title=title, id=vid)
+    return YouTubeDownloadResult(
+        url=url, audio_path=audio_path, video_path=video_path, title=title, id=vid
+    )

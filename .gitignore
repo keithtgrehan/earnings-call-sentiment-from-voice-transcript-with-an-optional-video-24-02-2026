@@ -1,13 +1,19 @@
-.venv/
+# Runtime artifacts
+cache/
+outputs/
+*.wav
+*.webm
+*.mp3
+*.m4a
+
+# Python
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-*.egg-info/
-build/
-dist/
-.coverage
-.pytest_cache/
-.mypy_cache/
-.ipynb_checkpoints/
-.DS_Store
+.venv/
+# generated
+cache/
+outputs/
+*.wav
+*.webm
+*.mp3
+*.m4a
