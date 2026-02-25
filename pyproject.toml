@@ -1,13 +1,18 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "earnings-call-sentiment"
-version = "0.0.1"
-description = "Earnings call sentiment pipeline (YouTube URL input)."
+version = "0.1.0"
+description = "Earnings call sentiment from voice transcript with optional video input."
 readme = "README.md"
 requires-python = ">=3.11"
+authors = [{ name = "Keith" }]
+license = { text = "MIT" }
+
+# Move runtime deps from requirements.txt into here.
+# (If you paste your requirements.txt content, I’ll fill this exactly.)
 dependencies = [
   "faster-whisper",
   "transformers",
@@ -19,7 +24,14 @@ dependencies = [
   "librosa",
   "ffmpeg-python",
   "opensmile",
-  "yt-dlp[default]",
+  "yt-dlp",
+  "typer",
+  "rich",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
 ]
 
 [project.scripts]
@@ -31,14 +43,5 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.ruff]
-line-length = 100
-target-version = "py311"
-
-[tool.ruff.lint]
-select = ["E","F","I","B","UP"]
-ignore = ["E501"]
-
-[tool.ruff.format]
-quote-style = "double"
-
+[tool.setuptools.package-data]
+earnings_call_sentiment = ["py.typed"]

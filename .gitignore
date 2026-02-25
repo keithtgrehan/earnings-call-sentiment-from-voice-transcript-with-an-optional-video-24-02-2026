@@ -1,15 +1,20 @@
-# Runtime artifacts
-cache/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
 outputs/
+models/
+cache/
+*.log
+*.egg-info/
+dist/
+build/
 *.wav
 *.webm
 *.mp3
 *.m4a
+.cache/
 
-# Python
-__pycache__/
-*.pyc
-.venv/
 # generated
 cache/
 outputs/
@@ -17,7 +22,4 @@ outputs/
 *.webm
 *.mp3
 *.m4a
-# python build / editable install
 *.egg-info/
-dist/
-build/

@@ -7,16 +7,17 @@ import subprocess
 import sys
 
 
-def test_cli_help_mentions_download_only(tmp_path: Path) -> None:
+def test_dry_run_wins_over_download_only(tmp_path: Path) -> None:
     repo_root = Path(__file__).resolve().parents[1]
     src_path = repo_root / "src"
+    cache_dir = tmp_path / "cache"
+    out_dir = tmp_path / "out"
 
     env = os.environ.copy()
     existing = env.get("PYTHONPATH")
     env["PYTHONPATH"] = (
         f"{src_path}{os.pathsep}{existing}" if existing else str(src_path)
     )
-
     shim_dir = tmp_path / "bin"
     shim_dir.mkdir(parents=True, exist_ok=True)
     shim = shim_dir / "earnings-call-sentiment"
@@ -28,15 +29,23 @@ def test_cli_help_mentions_download_only(tmp_path: Path) -> None:
     env["PATH"] = f"{shim_dir}{os.pathsep}{env.get('PATH', '')}"
 
     proc = subprocess.run(
-        ["earnings-call-sentiment", "--help"],
+        [
+            "earnings-call-sentiment",
+            "--youtube-url",
+            "https://example.com",
+            "--cache-dir",
+            str(cache_dir),
+            "--out-dir",
+            str(out_dir),
+            "--download-only",
+            "--dry-run",
+        ],
         cwd=str(repo_root),
         env=env,
         check=False,
         capture_output=True,
         text=True,
     )
-    output = (proc.stdout or "") + (proc.stderr or "")
-    assert proc.returncode == 0, output
-    assert "--download-only" in output
-    assert "--question-shifts" in output
-    assert "question-related sentiment shifts" in output
+
+    assert proc.returncode == 0, (proc.stdout or "") + (proc.stderr or "")
+    assert not list(cache_dir.glob("audio.*"))
