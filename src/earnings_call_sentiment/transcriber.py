@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 import logging
 from pathlib import Path
 import time
@@ -18,6 +19,15 @@ except Exception:  # pragma: no cover - optional dependency fallback
 
 class TranscriptSegment(TypedDict):
     """Normalized segment output used by pipeline code."""
+
+    start: float
+    end: float
+    text: str
+
+
+@dataclass(frozen=True)
+class Segment:
+    """Compatibility segment type used by chunking helpers/tests."""
 
     start: float
     end: float
