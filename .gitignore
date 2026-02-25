@@ -17,3 +17,7 @@ outputs/
 *.webm
 *.mp3
 *.m4a
+# python build / editable install
+*.egg-info/
+dist/
+build/
