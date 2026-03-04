@@ -40,3 +40,10 @@ def test_cli_help_mentions_download_only(tmp_path: Path) -> None:
     assert "--download-only" in output
     assert "--question-shifts" in output
     assert "question-related sentiment shifts" in output
+    assert "--prior-guidance" in output
+    assert "--tone-change-threshold" in output
+    assert "--vad" in output
+    assert "--force" in output
+    assert "--resume" in output
+    assert "--symbol" in output
+    assert "--event-dt" in output

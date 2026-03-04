@@ -1,0 +1,67 @@
+start,end,sentiment_score,rolling_mean_5,rolling_std_5,tone_change_z,is_change,text
+0.0,8.0,0.99775367975235,0.99775367975235,0.0,0.0,False,I hope you've had the opportunity to review our shareholder deck to get a sense of what an incredible year 2020 3 was for Spotify.
+8.0,13.0,0.9998273849487304,0.9987905323505402,0.0010368525981901966,1.0,False,"Throughout the year, we noticed some really significant milestones and set numerous records."
+13.0,20.0,-0.9851952791213988,0.3374619285265605,0.935260263873336,-1.4142129829938856,False,This included 113 million net ads on the MU side and premium net ads of 3...
+20.0,36.0,0.9996665716171264,0.503013089299202,0.8592178893533488,0.5780297273508912,False,"And there's no question that we had to make some difficult decisions that put us on track to achieve our goal of being a consistently profitable company, but by taking these steps, I'm super confident in where we're heading."
+36.0,40.0,-0.9910927414894104,0.2041919231414795,0.9735402726560949,-1.227771154622924,False,"So looking to 2024, you should expect a consumer."
+40.0,53.0,0.999237060546875,0.20448859930038452,0.9737822530000674,0.8161459697976602,False,"In addition to what you saw in 2023, strong product development, which leads to strong growth, but with an increased focus on monetization and efficiency, which in turn drives profitability."
+53.0,58.0,-0.997292935848236,-0.19493546485900876,0.9752206458447227,-0.8227445495621518,False,And I know some of you may start to wonder if we're sacrificing growth for profitability.
+58.0,66.0,0.5669909119606018,0.11550177335739135,0.9197218466153005,0.4908974819558227,False,"In some terms, we believe that the real value of Spotify is in solving problems at the intersection between creators and consumers."
+66.0,70.0,0.9948549270629884,0.11453944444656376,0.9187982720676972,0.9581161712846179,False,"With scale, there will be even more opportunities to do so."
+70.0,74.0,0.9998427629470824,0.5127265453338623,0.7732432893182123,0.6299650114554793,False,"Therefore, growth is still the most important thing we can deliver."
+74.0,79.0,0.9146573543548584,0.49581060409545896,0.763275975105437,0.54874876705184,False,"In Q4, we became the number two provider of audiobooks behind."
+79.0,82.0,0.9996446371078492,0.895198118686676,0.16726606866795649,0.6244333907823966,False,Which is notable given how entrenched the legacy players are.
+82.0,84.0,0.999710977077484,0.9817421317100525,0.03359560896694966,0.5348569625604551,False,Q4 is a very strong quarter.
+84.0,87.0,-0.6263163089752197,0.6575078845024109,0.6427572002949405,-1.9973703801194684,False,And maybe you grew like 28 million to 602 million.
+87.0,91.0,0.9825875163078308,0.6540568351745606,0.6409536866205943,0.512565397455527,False,And we had a 10 million net subscribers finishing up 236 million.
+91.0,96.0,0.9681490659713744,0.6647551774978637,0.6456434260751364,0.4699093589751867,False,With the MU and subscriber growth continued to be above our historical trend and outperform forecast.
+96.0,98.0,0.9995989203453064,0.6647460341453553,0.6456386837416749,0.5186382021897691,False,Looking ahead to the first quarter.
+98.0,108.0,0.8479767441749573,0.6343991875648498,0.63261581933049,0.33761020525244034,False,"For guidance, we are forecasting 618 million MU, an increase of 16 million from Q4, and 230 million subscribers, an increase of 3 million over Q4."
+108.0,116.0,-0.919179618358612,0.5758265256881714,0.7494082510538075,-1.9949155109308265,False,"We are also forecasting a currency neutral revenue growth rate of 20% plus year on year, 20 to 3.6 billion in total revenue."
+116.0,119.0,-0.970499575138092,0.18520910739898683,0.9242103335269265,-1.2504823205413853,False,We also anticipate a gross margin of 26 million.
+119.0,122.0,0.9967418313026428,0.1909276604652405,0.9291125418356013,0.8672944713946014,False,And an operating profit of 180 million.
+122.0,133.0,0.9940077066421508,0.18980941772460938,0.9281414416626833,0.8664609215992891,False,"Gross margin, operating margin, are both expected to improve throughout the year to deliver meaningful full year expansion with podcasting expected to deliver positive gross profit for the year."
+133.0,138.0,0.9633710980415344,0.2128882884979248,0.9454927763791229,0.7937477982832114,False,We also expect our free cash flow generation to meaningfully exceed what we generated in 2023.
+138.0,142.0,-0.9973655343055724,0.19725110530853274,0.9645410217622634,-1.2385337820380955,False,And we said we take much more of an opportunity approach to this strategy.
+142.0,145.0,0.9977105855941772,0.5908931374549866,0.794231753815549,0.5122150382238044,False,And we're going to throw in many different things.
+145.0,150.0,-0.9939541220664978,0.19275394678115845,0.9704096033951303,-1.2228939869265225,False,"And for some shows, exclusives may matter for some others it don't."
+150.0,158.0,0.6599607467651367,0.12594455480575564,0.923301805888708,0.5783766354116173,False,So I think the general story just to be candid here with all of you on the line is that what we've seen is that while exclusivities were.
+158.0,165.0,-0.9970496892929076,-0.2661396026611328,0.9004014713523131,-0.8117602090698729,False,"That positive on the side, it's not driving as much as the opportunity that we see on the ad side."
+165.0,171.0,0.9991117119789124,0.13315584659576418,0.9297956006746643,0.9313400329651015,False,"And so by broadening distribution, we think we can accomplish a number of different goals."
+171.0,174.0,-0.8857179284095764,-0.24352985620498657,0.8836048409064248,-0.7267819759178964,False,"Most notable among them, we are going to be more aligned with the creator."
+174.0,179.0,0.9794726371765136,0.15115549564361572,0.9008333319289027,0.9195009911092764,False,The creator obviously wants to be on many different platforms and wants.
+178.0,181.0,0.7711701393127441,0.17339737415313722,0.9143921837557235,0.6537378334801031,False,To have as big of an audience as possible.
+181.0,190.0,0.9959729313850404,0.5720018982887268,0.7338694317502142,0.5777199795407473,False,"So I feel like with this new strategy, we're actually even better aligned with the creator because we're not asking the creator to trade one for the other."
+190.0,198.0,0.9996180534362792,0.5721031665802002,0.7339283951726201,0.5825021755092707,False,"And because advertising is in such a strong growth position for us, I feel I'm really excited about the opportunity."
+198.0,202.0,-0.8350642919540405,0.5822338938713074,0.7138093862350897,-1.9855415369371,False,We can bring both the creators and just modify itself with that strategy.
+202.0,210.0,0.9998273849487304,0.5863048434257507,0.716117593813018,0.5774506102009728,False,"It's two parts of focus. So I think on our side, the intriguing part is we are able to bring a whole new audience to audibos."
+210.0,218.0,0.998817265033722,0.6318342685699463,0.7334505734445117,0.5003513662008738,False,"So internally and externally, I think the biggest surprise has been the type of titles that resonate with consumers."
+218.0,222.0,-0.9960020184516908,0.2334392786026001,0.9395115635118741,-1.308596237452007,False,These are not the normal titles that traditionally does well.
+222.0,232.0,0.9998798370361328,0.2334916353225708,0.9395542656773762,0.815693387503308,False,"They do well on Spotify, and that's pleasing to see because that means we're bringing a whole new mark of the audience to audibos, the format, which is great to see."
+232.0,238.0,0.9998551607131958,0.600475525856018,0.7982388733378764,0.5003259653180652,False,That's definitely been a positive surprise.
+238.0,244.0,0.999800980091095,0.600470244884491,0.7982362313799609,0.5002663616461708,False,Amazing to see also how much value audibos is adding to our subscriber base.
+244.0,246.0,0.9998586177825928,0.6006785154342651,0.7983402673672078,0.5000124867367103,False,So I feel really good about that.
+246.0,252.0,0.9566352367401124,0.9912059664726257,0.01728538445968512,-1.9999977329484897,False,We are very much adapting our pricing models in favor of what consumers want.
+252.0,256.0,0.9937500357627868,0.9899800062179566,0.016838313127306687,0.22389591619580548,False,And that's something that you should expect us to continue to do.
+256.0,258.0,0.985878884792328,0.987184751033783,0.016111345119423165,-0.08105258945019517,False,Now with that said.
+258.0,272.0,-0.7466329336166382,0.6378979682922363,0.6924241747063724,-1.999541541853294,False,"You know, the Apple case is many things like, for instance, alachart purchases, things like superfan things like purchasing of audibos, top up things that could be quite meaningful for Spotify's revenues"
+272.0,278.0,-0.999152898788452,0.23809566497802734,0.9107103611513843,-1.3585532970134022,False,"is a significant hindrance today because Apple insists on taking a 30% cost, which"
+278.0,282.0,0.6746740937232971,0.18170343637466432,0.8723953232985379,0.5650771435645763,False,in many cases exceeds even our own cuts that we're able to take inside of the app.
+282.0,286.0,0.9997424483299256,0.1829019188880921,0.8735134760571303,0.9351206957091178,False,So some of these more innovative things that we would like to do.
+286.0,292.0,-0.9991025924682616,-0.2140943765640258,0.8694206494381793,-0.9029095598448335,False,We're currently restricted in doing on the iOS ecosystem.
+292.0,302.0,-0.6047744750976562,-0.18572268486022941,0.8537529137331737,-0.4908349751979816,False,We outline our response to how we would be compliant with the DMA and Apple that
+298.0,306.0,-0.9904491305351256,-0.18398193120956413,0.8520998740594081,-0.946446800283572,False,"obviously subsequently responded with their stance, which is very much incongruent with our stance on the matter."
+306.0,312.0,0.957782506942749,-0.12736024856567374,0.9144043706379507,1.1867208757448888,False,"And frankly, I think it's a bit of a farce because it looks on the surface that they're complying with it."
+312.0,318.0,0.9981064796447754,-0.12768744230270382,0.9140012141009031,1.2317203791188782,False,"But behind the surface, they're doing pretty much everything to make this such an effort."
+318.0,324.0,-0.9715787768363952,-0.12218267917633052,0.9088044680091785,-0.9346301955587284,False,Alan attractive experience that's no same developer want to pick any of the new terms.
+324.0,328.0,0.9924224019050598,0.19725669622421269,0.9621714896906545,0.8264282554625465,False,I think the way you should think about headcount growth is we're not allergic to it.
+328.0,330.0,-0.997958779335022,0.1957547664642334,0.9640283710556293,-1.238255617406899,False,"We're not saying, hey, we can never ever grow anything."
+330.0,333.0,0.9979829788208008,0.20379486083984374,0.9704961733932833,0.8183320447355548,False,We should grow things that obviously are working.
+333.0,338.0,-0.9826803803443908,-0.19236251115798947,0.96968070477746,-0.8150289732410193,False,"And more importantly, I think you're going to see us be more diligent in shutting down things that"
+338.0,344.0,-0.9984654188156128,-0.19773983955383298,0.9740516081626731,-0.8220566267244982,False,"have sort of worked, but may not work as well going forward into the future."
+344.0,347.0,0.999772608280182,-0.19626979827880858,0.9758505801030869,1.2256409238724262,False,The long-term opportunity for Spotify is strong.
+347.0,352.0,0.9998289346694946,0.20328774452209478,0.9747961407397716,0.8171361753062601,False,"And we will continue to innovate in big and small ways to deliver for our listeners and the artists,"
+352.0,354.0,0.996300458908081,0.20295124053955083,0.9745220021725386,0.814090617348697,False,creators and authors on our platform.
+354.0,358.0,0.9984588623046876,0.5991790890693665,0.7988232795412981,0.49983492402048724,False,And make no mistake that we will continue to make both bets in.
+358.0,366.0,0.998720407485962,0.9986162543296814,0.0012811148759878763,0.08129884230743759,False,"Best and seize on the opportunities when they make sense, but hopefully it's clear now with much more disciplined approach going forward."
+366.0,370.0,0.9998019337654114,0.9986221194267273,0.0012864513901461462,0.9171075935873879,False,Thanks everyone for joining us today.

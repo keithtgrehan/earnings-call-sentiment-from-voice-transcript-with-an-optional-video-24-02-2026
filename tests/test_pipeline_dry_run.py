@@ -29,6 +29,7 @@ def test_pipeline_local_audio_no_network(
         device: str = "auto",
         compute_type: str = "int8",
         chunk_seconds: float = 30.0,
+        vad: bool = False,
     ) -> list[dict]:
         assert audio_path == str(cache_dir / "audio_normalized.wav")
         assert verbose is False
@@ -36,6 +37,7 @@ def test_pipeline_local_audio_no_network(
         assert device == "auto"
         assert compute_type == "int8"
         assert chunk_seconds == 30.0
+        assert vad is False
         return [{"start": 0.0, "end": 1.5, "text": "Hello world"}]
 
     def fake_sentiment(_: str):

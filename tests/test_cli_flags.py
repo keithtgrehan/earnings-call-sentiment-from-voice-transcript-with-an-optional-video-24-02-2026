@@ -35,3 +35,31 @@ def test_parser_accepts_question_shift_flags() -> None:
     assert args.pre_window_s == 45.0
     assert args.post_window_s == 90.0
     assert args.min_gap_s == 20.0
+
+
+def test_parser_accepts_prior_guidance_and_resume_flags() -> None:
+    parser = build_parser()
+    args = parser.parse_args(
+        [
+            "--youtube-url",
+            "https://www.youtube.com/watch?v=test123",
+            "--symbol",
+            "AAPL",
+            "--event-dt",
+            "2024-08-01T16:00:00",
+            "--prior-guidance",
+            "./outputs_prior/guidance.csv",
+            "--force",
+            "--no-resume",
+            "--vad",
+            "--tone-change-threshold",
+            "1.5",
+        ]
+    )
+    assert args.prior_guidance == "./outputs_prior/guidance.csv"
+    assert args.force is True
+    assert args.resume is False
+    assert args.vad is True
+    assert args.tone_change_threshold == 1.5
+    assert args.symbol == "AAPL"
+    assert args.event_dt == "2024-08-01T16:00:00"
