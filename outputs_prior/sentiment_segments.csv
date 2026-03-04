@@ -1,0 +1,67 @@
+start,end,text,sentiment,score
+0.0,8.0,I hope you've had the opportunity to review our shareholder deck to get a sense of what an incredible year 2020 3 was for Spotify.,POSITIVE,0.9977536797523499
+8.0,13.0,"Throughout the year, we noticed some really significant milestones and set numerous records.",POSITIVE,0.9998273849487305
+13.0,20.0,This included 113 million net ads on the MU side and premium net ads of 3...,NEGATIVE,0.9851952791213989
+20.0,36.0,"And there's no question that we had to make some difficult decisions that put us on track to achieve our goal of being a consistently profitable company, but by taking these steps, I'm super confident in where we're heading.",POSITIVE,0.9996665716171265
+36.0,40.0,"So looking to 2024, you should expect a consumer.",NEGATIVE,0.9910927414894104
+40.0,53.0,"In addition to what you saw in 2023, strong product development, which leads to strong growth, but with an increased focus on monetization and efficiency, which in turn drives profitability.",POSITIVE,0.999237060546875
+53.0,58.0,And I know some of you may start to wonder if we're sacrificing growth for profitability.,NEGATIVE,0.9972929358482361
+58.0,66.0,"In some terms, we believe that the real value of Spotify is in solving problems at the intersection between creators and consumers.",POSITIVE,0.5669909119606018
+66.0,70.0,"With scale, there will be even more opportunities to do so.",POSITIVE,0.9948549270629883
+70.0,74.0,"Therefore, growth is still the most important thing we can deliver.",POSITIVE,0.9998427629470825
+74.0,79.0,"In Q4, we became the number two provider of audiobooks behind.",POSITIVE,0.9146573543548584
+79.0,82.0,Which is notable given how entrenched the legacy players are.,POSITIVE,0.9996446371078491
+82.0,84.0,Q4 is a very strong quarter.,POSITIVE,0.9997109770774841
+84.0,87.0,And maybe you grew like 28 million to 602 million.,NEGATIVE,0.6263163089752197
+87.0,91.0,And we had a 10 million net subscribers finishing up 236 million.,POSITIVE,0.9825875163078308
+91.0,96.0,With the MU and subscriber growth continued to be above our historical trend and outperform forecast.,POSITIVE,0.9681490659713745
+96.0,98.0,Looking ahead to the first quarter.,POSITIVE,0.9995989203453064
+98.0,108.0,"For guidance, we are forecasting 618 million MU, an increase of 16 million from Q4, and 230 million subscribers, an increase of 3 million over Q4.",POSITIVE,0.8479767441749573
+108.0,116.0,"We are also forecasting a currency neutral revenue growth rate of 20% plus year on year, 20 to 3.6 billion in total revenue.",NEGATIVE,0.9191796183586121
+116.0,119.0,We also anticipate a gross margin of 26 million.,NEGATIVE,0.970499575138092
+119.0,122.0,And an operating profit of 180 million.,POSITIVE,0.9967418313026428
+122.0,133.0,"Gross margin, operating margin, are both expected to improve throughout the year to deliver meaningful full year expansion with podcasting expected to deliver positive gross profit for the year.",POSITIVE,0.9940077066421509
+133.0,138.0,We also expect our free cash flow generation to meaningfully exceed what we generated in 2023.,POSITIVE,0.9633710980415344
+138.0,142.0,And we said we take much more of an opportunity approach to this strategy.,NEGATIVE,0.9973655343055725
+142.0,145.0,And we're going to throw in many different things.,POSITIVE,0.9977105855941772
+145.0,150.0,"And for some shows, exclusives may matter for some others it don't.",NEGATIVE,0.9939541220664978
+150.0,158.0,So I think the general story just to be candid here with all of you on the line is that what we've seen is that while exclusivities were.,POSITIVE,0.6599607467651367
+158.0,165.0,"That positive on the side, it's not driving as much as the opportunity that we see on the ad side.",NEGATIVE,0.9970496892929077
+165.0,171.0,"And so by broadening distribution, we think we can accomplish a number of different goals.",POSITIVE,0.9991117119789124
+171.0,174.0,"Most notable among them, we are going to be more aligned with the creator.",NEGATIVE,0.8857179284095764
+174.0,179.0,The creator obviously wants to be on many different platforms and wants.,POSITIVE,0.9794726371765137
+178.0,181.0,To have as big of an audience as possible.,POSITIVE,0.7711701393127441
+181.0,190.0,"So I feel like with this new strategy, we're actually even better aligned with the creator because we're not asking the creator to trade one for the other.",POSITIVE,0.9959729313850403
+190.0,198.0,"And because advertising is in such a strong growth position for us, I feel I'm really excited about the opportunity.",POSITIVE,0.9996180534362793
+198.0,202.0,We can bring both the creators and just modify itself with that strategy.,NEGATIVE,0.8350642919540405
+202.0,210.0,"It's two parts of focus. So I think on our side, the intriguing part is we are able to bring a whole new audience to audibos.",POSITIVE,0.9998273849487305
+210.0,218.0,"So internally and externally, I think the biggest surprise has been the type of titles that resonate with consumers.",POSITIVE,0.9988172650337219
+218.0,222.0,These are not the normal titles that traditionally does well.,NEGATIVE,0.9960020184516907
+222.0,232.0,"They do well on Spotify, and that's pleasing to see because that means we're bringing a whole new mark of the audience to audibos, the format, which is great to see.",POSITIVE,0.9998798370361328
+232.0,238.0,That's definitely been a positive surprise.,POSITIVE,0.9998551607131958
+238.0,244.0,Amazing to see also how much value audibos is adding to our subscriber base.,POSITIVE,0.999800980091095
+244.0,246.0,So I feel really good about that.,POSITIVE,0.9998586177825928
+246.0,252.0,We are very much adapting our pricing models in favor of what consumers want.,POSITIVE,0.9566352367401123
+252.0,256.0,And that's something that you should expect us to continue to do.,POSITIVE,0.9937500357627869
+256.0,258.0,Now with that said.,POSITIVE,0.9858788847923279
+258.0,272.0,"You know, the Apple case is many things like, for instance, alachart purchases, things like superfan things like purchasing of audibos, top up things that could be quite meaningful for Spotify's revenues",NEGATIVE,0.7466329336166382
+272.0,278.0,"is a significant hindrance today because Apple insists on taking a 30% cost, which",NEGATIVE,0.9991528987884521
+278.0,282.0,in many cases exceeds even our own cuts that we're able to take inside of the app.,POSITIVE,0.6746740937232971
+282.0,286.0,So some of these more innovative things that we would like to do.,POSITIVE,0.9997424483299255
+286.0,292.0,We're currently restricted in doing on the iOS ecosystem.,NEGATIVE,0.9991025924682617
+292.0,302.0,We outline our response to how we would be compliant with the DMA and Apple that,NEGATIVE,0.6047744750976562
+298.0,306.0,"obviously subsequently responded with their stance, which is very much incongruent with our stance on the matter.",NEGATIVE,0.9904491305351257
+306.0,312.0,"And frankly, I think it's a bit of a farce because it looks on the surface that they're complying with it.",POSITIVE,0.957782506942749
+312.0,318.0,"But behind the surface, they're doing pretty much everything to make this such an effort.",POSITIVE,0.9981064796447754
+318.0,324.0,Alan attractive experience that's no same developer want to pick any of the new terms.,NEGATIVE,0.9715787768363953
+324.0,328.0,I think the way you should think about headcount growth is we're not allergic to it.,POSITIVE,0.9924224019050598
+328.0,330.0,"We're not saying, hey, we can never ever grow anything.",NEGATIVE,0.997958779335022
+330.0,333.0,We should grow things that obviously are working.,POSITIVE,0.9979829788208008
+333.0,338.0,"And more importantly, I think you're going to see us be more diligent in shutting down things that",NEGATIVE,0.9826803803443909
+338.0,344.0,"have sort of worked, but may not work as well going forward into the future.",NEGATIVE,0.9984654188156128
+344.0,347.0,The long-term opportunity for Spotify is strong.,POSITIVE,0.9997726082801819
+347.0,352.0,"And we will continue to innovate in big and small ways to deliver for our listeners and the artists,",POSITIVE,0.9998289346694946
+352.0,354.0,creators and authors on our platform.,POSITIVE,0.996300458908081
+354.0,358.0,And make no mistake that we will continue to make both bets in.,POSITIVE,0.9984588623046875
+358.0,366.0,"Best and seize on the opportunities when they make sense, but hopefully it's clear now with much more disciplined approach going forward.",POSITIVE,0.9987204074859619
+366.0,370.0,Thanks everyone for joining us today.,POSITIVE,0.9998019337654114

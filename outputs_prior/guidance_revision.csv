@@ -1,0 +1,1 @@
+row_id,is_matched,revision_label,topic,period,current_start,current_end,prior_start,prior_end,current_text_snippet,prior_text_snippet,current_numbers,prior_numbers,current_midpoint,prior_midpoint,diff,overlap_score,current_match_key,prior_match_key

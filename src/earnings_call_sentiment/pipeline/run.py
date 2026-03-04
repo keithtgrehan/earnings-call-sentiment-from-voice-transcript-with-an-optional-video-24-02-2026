@@ -93,11 +93,14 @@ def transcribe_audio(
     device: str = "auto",
     compute_type: str = "int8",
     chunk_seconds: float = 30.0,
+    vad: bool = False,
 ) -> list[dict]:
     """Transcribe audio using faster-whisper base model in int8 mode."""
     transcribe_kwargs: dict[str, Any] = {}
     if chunk_seconds > 0:
         transcribe_kwargs["chunk_length"] = max(1, int(round(chunk_seconds)))
+    if vad:
+        transcribe_kwargs["vad_filter"] = True
     return list(
         _transcribe_audio(
             audio_path=audio_path,
@@ -277,6 +280,7 @@ def run_pipeline(
     device: str = "auto",
     compute_type: str = "int8",
     chunk_seconds: float = 30.0,
+    vad: bool = False,
 ) -> dict:
     """Run audio acquisition, normalization, transcription, and transcript export."""
     cache_path = Path(cache_dir or "./cache")
@@ -316,6 +320,7 @@ def run_pipeline(
         device=device,
         compute_type=compute_type,
         chunk_seconds=chunk_seconds,
+        vad=vad,
     )
     _log(verbose, f"segments_count={len(segments)}")
 

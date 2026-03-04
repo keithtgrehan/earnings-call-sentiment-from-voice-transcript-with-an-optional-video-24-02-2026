@@ -1,0 +1,16 @@
+start,end,text,sentiment,score,topic,period,numbers,numeric_signature,midpoint_hint,guidance_strength,count_numbers,has_percent,has_range,has_currency,matched_cues
+108.0,116.0,"We are also forecasting a currency neutral revenue growth rate of 20% plus year on year, 20 to 3.6 billion in total revenue.",NEGATIVE,0.919179618358612,revenue,Year,20;20;3.6,3.6|20,11.8,0.74,3,True,True,True,year;revenue
+98.0,108.0,"For guidance, we are forecasting 618 million MU, an increase of 16 million from Q4, and 230 million subscribers, an increase of 3 million over Q4.",POSITIVE,0.8479767441749573,outlook,Q4,618;16;4;230;3;4,3|4|16|230|618,618.0,0.7096,6,False,False,True,guidance;q4
+0.0,8.0,I hope you've had the opportunity to review our shareholder deck to get a sense of what an incredible year 2020 3 was for Spotify.,POSITIVE,0.99775367975235,other,Year,2020;3,3|2020,2020.0,0.4396,2,False,False,False,year;fy
+82.0,84.0,Q4 is a very strong quarter.,POSITIVE,0.999710977077484,other,Q4,4,4,4.0,0.3399,1,False,False,False,quarter;q4
+74.0,79.0,"In Q4, we became the number two provider of audiobooks behind.",POSITIVE,0.9146573543548584,other,Q4,4,4,4.0,0.3029,1,False,False,False,q4
+122.0,133.0,"Gross margin, operating margin, are both expected to improve throughout the year to deliver meaningful full year expansion with podcasting expected to deliver positive gross profit for the year.",POSITIVE,0.9940077066421508,margin,FY,,none,,0.2388,0,False,False,False,year;margin
+8.0,13.0,"Throughout the year, we noticed some really significant milestones and set numerous records.",POSITIVE,0.9998273849487304,other,Year,,none,,0.22,0,False,False,False,year
+116.0,119.0,We also anticipate a gross margin of 26 million.,NEGATIVE,0.970499575138092,margin,Unknown,26,26,26.0,0.22,1,False,False,True,margin
+222.0,232.0,"They do well on Spotify, and that's pleasing to see because that means we're bringing a whole new mark of the audience to audibos, the format, which is great to see.",POSITIVE,0.9998798370361328,other,Unknown,,none,,0.22,0,False,False,False,fy
+344.0,347.0,The long-term opportunity for Spotify is strong.,POSITIVE,0.999772608280182,other,Unknown,,none,,0.22,0,False,False,False,fy
+20.0,36.0,"And there's no question that we had to make some difficult decisions that put us on track to achieve our goal of being a consistently profitable company, but by taking these steps, I'm super confident in where we're heading.",POSITIVE,0.9996665716171264,eps,Unknown,,none,,0.2199,0,False,False,False,eps
+96.0,98.0,Looking ahead to the first quarter.,POSITIVE,0.9995989203453064,other,Quarter,,none,,0.2199,0,False,False,False,quarter
+58.0,66.0,"In some terms, we believe that the real value of Spotify is in solving problems at the intersection between creators and consumers.",POSITIVE,0.5669909119606018,other,Unknown,,none,,0.1334,0,False,False,False,fy
+258.0,272.0,"You know, the Apple case is many things like, for instance, alachart purchases, things like superfan things like purchasing of audibos, top up things that could be quite meaningful for Spotify's revenues",NEGATIVE,0.7466329336166382,revenue,Unknown,,none,,0.04,0,False,False,False,fy;revenue
+198.0,202.0,We can bring both the creators and just modify itself with that strategy.,NEGATIVE,0.8350642919540405,other,Unknown,,none,,0.02,0,False,False,False,fy

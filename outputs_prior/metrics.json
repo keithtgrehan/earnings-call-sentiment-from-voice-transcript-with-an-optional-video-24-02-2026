@@ -1,0 +1,23 @@
+{
+  "num_chunks_scored": 66,
+  "sentiment_mean": 0.35894,
+  "sentiment_std": 0.885292,
+  "guidance": {
+    "row_count": 15,
+    "mean_strength": 0.2856
+  },
+  "tone_changes": {
+    "row_count": 66,
+    "change_count": 0
+  },
+  "guidance_revision": {
+    "prior_guidance_path": null,
+    "matched_count": 0,
+    "raised_count": 0,
+    "lowered_count": 0,
+    "reaffirmed_count": 0,
+    "unclear_count": 0,
+    "mixed_count": 0,
+    "top_revisions": []
+  }
+}
