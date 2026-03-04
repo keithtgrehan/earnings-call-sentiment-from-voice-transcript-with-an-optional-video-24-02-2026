@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+from datetime import UTC, datetime
 import json
 import re
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -958,6 +960,68 @@ def _print_outputs(console: Console, title: str, rows: list[tuple[str, str]]) ->
         console.print(f"[bold]{label}:[/bold] {value}")
 
 
+def _normalize_event_dt(value: str | None) -> tuple[str, bool]:
+    if value is None or not str(value).strip():
+        return datetime.now().astimezone().isoformat(), True
+
+    normalized = str(value).strip().replace(" ", "T")
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError(
+            "--event-dt must be ISO8601, e.g. 2024-08-01T16:00:00 or 2024-08-01 16:00"
+        ) from exc
+
+    if parsed.tzinfo is None:
+        local_tz = datetime.now().astimezone().tzinfo
+        if local_tz is None:
+            local_tz = UTC
+        parsed = parsed.replace(tzinfo=local_tz)
+
+    return parsed.isoformat(), False
+
+
+def _resolve_version_identifier() -> str:
+    try:
+        proc = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError:
+        return __version__
+    sha = (proc.stdout or "").strip()
+    if proc.returncode == 0 and sha:
+        return f"git:{sha}"
+    return __version__
+
+
+def _write_run_meta(
+    *,
+    out_dir: Path,
+    symbol: str,
+    event_dt: str,
+    source_url: str | None,
+) -> Path:
+    normalized_symbol = str(symbol or "").strip().upper() or "UNKNOWN"
+    generated_at = datetime.now(UTC).isoformat()
+    event_token = re.sub(r"[^0-9]", "", event_dt)[:14] or "event"
+    run_token = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
+    run_id = f"{normalized_symbol}_{event_token}_{run_token}"
+    payload = {
+        "symbol": normalized_symbol,
+        "event_dt": str(event_dt),
+        "source_url": str(source_url or ""),
+        "run_id": run_id,
+        "generated_at": generated_at,
+        "version": _resolve_version_identifier(),
+    }
+    path = out_dir / "run_meta.json"
+    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    return path
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Build CLI argument parser."""
     parser = argparse.ArgumentParser(
@@ -980,6 +1044,16 @@ def build_parser() -> argparse.ArgumentParser:
         "--audio-path",
         default=None,
         help="Local audio file path to process (skips YouTube download)",
+    )
+    parser.add_argument(
+        "--symbol",
+        default=None,
+        help="Ticker symbol used for run metadata and backtesting (default: UNKNOWN).",
+    )
+    parser.add_argument(
+        "--event-dt",
+        default=None,
+        help="Event timestamp (ISO8601), e.g. 2024-08-01T16:00:00 or 2024-08-01 16:00.",
     )
     parser.add_argument(
         "--cache-dir",
@@ -1136,6 +1210,11 @@ def main(argv: list[str] | None = None) -> int:
     cache_dir = Path(args.cache_dir).expanduser().resolve()
     out_dir = Path(args.out_dir).expanduser().resolve()
     console = Console()
+    symbol = str(args.symbol or "").strip().upper() or "UNKNOWN"
+    try:
+        event_dt_iso, defaulted_event_dt = _normalize_event_dt(args.event_dt)
+    except ValueError as exc:
+        parser.error(str(exc))
 
     if args.verbose:
         _log(args.verbose, f"args={args}")
@@ -1149,10 +1228,17 @@ def main(argv: list[str] | None = None) -> int:
         print(f"resume={args.resume}")
         print(f"force={args.force}")
         print(f"prior_guidance={args.prior_guidance}")
+        print(f"symbol={symbol}")
+        print(f"event_dt={event_dt_iso}")
         return 0
 
     cache_dir.mkdir(parents=True, exist_ok=True)
     out_dir.mkdir(parents=True, exist_ok=True)
+    if defaulted_event_dt:
+        console.print(
+            "[yellow]Warning:[/yellow] --event-dt not provided; defaulting to current "
+            "local time. Backtesting requires the true event timestamp."
+        )
 
     if args.download_only:
         source_audio = _resolve_source_audio(args, cache_dir)
@@ -1188,6 +1274,13 @@ def main(argv: list[str] | None = None) -> int:
                 "[yellow]Skipping --question-shifts in --transcribe-only mode "
                 "(no sentiment scoring step).[/yellow]"
             )
+        run_meta_path = _write_run_meta(
+            out_dir=out_dir,
+            symbol=symbol,
+            event_dt=event_dt_iso,
+            source_url=args.youtube_url,
+        )
+        console.print(f"[bold]Run Metadata:[/bold] {run_meta_path}")
         return 0
 
     if args.score_only:
@@ -1252,6 +1345,13 @@ def main(argv: list[str] | None = None) -> int:
                 args=args,
                 console=console,
             )
+        run_meta_path = _write_run_meta(
+            out_dir=out_dir,
+            symbol=symbol,
+            event_dt=event_dt_iso,
+            source_url=args.youtube_url,
+        )
+        console.print(f"[bold]Run Metadata:[/bold] {run_meta_path}")
         return 0
 
     resolved_audio_path = None
@@ -1317,6 +1417,13 @@ def main(argv: list[str] | None = None) -> int:
             args=args,
             console=console,
         )
+    run_meta_path = _write_run_meta(
+        out_dir=out_dir,
+        symbol=symbol,
+        event_dt=event_dt_iso,
+        source_url=args.youtube_url,
+    )
+    console.print(f"[bold]Run Metadata:[/bold] {run_meta_path}")
     return 0
 
 

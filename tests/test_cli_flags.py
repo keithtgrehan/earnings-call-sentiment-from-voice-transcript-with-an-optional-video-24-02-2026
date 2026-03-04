@@ -43,6 +43,10 @@ def test_parser_accepts_prior_guidance_and_resume_flags() -> None:
         [
             "--youtube-url",
             "https://www.youtube.com/watch?v=test123",
+            "--symbol",
+            "AAPL",
+            "--event-dt",
+            "2024-08-01T16:00:00",
             "--prior-guidance",
             "./outputs_prior/guidance.csv",
             "--force",
@@ -57,3 +61,5 @@ def test_parser_accepts_prior_guidance_and_resume_flags() -> None:
     assert args.resume is False
     assert args.vad is True
     assert args.tone_change_threshold == 1.5
+    assert args.symbol == "AAPL"
+    assert args.event_dt == "2024-08-01T16:00:00"

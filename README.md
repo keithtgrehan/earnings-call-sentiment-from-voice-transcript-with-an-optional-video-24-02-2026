@@ -181,3 +181,33 @@ Components:
 	•	Hedging
 	•	Lack of numeric specificity
 
+---
+
+## Optional LLM Narrative Evaluation
+
+This does **not** change the pipeline. It reads existing artifacts in `--out-dir`
+and writes:
+
+- `llm_eval.json` (always)
+- `llm_eval.md` (human-readable summary)
+
+Deterministic mode (no LLM call):
+
+```bash
+python scripts/run_eval.py \
+  --out-dir ./outputs \
+  --llm none
+```
+
+Local Ollama mode (strict JSON response validated):
+
+```bash
+python scripts/run_eval.py \
+  --out-dir ./outputs \
+  --llm ollama \
+  --model llama3.2:1b \
+  --limit 5 \
+  --top-k 10 \
+  --timeout 240 \
+  --max-tokens 300
+```

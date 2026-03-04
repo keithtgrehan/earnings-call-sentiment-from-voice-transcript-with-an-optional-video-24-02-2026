@@ -83,6 +83,7 @@ def _try_load_metadata(run_dir: Path, outputs_dir: Path) -> tuple[str, pd.Timest
     metadata_candidates = [
         run_dir / "event.json",
         run_dir / "metadata.json",
+        run_dir / "outputs" / "run_meta.json",
         outputs_dir / "event.json",
         outputs_dir / "metadata.json",
         outputs_dir / "run_meta.json",

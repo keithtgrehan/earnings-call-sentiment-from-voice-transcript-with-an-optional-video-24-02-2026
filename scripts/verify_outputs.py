@@ -18,6 +18,12 @@ def main(argv: list[str] | None = None) -> int:
         default="./outputs",
         help="Directory containing pipeline outputs (default: ./outputs).",
     )
+    parser.add_argument(
+        "--require-run-meta",
+        action="store_true",
+        default=False,
+        help="Also require out_dir/run_meta.json to exist and be non-empty.",
+    )
     args = parser.parse_args(argv)
 
     out_dir = Path(args.out_dir).expanduser().resolve()
@@ -30,6 +36,8 @@ def main(argv: list[str] | None = None) -> int:
         out_dir / "metrics.json",
         out_dir / "report.md",
     ]
+    if args.require_run_meta:
+        required.append(out_dir / "run_meta.json")
 
     failures: list[str] = []
     print(f"Verifying outputs in: {out_dir}")
