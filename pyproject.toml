@@ -11,8 +11,6 @@ requires-python = ">=3.11"
 authors = [{ name = "Keith" }]
 license = { text = "MIT" }
 
-# Move runtime deps from requirements.txt into here.
-# (If you paste your requirements.txt content, I’ll fill this exactly.)
 dependencies = [
   "faster-whisper",
   "transformers",
@@ -27,6 +25,7 @@ dependencies = [
   "yt-dlp",
   "typer",
   "rich",
+  "matplotlib",
 ]
 
 [project.optional-dependencies]

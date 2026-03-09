@@ -10,3 +10,4 @@ ffmpeg-python
 opensmile
 
 yt-dlp
+matplotlib

@@ -127,10 +127,11 @@ earnings-call-sentiment \
 - `--resume` / `--no-resume`: reuse or recompute post-score artifacts.
 - `--tone-change-threshold`: z-score threshold for tone-change detection.
 - `--prior-guidance`: prior `guidance.csv` path for revision labeling.
+- `--sentiment-model`: pinned HF model id for sentiment pipeline.
+- `--sentiment-revision`: pinned HF model revision for reproducible sentiment scoring.
 - `--symbol`: ticker stored in `run_meta.json`.
 - `--event-dt`: event timestamp stored in `run_meta.json`.
-
-Note: a `--strict` CLI flag is not currently present. Contract checks are enforced via `scripts/verify_outputs.py` (plus `--require-run-meta` when needed).
+- `--strict`: enforce the output contract and exit with code `2` if required artifacts are missing/empty.
 
 ## 8) Outputs Contract
 Core contract artifacts (full scoring run):
@@ -161,6 +162,14 @@ Optional artifacts (flag-dependent):
 }
 ```
 
+### `metrics.json` top-level metadata keys
+- `schema_version` (current: `1.0.0`)
+- `git_commit` (short SHA or `null`)
+- `package_version` (package metadata version or `null`)
+- `generated_at` (ISO8601 UTC timestamp)
+- `models.sentiment.model` (pinned HF model id)
+- `models.sentiment.revision` (pinned HF model revision)
+
 ### CSV/JSONL required columns
 `sentiment_segments.csv`
 - `start`, `end`, `text`, `sentiment`, `score`
@@ -185,6 +194,10 @@ Contract verification:
 python scripts/verify_outputs.py --out-dir ./outputs
 python scripts/verify_outputs.py --out-dir ./outputs --require-run-meta
 ```
+
+`--strict` behavior:
+- Disabled (default): pipeline completes without enforcing contract checks.
+- Enabled: validates required artifacts (`transcript.json`, `transcript.txt`, `sentiment_segments.csv`, `sentiment_timeline.png`, `risk_metrics.json`, `guidance.csv`, `guidance_revision.csv`, `tone_changes.csv`, `metrics.json`, `report.md`, `run_meta.json`) and exits `2` on violations.
 
 ## 9) Backtesting + Statistical significance
 Workflow:

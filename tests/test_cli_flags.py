@@ -49,9 +49,14 @@ def test_parser_accepts_prior_guidance_and_resume_flags() -> None:
             "2024-08-01T16:00:00",
             "--prior-guidance",
             "./outputs_prior/guidance.csv",
+            "--sentiment-model",
+            "distilbert/distilbert-base-uncased-finetuned-sst-2-english",
+            "--sentiment-revision",
+            "714eb0f",
             "--force",
             "--no-resume",
             "--vad",
+            "--strict",
             "--tone-change-threshold",
             "1.5",
         ]
@@ -60,6 +65,12 @@ def test_parser_accepts_prior_guidance_and_resume_flags() -> None:
     assert args.force is True
     assert args.resume is False
     assert args.vad is True
+    assert args.strict is True
+    assert (
+        args.sentiment_model
+        == "distilbert/distilbert-base-uncased-finetuned-sst-2-english"
+    )
+    assert args.sentiment_revision == "714eb0f"
     assert args.tone_change_threshold == 1.5
     assert args.symbol == "AAPL"
     assert args.event_dt == "2024-08-01T16:00:00"
