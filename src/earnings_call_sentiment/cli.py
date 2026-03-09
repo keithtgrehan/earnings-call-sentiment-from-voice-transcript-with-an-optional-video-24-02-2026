@@ -19,6 +19,7 @@ os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
 from . import __version__
 from earnings_call_sentiment.downloaders.youtube import download_audio
+from earnings_call_sentiment.post_summary import generate_optional_summary
 from earnings_call_sentiment.pipeline.run import (
     load_transcript_segments,
     normalize_audio_to_wav,
@@ -28,6 +29,11 @@ from earnings_call_sentiment.pipeline.run import (
     write_transcript_artifacts,
 )
 import earnings_call_sentiment.question_shifts as qs
+from earnings_call_sentiment.summary_config import (
+    SummaryConfig,
+    load_summary_config,
+    run_summary_preflight,
+)
 
 
 _GUIDANCE_CUES = (
@@ -1096,6 +1102,17 @@ def _write_run_meta(
     return path
 
 
+def _resolve_summary_config(args: argparse.Namespace) -> SummaryConfig:
+    return load_summary_config(
+        enabled=bool(args.llm_summary),
+        provider=args.summary_provider,
+        model=args.summary_model,
+        base_url=args.summary_base_url,
+        api_key_env=args.summary_api_key_env,
+        timeout_s=float(args.summary_timeout_s),
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Build CLI argument parser."""
     parser = argparse.ArgumentParser(
@@ -1280,6 +1297,39 @@ def build_parser() -> argparse.ArgumentParser:
         default=False,
         help="Enforce strict output artifact contract and exit code 2 on violations.",
     )
+    parser.add_argument(
+        "--llm-summary",
+        action="store_true",
+        default=False,
+        help="Run optional post-pipeline narrative summary stage.",
+    )
+    parser.add_argument(
+        "--summary-provider",
+        choices=("none", "openai_compatible"),
+        default=None,
+        help="Summary provider for optional narrative stage.",
+    )
+    parser.add_argument(
+        "--summary-model",
+        default=None,
+        help="Model identifier used by optional summary provider.",
+    )
+    parser.add_argument(
+        "--summary-base-url",
+        default=None,
+        help="Base URL for openai-compatible summary provider.",
+    )
+    parser.add_argument(
+        "--summary-api-key-env",
+        default=None,
+        help="Environment variable name holding summary provider API key.",
+    )
+    parser.add_argument(
+        "--summary-timeout-s",
+        type=float,
+        default=30.0,
+        help="Timeout in seconds for optional summary provider call.",
+    )
     return parser
 
 
@@ -1310,6 +1360,8 @@ def main(argv: list[str] | None = None) -> int:
         _log(args.verbose, f"args={args}")
 
     if args.dry_run:
+        summary_config = _resolve_summary_config(args)
+        summary_ok, summary_message = run_summary_preflight(summary_config)
         print("Dry run enabled; skipping execution.")
         print(f"youtube_url={args.youtube_url}")
         print(f"audio_path={args.audio_path}")
@@ -1322,6 +1374,14 @@ def main(argv: list[str] | None = None) -> int:
         print(f"sentiment_revision={args.sentiment_revision}")
         print(f"symbol={symbol}")
         print(f"event_dt={event_dt_iso}")
+        print(f"summary_enabled={summary_config.enabled}")
+        print(f"summary_provider={summary_config.provider}")
+        print(f"summary_model={summary_config.model}")
+        print(f"summary_base_url={summary_config.base_url}")
+        print(f"summary_api_key_env={summary_config.api_key_env}")
+        print(f"summary_timeout_s={summary_config.timeout_s}")
+        print(f"summary_preflight_ok={summary_ok}")
+        print(f"summary_preflight_message={summary_message}")
         return 0
 
     cache_dir.mkdir(parents=True, exist_ok=True)
@@ -1449,6 +1509,21 @@ def main(argv: list[str] | None = None) -> int:
             source_url=args.youtube_url,
         )
         console.print(f"[bold]Run Metadata:[/bold] {run_meta_path}")
+        if args.llm_summary:
+            summary_config = _resolve_summary_config(args)
+            try:
+                summary_path = generate_optional_summary(
+                    out_dir=out_dir,
+                    config=summary_config,
+                    verbose=bool(args.verbose),
+                )
+                if summary_path is not None:
+                    console.print(f"[bold]Optional Summary:[/bold] {summary_path}")
+            except RuntimeError as exc:
+                console.print(
+                    "[yellow]Optional summary stage failed:[/yellow] "
+                    f"{exc}"
+                )
         if args.strict and not _enforce_strict_outputs(out_dir, console):
             return 2
         return 0
@@ -1525,6 +1600,21 @@ def main(argv: list[str] | None = None) -> int:
         source_url=args.youtube_url,
     )
     console.print(f"[bold]Run Metadata:[/bold] {run_meta_path}")
+    if args.llm_summary:
+        summary_config = _resolve_summary_config(args)
+        try:
+            summary_path = generate_optional_summary(
+                out_dir=out_dir,
+                config=summary_config,
+                verbose=bool(args.verbose),
+            )
+            if summary_path is not None:
+                console.print(f"[bold]Optional Summary:[/bold] {summary_path}")
+        except RuntimeError as exc:
+            console.print(
+                "[yellow]Optional summary stage failed:[/yellow] "
+                f"{exc}"
+            )
     if args.strict and not _enforce_strict_outputs(out_dir, console):
         return 2
     return 0

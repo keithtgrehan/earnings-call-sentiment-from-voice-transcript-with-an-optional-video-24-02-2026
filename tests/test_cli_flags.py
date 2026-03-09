@@ -59,6 +59,17 @@ def test_parser_accepts_prior_guidance_and_resume_flags() -> None:
             "--strict",
             "--tone-change-threshold",
             "1.5",
+            "--llm-summary",
+            "--summary-provider",
+            "openai_compatible",
+            "--summary-model",
+            "test-model",
+            "--summary-base-url",
+            "https://example.invalid/v1",
+            "--summary-api-key-env",
+            "OPENAI_API_KEY",
+            "--summary-timeout-s",
+            "12.5",
         ]
     )
     assert args.prior_guidance == "./outputs_prior/guidance.csv"
@@ -74,3 +85,9 @@ def test_parser_accepts_prior_guidance_and_resume_flags() -> None:
     assert args.tone_change_threshold == 1.5
     assert args.symbol == "AAPL"
     assert args.event_dt == "2024-08-01T16:00:00"
+    assert args.llm_summary is True
+    assert args.summary_provider == "openai_compatible"
+    assert args.summary_model == "test-model"
+    assert args.summary_base_url == "https://example.invalid/v1"
+    assert args.summary_api_key_env == "OPENAI_API_KEY"
+    assert args.summary_timeout_s == 12.5

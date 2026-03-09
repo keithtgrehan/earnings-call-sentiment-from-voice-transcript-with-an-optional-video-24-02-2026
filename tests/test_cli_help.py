@@ -50,3 +50,9 @@ def test_cli_help_mentions_download_only(tmp_path: Path) -> None:
     assert "--sentiment-revision" in output
     assert "--symbol" in output
     assert "--event-dt" in output
+    assert "--llm-summary" in output
+    assert "--summary-provider" in output
+    assert "--summary-model" in output
+    assert "--summary-base-url" in output
+    assert "--summary-api-key-env" in output
+    assert "--summary-timeout-s" in output
