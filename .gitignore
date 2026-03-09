@@ -23,3 +23,5 @@ outputs/
 *.mp3
 *.m4a
 *.egg-info/
+
+.python-version

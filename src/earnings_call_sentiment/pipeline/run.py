@@ -18,6 +18,9 @@ matplotlib.use("Agg")
 from earnings_call_sentiment.downloaders.youtube import download_audio
 from earnings_call_sentiment.transcriber import transcribe_audio as _transcribe_audio
 
+DEFAULT_SENTIMENT_MODEL_NAME = "distilbert/distilbert-base-uncased-finetuned-sst-2-english"
+DEFAULT_SENTIMENT_MODEL_REVISION = "714eb0f"
+
 
 def _log(verbose: bool, message: str) -> None:
     if verbose:
@@ -30,6 +33,8 @@ class SentimentArtifacts(TypedDict):
     risk_metrics_json: str
     risk_score: float
     sentiment_segments: list[dict]
+    sentiment_model_name: str | None
+    sentiment_model_revision: str | None
 
 
 def _require_file(path: Path, name: str) -> None:
@@ -113,14 +118,31 @@ def transcribe_audio(
     )
 
 
-def build_sentiment_pipeline():
+def build_sentiment_pipeline(
+    sentiment_model: str = DEFAULT_SENTIMENT_MODEL_NAME,
+    sentiment_revision: str = DEFAULT_SENTIMENT_MODEL_REVISION,
+):
     """Create a transformers sentiment analysis pipeline."""
-    return hf_pipeline("sentiment-analysis")
+    return hf_pipeline(
+        "sentiment-analysis",
+        model=sentiment_model,
+        revision=sentiment_revision,
+        tokenizer=(sentiment_model, {"revision": sentiment_revision}),
+    )
 
 
-def score_segments_with_sentiment(segments: list[dict]) -> list[dict]:
+def score_segments_with_sentiment(
+    segments: list[dict],
+    *,
+    sentiment_pipeline: Any | None = None,
+) -> list[dict]:
     """Add sentiment label/score to transcript segments."""
-    sentiment = build_sentiment_pipeline()
+    sentiment = (
+        sentiment_pipeline
+        if sentiment_pipeline is not None
+        else build_sentiment_pipeline()
+    )
+
     scored: list[dict] = []
     for segment in segments:
         text = str(segment.get("text", "")).strip()
@@ -141,6 +163,29 @@ def score_segments_with_sentiment(segments: list[dict]) -> list[dict]:
             }
         )
     return scored
+
+
+def _resolve_sentiment_model_metadata(
+    sentiment_pipeline: Any,
+    *,
+    fallback_model: str,
+    fallback_revision: str,
+) -> tuple[str | None, str | None]:
+    model_name: str | None = None
+    model_revision: str | None = None
+    model_obj = getattr(sentiment_pipeline, "model", None)
+    if model_obj is not None:
+        model_name = getattr(model_obj, "name_or_path", None)
+        config = getattr(model_obj, "config", None)
+        if config is not None:
+            if not model_name:
+                model_name = getattr(config, "_name_or_path", None)
+            model_revision = getattr(config, "_commit_hash", None)
+    if not model_name:
+        model_name = fallback_model
+    if not model_revision:
+        model_revision = fallback_revision
+    return model_name, model_revision
 
 
 def _signed_score(segment: dict) -> float:
@@ -207,11 +252,27 @@ def plot_sentiment_timeline(scored_segments: list[dict], output_path: Path) -> N
 
 
 def write_sentiment_artifacts(
-    segments: list[dict], output_path: Path, verbose: bool = False
+    segments: list[dict],
+    output_path: Path,
+    verbose: bool = False,
+    sentiment_model: str = DEFAULT_SENTIMENT_MODEL_NAME,
+    sentiment_revision: str = DEFAULT_SENTIMENT_MODEL_REVISION,
 ) -> SentimentArtifacts:
     """Score transcript segments and write sentiment/risk artifacts."""
     _log(verbose, "Scoring transcript segments")
-    sentiment_segments = score_segments_with_sentiment(segments)
+    sentiment_pipeline = build_sentiment_pipeline(
+        sentiment_model=sentiment_model,
+        sentiment_revision=sentiment_revision,
+    )
+    sentiment_model_name, sentiment_model_revision = _resolve_sentiment_model_metadata(
+        sentiment_pipeline,
+        fallback_model=sentiment_model,
+        fallback_revision=sentiment_revision,
+    )
+    sentiment_segments = score_segments_with_sentiment(
+        segments,
+        sentiment_pipeline=sentiment_pipeline,
+    )
 
     sentiment_csv = output_path / "sentiment_segments.csv"
     with sentiment_csv.open("w", newline="", encoding="utf-8") as handle:
@@ -266,6 +327,8 @@ def write_sentiment_artifacts(
         "risk_metrics_json": str(risk_metrics_path),
         "risk_score": float(risk_metrics["risk_score"]),
         "sentiment_segments": sentiment_segments,
+        "sentiment_model_name": sentiment_model_name,
+        "sentiment_model_revision": sentiment_model_revision,
     }
 
 
@@ -281,6 +344,8 @@ def run_pipeline(
     compute_type: str = "int8",
     chunk_seconds: float = 30.0,
     vad: bool = False,
+    sentiment_model: str = DEFAULT_SENTIMENT_MODEL_NAME,
+    sentiment_revision: str = DEFAULT_SENTIMENT_MODEL_REVISION,
 ) -> dict:
     """Run audio acquisition, normalization, transcription, and transcript export."""
     cache_path = Path(cache_dir or "./cache")
@@ -332,7 +397,12 @@ def run_pipeline(
     _log(verbose, f"transcript_txt={transcript_txt.resolve()}")
 
     print("Stage 5/5: Scoring sentiment and generating postprocess artifacts")
-    artifacts = write_sentiment_artifacts(segments=segments, output_path=output_path)
+    artifacts = write_sentiment_artifacts(
+        segments=segments,
+        output_path=output_path,
+        sentiment_model=sentiment_model,
+        sentiment_revision=sentiment_revision,
+    )
     sentiment_csv = Path(str(artifacts["sentiment_segments_csv"]))
     sentiment_plot = Path(str(artifacts["sentiment_timeline_png"]))
     risk_metrics_path = Path(str(artifacts["risk_metrics_json"]))
@@ -349,4 +419,6 @@ def run_pipeline(
         "sentiment_timeline_png": str(sentiment_plot),
         "risk_metrics_json": str(risk_metrics_path),
         "risk_score": artifacts["risk_score"],
+        "sentiment_model_name": artifacts.get("sentiment_model_name"),
+        "sentiment_model_revision": artifacts.get("sentiment_model_revision"),
     }

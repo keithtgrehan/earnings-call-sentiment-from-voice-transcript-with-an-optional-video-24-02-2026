@@ -45,7 +45,9 @@ def test_pipeline_local_audio_no_network(
 
     monkeypatch.setattr(run_module, "_normalize_to_wav", fake_normalize)
     monkeypatch.setattr(run_module, "transcribe_audio", fake_transcribe)
-    monkeypatch.setattr(run_module, "build_sentiment_pipeline", lambda: fake_sentiment)
+    monkeypatch.setattr(
+        run_module, "build_sentiment_pipeline", lambda *args, **kwargs: fake_sentiment
+    )
 
     result = run_module.run_pipeline(
         youtube_url=None,

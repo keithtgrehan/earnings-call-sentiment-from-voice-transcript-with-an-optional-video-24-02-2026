@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import UTC, datetime
+from importlib import metadata as importlib_metadata
 import json
 import os
 import re
@@ -18,6 +19,7 @@ os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
 from . import __version__
 from earnings_call_sentiment.downloaders.youtube import download_audio
+from earnings_call_sentiment.post_summary import generate_optional_summary
 from earnings_call_sentiment.pipeline.run import (
     load_transcript_segments,
     normalize_audio_to_wav,
@@ -27,6 +29,11 @@ from earnings_call_sentiment.pipeline.run import (
     write_transcript_artifacts,
 )
 import earnings_call_sentiment.question_shifts as qs
+from earnings_call_sentiment.summary_config import (
+    SummaryConfig,
+    load_summary_config,
+    run_summary_preflight,
+)
 
 
 _GUIDANCE_CUES = (
@@ -58,6 +65,10 @@ _TOPIC_PATTERNS: dict[str, tuple[str, ...]] = {
     "capex": ("capex", "capital expenditure", "capital expenditures"),
 }
 
+METRICS_SCHEMA_VERSION = "1.0.0"
+DEFAULT_SENTIMENT_MODEL_NAME = "distilbert/distilbert-base-uncased-finetuned-sst-2-english"
+DEFAULT_SENTIMENT_MODEL_REVISION = "714eb0f"
+
 
 def _log(verbose: bool, message: str) -> None:
     if verbose:
@@ -81,6 +92,44 @@ def _format_mmss(seconds: float) -> str:
 
 def _file_ok(path: Path) -> bool:
     return path.exists() and path.is_file() and path.stat().st_size > 0
+
+
+def _strict_required_artifacts(out_dir: Path) -> list[Path]:
+    return [
+        out_dir / "transcript.json",
+        out_dir / "transcript.txt",
+        out_dir / "sentiment_segments.csv",
+        out_dir / "sentiment_timeline.png",
+        out_dir / "risk_metrics.json",
+        out_dir / "guidance.csv",
+        out_dir / "guidance_revision.csv",
+        out_dir / "tone_changes.csv",
+        out_dir / "metrics.json",
+        out_dir / "report.md",
+        out_dir / "run_meta.json",
+    ]
+
+
+def _validate_strict_outputs(out_dir: Path) -> list[str]:
+    errors: list[str] = []
+    for path in _strict_required_artifacts(out_dir):
+        if not path.exists() or not path.is_file():
+            errors.append(f"missing: {path}")
+            continue
+        if path.stat().st_size <= 0:
+            errors.append(f"empty: {path}")
+    return errors
+
+
+def _enforce_strict_outputs(out_dir: Path, console: Console) -> bool:
+    errors = _validate_strict_outputs(out_dir)
+    if not errors:
+        console.print("[green]Strict output contract passed.[/green]")
+        return True
+    console.print("[bold red]Strict output contract failed.[/bold red]")
+    for item in errors:
+        console.print(f"- {item}")
+    return False
 
 
 def _stage_should_run(
@@ -706,6 +755,8 @@ def _build_metrics_payload(
     guidance_revision_df: pd.DataFrame,
     tone_changes_df: pd.DataFrame,
     prior_guidance_path: str | None,
+    sentiment_model: str,
+    sentiment_revision: str,
 ) -> dict[str, Any]:
     sentiment_series = pd.to_numeric(
         chunks_scored.get("signed_score", pd.Series([], dtype="float64")),
@@ -725,6 +776,16 @@ def _build_metrics_payload(
     )
 
     payload: dict[str, Any] = {
+        "schema_version": METRICS_SCHEMA_VERSION,
+        "git_commit": _resolve_git_commit(),
+        "package_version": _resolve_package_version(),
+        "generated_at": datetime.now(UTC).isoformat(),
+        "models": {
+            "sentiment": {
+                "model": str(sentiment_model),
+                "revision": str(sentiment_revision),
+            }
+        },
         "num_chunks_scored": int(len(chunks_scored)),
         "sentiment_mean": round(mean_sentiment, 6),
         "sentiment_std": round(std_sentiment, 6),
@@ -933,6 +994,8 @@ def _run_postscore_stages(
             guidance_revision_df=guidance_revision_df,
             tone_changes_df=tone_changes_df,
             prior_guidance_path=args.prior_guidance,
+            sentiment_model=str(args.sentiment_model),
+            sentiment_revision=str(args.sentiment_revision),
         )
         metrics_path.write_text(json.dumps(metrics_payload, indent=2), encoding="utf-8")
     else:
@@ -985,6 +1048,13 @@ def _normalize_event_dt(value: str | None) -> tuple[str, bool]:
 
 
 def _resolve_version_identifier() -> str:
+    git_commit = _resolve_git_commit()
+    if git_commit:
+        return f"git:{git_commit}"
+    return __version__
+
+
+def _resolve_git_commit() -> str | None:
     try:
         proc = subprocess.run(
             ["git", "rev-parse", "--short", "HEAD"],
@@ -993,11 +1063,18 @@ def _resolve_version_identifier() -> str:
             text=True,
         )
     except OSError:
-        return __version__
+        return None
     sha = (proc.stdout or "").strip()
     if proc.returncode == 0 and sha:
-        return f"git:{sha}"
-    return __version__
+        return sha
+    return None
+
+
+def _resolve_package_version() -> str | None:
+    try:
+        return importlib_metadata.version("earnings-call-sentiment")
+    except importlib_metadata.PackageNotFoundError:
+        return None
 
 
 def _write_run_meta(
@@ -1023,6 +1100,17 @@ def _write_run_meta(
     path = out_dir / "run_meta.json"
     path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return path
+
+
+def _resolve_summary_config(args: argparse.Namespace) -> SummaryConfig:
+    return load_summary_config(
+        enabled=bool(args.llm_summary),
+        provider=args.summary_provider,
+        model=args.summary_model,
+        base_url=args.summary_base_url,
+        api_key_env=args.summary_api_key_env,
+        timeout_s=float(args.summary_timeout_s),
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -1193,6 +1281,55 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Path to a prior guidance.csv for revision comparison.",
     )
+    parser.add_argument(
+        "--sentiment-model",
+        default=DEFAULT_SENTIMENT_MODEL_NAME,
+        help="Pinned HuggingFace model id for sentiment scoring.",
+    )
+    parser.add_argument(
+        "--sentiment-revision",
+        default=DEFAULT_SENTIMENT_MODEL_REVISION,
+        help="Pinned HuggingFace model revision for sentiment scoring.",
+    )
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        default=False,
+        help="Enforce strict output artifact contract and exit code 2 on violations.",
+    )
+    parser.add_argument(
+        "--llm-summary",
+        action="store_true",
+        default=False,
+        help="Run optional post-pipeline narrative summary stage.",
+    )
+    parser.add_argument(
+        "--summary-provider",
+        choices=("none", "openai_compatible"),
+        default=None,
+        help="Summary provider for optional narrative stage.",
+    )
+    parser.add_argument(
+        "--summary-model",
+        default=None,
+        help="Model identifier used by optional summary provider.",
+    )
+    parser.add_argument(
+        "--summary-base-url",
+        default=None,
+        help="Base URL for openai-compatible summary provider.",
+    )
+    parser.add_argument(
+        "--summary-api-key-env",
+        default=None,
+        help="Environment variable name holding summary provider API key.",
+    )
+    parser.add_argument(
+        "--summary-timeout-s",
+        type=float,
+        default=30.0,
+        help="Timeout in seconds for optional summary provider call.",
+    )
     return parser
 
 
@@ -1223,6 +1360,8 @@ def main(argv: list[str] | None = None) -> int:
         _log(args.verbose, f"args={args}")
 
     if args.dry_run:
+        summary_config = _resolve_summary_config(args)
+        summary_ok, summary_message = run_summary_preflight(summary_config)
         print("Dry run enabled; skipping execution.")
         print(f"youtube_url={args.youtube_url}")
         print(f"audio_path={args.audio_path}")
@@ -1231,8 +1370,18 @@ def main(argv: list[str] | None = None) -> int:
         print(f"resume={args.resume}")
         print(f"force={args.force}")
         print(f"prior_guidance={args.prior_guidance}")
+        print(f"sentiment_model={args.sentiment_model}")
+        print(f"sentiment_revision={args.sentiment_revision}")
         print(f"symbol={symbol}")
         print(f"event_dt={event_dt_iso}")
+        print(f"summary_enabled={summary_config.enabled}")
+        print(f"summary_provider={summary_config.provider}")
+        print(f"summary_model={summary_config.model}")
+        print(f"summary_base_url={summary_config.base_url}")
+        print(f"summary_api_key_env={summary_config.api_key_env}")
+        print(f"summary_timeout_s={summary_config.timeout_s}")
+        print(f"summary_preflight_ok={summary_ok}")
+        print(f"summary_preflight_message={summary_message}")
         return 0
 
     cache_dir.mkdir(parents=True, exist_ok=True)
@@ -1314,7 +1463,12 @@ def main(argv: list[str] | None = None) -> int:
                 encoding="utf-8",
             )
 
-        artifacts = write_sentiment_artifacts(segments=segments, output_path=out_dir)
+        artifacts = write_sentiment_artifacts(
+            segments=segments,
+            output_path=out_dir,
+            sentiment_model=str(args.sentiment_model),
+            sentiment_revision=str(args.sentiment_revision),
+        )
         sentiment_segments = artifacts["sentiment_segments"]
         chunks_scored_df = _build_chunks_scored_df(sentiment_segments)
         chunks_scored_csv = out_dir / "chunks_scored.csv"
@@ -1355,6 +1509,23 @@ def main(argv: list[str] | None = None) -> int:
             source_url=args.youtube_url,
         )
         console.print(f"[bold]Run Metadata:[/bold] {run_meta_path}")
+        if args.llm_summary:
+            summary_config = _resolve_summary_config(args)
+            try:
+                summary_path = generate_optional_summary(
+                    out_dir=out_dir,
+                    config=summary_config,
+                    verbose=bool(args.verbose),
+                )
+                if summary_path is not None:
+                    console.print(f"[bold]Optional Summary:[/bold] {summary_path}")
+            except RuntimeError as exc:
+                console.print(
+                    "[yellow]Optional summary stage failed:[/yellow] "
+                    f"{exc}"
+                )
+        if args.strict and not _enforce_strict_outputs(out_dir, console):
+            return 2
         return 0
 
     resolved_audio_path = None
@@ -1378,6 +1549,8 @@ def main(argv: list[str] | None = None) -> int:
         compute_type=args.compute_type,
         chunk_seconds=float(args.chunk_seconds),
         vad=bool(args.vad),
+        sentiment_model=str(args.sentiment_model),
+        sentiment_revision=str(args.sentiment_revision),
     )
 
     sentiment_segments_path = Path(str(result["sentiment_segments_csv"]))
@@ -1427,6 +1600,23 @@ def main(argv: list[str] | None = None) -> int:
         source_url=args.youtube_url,
     )
     console.print(f"[bold]Run Metadata:[/bold] {run_meta_path}")
+    if args.llm_summary:
+        summary_config = _resolve_summary_config(args)
+        try:
+            summary_path = generate_optional_summary(
+                out_dir=out_dir,
+                config=summary_config,
+                verbose=bool(args.verbose),
+            )
+            if summary_path is not None:
+                console.print(f"[bold]Optional Summary:[/bold] {summary_path}")
+        except RuntimeError as exc:
+            console.print(
+                "[yellow]Optional summary stage failed:[/yellow] "
+                f"{exc}"
+            )
+    if args.strict and not _enforce_strict_outputs(out_dir, console):
+        return 2
     return 0
 
 
