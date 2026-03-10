@@ -53,3 +53,12 @@
 - benchmark-quality caution: caution
 - rationale: Apple provides explicit March-quarter revenue guidance, but the transcript does not explicitly frame it as a raise, maintenance, lowering, or withdrawal of prior guidance.
 - assessment: high-confidence unclear
+
+## call07
+- filename: NVDA_2026_Q4_call07.txt
+- source URL: https://www.youtube.com/watch?v=62C2BOjJM7g
+- proposed label: unclear
+- confidence: 0.89
+- benchmark-quality caution: caution
+- rationale: NVIDIA provides a concrete first-quarter revenue outlook, but the transcript does not explicitly characterize it as a raise, maintenance, lowering, or withdrawal of prior guidance.
+- assessment: high-confidence unclear

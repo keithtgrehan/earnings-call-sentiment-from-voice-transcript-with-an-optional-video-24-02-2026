@@ -84,3 +84,25 @@
   - Evidence offsets validated for `call01` through `call06`.
   - Spot-checked transcript previews for PLTR, MSFT, and AAPL.
 - `call07` (NVDA) initial `tiny` run stopped without writing `transcript.txt`; restarted the same repo CLI command for a clean retry.
+- Added optional benchmark review docs after core benchmark artifacts stabilized:
+  - `data/gold_guidance_calls/README.md`
+  - `docs/benchmark_progress.md`
+- Current recommended first-pass human-eval shortlist, pending NVDA completion:
+  - `call02` (LEU): strongest explicit maintained cue
+  - `call01` (PLTR): strong explicit guidance issuance, good `unclear` calibration case
+  - `call04` (IBM): concrete annual outlook, good `unclear` calibration case
+  - `call05` (MSFT): concrete next-quarter range, good `unclear` calibration case
+  - `call06` (AAPL): concrete next-quarter range, good `unclear` calibration case
+- `call07` (NVDA) completed successfully on retry under the `tiny` fallback.
+  - raw file: data/gold_guidance_calls/raw_calls/NVDA_2026_Q4_call07.txt
+  - size_bytes: 52819
+  - line_count: 430
+  - sanity_preview: Good afternoon. My name is Sarah, and I will be your conference operator today.
+- Refreshed the benchmark artifacts to a full seven-call state:
+  - `data/gold_guidance_calls/transcription_status.csv`
+  - `data/gold_guidance_calls/draft_labels.csv`
+  - `data/gold_guidance_calls/draft_label_review.md`
+  - `data/gold_guidance_calls/transcript_inventory.csv`
+  - `docs/benchmark_progress.md`
+- Added `call07` draft label as `unclear` based on explicit first-quarter revenue outlook language without an explicit guidance-action verb.
+- Full draft-label quality control now passes for `call01` through `call07`.

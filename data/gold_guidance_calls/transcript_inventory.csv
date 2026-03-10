@@ -5,3 +5,4 @@ call03,data/gold_guidance_calls/raw_calls/GOOGL_2025_Q4_call03.txt,53870,1668,fa
 call04,data/gold_guidance_calls/raw_calls/IBM_2025_Q4_call04.txt,57400,633,true,false,true,false,false,false,false
 call05,data/gold_guidance_calls/raw_calls/MSFT_2026_Q2_call05.txt,52105,561,true,true,true,false,false,true,false
 call06,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,48050,527,true,true,true,false,false,false,false
+call07,data/gold_guidance_calls/raw_calls/NVDA_2026_Q4_call07.txt,52819,430,false,true,true,false,false,true,true
