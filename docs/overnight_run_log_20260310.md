@@ -106,3 +106,12 @@
   - `docs/benchmark_progress.md`
 - Added `call07` draft label as `unclear` based on explicit first-quarter revenue outlook language without an explicit guidance-action verb.
 - Full draft-label quality control now passes for `call01` through `call07`.
+
+## Metadata hardening and next benchmark sourcing
+- Added `data/gold_guidance_calls/official_source_manifest.csv` to pin official source URLs and confirmation status for the current seven-call batch without rewriting the working manifest mid-run.
+- Added `data/gold_guidance_calls/prior_quarter_sources.csv` to point each current call to a same-company prior-quarter official source, with extracted guidance snippets where the official source exposed them quickly.
+- Added `docs/directional_call_shortlist.md` to capture higher-value next benchmark targets with explicit directional language (`raised`, `lowered`, `maintained`) from primary sources.
+- Notable metadata findings:
+  - `call04` (IBM) current manifest date is likely one day late relative to the official January 28, 2026 event notice.
+  - `call02` (LEU) remains the messiest metadata row; the official release supports Q4 2025 / 2026 guidance, but official Centrus event pages expose an inconsistent timestamp and should be reconciled before final gold use.
+- Notable benchmark finding: the current seven-call batch is now complete and reproducible, but still skewed toward explicit guidance issuance that maps conservatively to `unclear` under the MVP rubric.
