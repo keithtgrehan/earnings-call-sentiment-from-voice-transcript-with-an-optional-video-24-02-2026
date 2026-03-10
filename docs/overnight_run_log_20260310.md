@@ -115,3 +115,24 @@
   - `call04` (IBM) current manifest date is likely one day late relative to the official January 28, 2026 event notice.
   - `call02` (LEU) remains the messiest metadata row; the official release supports Q4 2025 / 2026 guidance, but official Centrus event pages expose an inconsistent timestamp and should be reconciled before final gold use.
 - Notable benchmark finding: the current seven-call batch is now complete and reproducible, but still skewed toward explicit guidance issuance that maps conservatively to `unclear` under the MVP rubric.
+- Applied one direct manifest correction backed by the official-source supplemental file:
+  - `call04` (IBM) event date updated from `2026-01-29` to official call date `2026-01-28` in `call_manifest.csv`, `transcription_status.csv`, and `draft_labels.csv`.
+
+## Directional benchmark expansion
+- Began post-batch expansion beyond the original seven calls to improve label coverage.
+- Selected two raised-guidance candidates with both primary-source confirmation and usable repost video URLs for the existing CLI path:
+  - `call08` / `LLY_2025_Q2_call08` (official Lilly Q2 2025 results raised guidance; repost video selected for transcription)
+  - `call09` / `ECG_2025_Q2_call09` (official Everus Q2 2025 results raised guidance; repost video selected for transcription)
+- Using the same `tiny` fallback path for these add-on calls because the machine already showed `small` to be the throughput bottleneck for overnight benchmark collection.
+- Upgraded the IBM prior-quarter row from source-only to snippet-extracted using the official Q3 2025 release sentence: `Given the strength of our business, we are raising our full-year outlook for revenue growth and free cash flow.`
+- Promoted IBM Q3 2025 above Everus in the directional shortlist because it offers both a clean primary-source raised sentence and an easily found repost video path for the current CLI.
+- Added `docs/morning_review_package.md` to summarize the current benchmark state, source-quality split, use-now subset, hold-back subset, and directional expansion queue.
+- `call08` (LLY) completed successfully and was promoted into the benchmark set.
+  - raw file: data/gold_guidance_calls/raw_calls/LLY_2025_Q2_call08.txt
+  - size_bytes: 56591
+  - line_count: 706
+  - draft label: `raised`
+  - evidence: `As a result, we raised our revenue / in earnings for share guides.`
+- Updated the benchmark package to an eight-call state, including `call_manifest.csv`, `official_source_manifest.csv`, `transcription_status.csv`, `draft_labels.csv`, `draft_label_review.md`, `transcript_inventory.csv`, `docs/benchmark_progress.md`, and `docs/morning_review_package.md`.
+- Final benchmark status before UI work: eight completed transcript files, eight draft label rows, official-source supplemental data in place, prior-quarter source pack present, and morning review package written.
+- Directional expansion decision: stop after `call08` for this run. `call09` (IBM Q3 2025) remains the next best raised candidate, but the benchmark is materially stronger now and the remaining missing label family is `lowered`, not another `raised` row.

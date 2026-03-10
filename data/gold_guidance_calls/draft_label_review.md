@@ -62,3 +62,12 @@
 - benchmark-quality caution: caution
 - rationale: NVIDIA provides a concrete first-quarter revenue outlook, but the transcript does not explicitly characterize it as a raise, maintenance, lowering, or withdrawal of prior guidance.
 - assessment: high-confidence unclear
+
+## call08
+- filename: LLY_2025_Q2_call08.txt
+- source URL: https://www.youtube.com/watch?v=maG_yQuy1_s
+- proposed label: raised
+- confidence: 0.78
+- benchmark-quality caution: caution
+- rationale: The transcript contains an explicit sentence stating that Lilly raised revenue and earnings-per-share guidance. The source video is a repost and the ASR text is noisy, so the label is strong but not perfect.
+- assessment: high-confidence directional with ASR noise

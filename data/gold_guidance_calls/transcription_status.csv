@@ -2,7 +2,8 @@ call_id,ticker,company,quarter,event_date,source_url,raw_transcript_path,transcr
 call01,PLTR,Palantir,Q4_2025,2026-02-02,https://www.youtube.com/watch?v=qQYAHS0oaiY,data/gold_guidance_calls/raw_calls/PLTR_2025_Q4_call01.txt,completed,42989,1166,raw transcript present
 call02,LEU,Centrus Energy Corp,Q4_2025,2026-02-12,https://www.youtube.com/watch?v=BnQKVvWjdYA,data/gold_guidance_calls/raw_calls/LEU_2025_Q4_call02.txt,completed,45097,1148,raw transcript present
 call03,GOOGL,Alphabet,Q4_2025,2026-02-04,https://www.youtube.com/watch?v=mIK5-yi7a-c,data/gold_guidance_calls/raw_calls/GOOGL_2025_Q4_call03.txt,completed,53870,1668,raw transcript present
-call04,IBM,IBM,Q4_2025,2026-01-29,https://www.youtube.com/watch?v=EquSfBTfyAM,data/gold_guidance_calls/raw_calls/IBM_2025_Q4_call04.txt,completed,57400,633,raw transcript present
+call04,IBM,IBM,Q4_2025,2026-01-28,https://www.youtube.com/watch?v=EquSfBTfyAM,data/gold_guidance_calls/raw_calls/IBM_2025_Q4_call04.txt,completed,57400,633,raw transcript present
 call05,MSFT,Microsoft,Q2_2026,2026-01-28,https://www.youtube.com/watch?v=6NbiiKz9BCY,data/gold_guidance_calls/raw_calls/MSFT_2026_Q2_call05.txt,completed,52105,561,raw transcript present
 call06,AAPL,Apple,Q1_2026,2026-01-29,https://www.youtube.com/watch?v=zq6d9_eS-YI,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,completed,48050,527,raw transcript present
 call07,NVDA,NVIDIA,Q4_2026,2026-02-25,https://www.youtube.com/watch?v=62C2BOjJM7g,data/gold_guidance_calls/raw_calls/NVDA_2026_Q4_call07.txt,completed,52819,430,raw transcript present
+call08,LLY,Eli Lilly,Q2_2025,2025-08-07,https://www.youtube.com/watch?v=maG_yQuy1_s,data/gold_guidance_calls/raw_calls/LLY_2025_Q2_call08.txt,completed,56591,706,raw transcript present

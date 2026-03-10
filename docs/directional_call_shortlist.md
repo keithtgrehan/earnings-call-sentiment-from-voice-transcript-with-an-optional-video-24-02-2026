@@ -6,7 +6,8 @@ This is the next-pass shortlist for improving the gold benchmark with clearer di
 - `LEU` current batch (`call02`): maintained. Current transcript already contains the explicit phrase `our guidance is flat`.
 - `HOLX` Q2 FY2025: lowered. Official Hologic release states: `Company Maintains Annual Revenue Guidance, Lowers Guidance for GAAP and Non-GAAP EPS.` Source: https://investor.hologic.com/press-releases/press-release-details/2025/Hologic-Announces-Financial-Results-for-Second-Quarter-of-Fiscal-2025/default.aspx
 - `LLY` Q2 2025: raised. Official Lilly investor release title states `Lilly reports second-quarter 2025 financial results and raises guidance.` Source: https://investor.lilly.com/node/52686/pdf
-- `EVER`? `Everus` Q2 2025: raised. Official Everus release title states `Everus Reports Second Quarter Results, Raises Guidance for 2025.` Source: https://investors.everus.com/news/news-details/2025/Everus-Reports-Second-Quarter-Results-Raises-Guidance-for-2025/default.aspx
+- `IBM` Q3 2025: raised. Official IBM release states: `Given the strength of our business, we are raising our full-year outlook for revenue growth and free cash flow.` Source: https://newsroom.ibm.com/2025-10-22-IBM-RELEASES-THIRD-QUARTER-RESULTS
+- `EVER` / Everus Q2 2025: raised. Official Everus release title states `Everus Reports Second Quarter Results, Raises Guidance for 2025.` Source: https://investors.everus.com/news/news-details/2025/Everus-Reports-Second-Quarter-Results-Raises-Guidance-for-2025/default.aspx
 - `ATGE` Q1 FY2025: raised. Official Adtalem release states `Adtalem raises guidance for fiscal year 2025` and includes webcast information. Source: https://s24.q4cdn.com/745190157/files/doc_financials/2025/q1/Press-Release-Adtalem-Global-Education-Announces-First-Quarter-Fiscal-Year-2025-Results-FINAL.pdf
 
 ## Why these are better than most of the current seven-call batch
@@ -16,7 +17,8 @@ This is the next-pass shortlist for improving the gold benchmark with clearer di
 
 ## Recommended next collection order
 1. Hologic (`lowered`)
-2. Lilly (`raised`)
-3. Adtalem (`raised`)
-4. Everus (`raised`)
-5. Keep LEU as the first `maintained` control case
+2. IBM Q3 2025 (`raised`)
+3. Lilly (`raised`)
+4. Adtalem (`raised`)
+5. Everus (`raised`)
+6. Keep LEU as the first `maintained` control case
