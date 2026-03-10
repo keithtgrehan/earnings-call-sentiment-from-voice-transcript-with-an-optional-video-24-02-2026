@@ -54,3 +54,33 @@
   - `call01` (PLTR): `unclear`, high-confidence unclear
   - `call02` (LEU): `maintained`, based on explicit phrase "our guidance is flat"
   - `call03` (GOOGL): `unclear`, outlook commentary without explicit change verb
+- `call04` (IBM) completed successfully under the `tiny` fallback.
+  - raw file: data/gold_guidance_calls/raw_calls/IBM_2025_Q4_call04.txt
+  - size_bytes: 57400
+  - line_count: 633
+  - sanity_preview: Welcome and thank you for standing by. At this time, participants are in a listen only mode.
+- Added `call04` draft label as `unclear` based on explicit 2026 outlook language without an explicit guidance-action verb.
+- `call05` (MSFT) started under the same `tiny` fallback path after IBM completed.
+- `call05` (MSFT) completed successfully under the `tiny` fallback.
+  - raw file: data/gold_guidance_calls/raw_calls/MSFT_2026_Q2_call05.txt
+  - size_bytes: 52105
+  - line_count: 561
+  - sanity_preview: Greetings and welcome to the Microsoft Fiscal Year 2026 second quarter earnings conference call.
+- `call06` (AAPL) completed successfully under the `tiny` fallback.
+  - raw file: data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt
+  - size_bytes: 48050
+  - line_count: 527
+  - sanity_preview: Good afternoon and welcome to the Apple Q1 fiscal year 2026 earnings conference call.
+- Refreshed benchmark support artifacts after the sixth completed transcript:
+  - `data/gold_guidance_calls/transcription_status.csv`
+  - `data/gold_guidance_calls/draft_labels.csv`
+  - `data/gold_guidance_calls/draft_label_review.md`
+  - `data/gold_guidance_calls/transcript_inventory.csv`
+- Added draft labels:
+  - `call05` (MSFT): `unclear`, explicit Q3 revenue range without an explicit guidance-action verb
+  - `call06` (AAPL): `unclear`, explicit March-quarter revenue range without an explicit guidance-action verb
+- Quality-control pass completed on current draft set.
+  - All CSV artifacts open with expected headers.
+  - Evidence offsets validated for `call01` through `call06`.
+  - Spot-checked transcript previews for PLTR, MSFT, and AAPL.
+- `call07` (NVDA) initial `tiny` run stopped without writing `transcript.txt`; restarted the same repo CLI command for a clean retry.
