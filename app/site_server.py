@@ -14,11 +14,11 @@ def create_app():
         static_dir=APP_DIR / 'static',
         repo_root=REPO_ROOT,
         ui_meta={
-            'title': 'Signal Desk',
-            'eyebrow': 'Deterministic earnings-call review',
+            'title': 'Earnings Call Signal Engine',
+            'eyebrow': 'Transcript-first AI review',
             'lede': (
-                'Transcript-first review surface for guidance shifts, tone changes, and auditable evidence. '
-                'This is the cleaner long-term website shell built on the same local deterministic backend.'
+                'Transcript-first AI tool for extracting structured signals from earnings call audio '
+                'and video sources using NLP.'
             ),
             'variant': 'site',
         },
