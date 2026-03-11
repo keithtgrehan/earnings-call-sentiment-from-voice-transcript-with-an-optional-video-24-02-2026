@@ -1,1 +1,23 @@
 call_id,ticker,company,quarter,event_date,guidance_change_label,evidence_text,evidence_start,evidence_end,label_confidence,notes,source_type,source_path
+call01,PLTR,Palantir,Q4_2025,2026-02-02,unclear,"For full year 2026 we expect
+revenue of between
+7.182
+and 7.198 billion",21446,21517,0.90,"Explicit forward guidance range is stated, but no explicit action verb indicates raised, maintained, lowered, or withdrawn versus prior guidance; offsets are 0-based [start,end).",transcript,data/gold_guidance_calls/raw_calls/PLTR_2025_Q4_call01.txt
+call02,LEU,Centrus Energy Corp,Q4_2025,2026-02-11,maintained,"Yeah, so our guidance is flat.",27457,27487,0.82,"Management explicitly states current guidance is flat, which is the closest closed-set match to maintained; offsets are 0-based [start,end).",transcript,data/gold_guidance_calls/raw_calls/LEU_2025_Q4_call02.txt
+call03,GOOGL,Alphabet,Q4_2025,2026-02-04,unclear,"Turning to our outlook, I would
+like to provide some
+commentaries on factors that
+will impact our business
+performance in the first quarter
+and full year 2026.",25690,25849,0.78,"Outlook commentary is present, but no explicit change verb indicates raised, maintained, lowered, or withdrawn guidance; offsets are 0-based [start,end).",transcript,data/gold_guidance_calls/raw_calls/GOOGL_2025_Q4_call03.txt
+call04,IBM,IBM,Q4_2025,2026-01-28,unclear,"we expect a sustained constant currency revenue growth of 5% plus in 2026, and free cash flow
+to be up about $1 billion year over year, growing high single digits.",20271,20434,0.86,"Explicit FY2026 outlook is stated, but no explicit action verb indicates raised, maintained, lowered, or withdrawn versus prior guidance; offsets are 0-based [start,end).",transcript,data/gold_guidance_calls/raw_calls/IBM_2025_Q4_call04.txt
+call05,MSFT,Microsoft,Q2_2026,2026-01-28,unclear,"We expect revenue of 80.65 to 81.75
+billion US dollars are growth of 15 to 17%",26236,26314,0.88,"Explicit Q3 revenue guidance range is stated, but no explicit action verb indicates raised, maintained, lowered, or withdrawn versus prior guidance; offsets are 0-based [start,end).",transcript,data/gold_guidance_calls/raw_calls/MSFT_2026_Q2_call05.txt
+call06,AAPL,Apple,Q1_2026,2026-01-29,unclear,"We expect our March quarter total company revenue
+to grow by 13 to 16% year-over-year",19052,19137,0.87,"Explicit March-quarter revenue guidance is stated, but no explicit action verb indicates raised, maintained, lowered, or withdrawn versus prior guidance; offsets are 0-based [start,end).",transcript,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt
+call07,NVDA,NVIDIA,Q4_2026,2026-02-25,unclear,Total revenue is expected to be 78 billion plus or minus 2%.,13772,13832,0.89,"Explicit first-quarter revenue outlook is stated, but no explicit action verb indicates raised, maintained, lowered, or withdrawn versus prior guidance; offsets are 0-based [start,end).",transcript,data/gold_guidance_calls/raw_calls/NVDA_2026_Q4_call07.txt
+call08,LLY,Eli Lilly,Q2_2025,2025-08-07,raised,"As a result, we raised our revenue
+in earnings for share guides.",4336,4400,0.78,"Transcript explicitly states that the company raised revenue and earnings-per-share guidance; ASR quality is imperfect (guides / earnings for share), so confidence is conservative; offsets are 0-based [start,end).",transcript,data/gold_guidance_calls/raw_calls/LLY_2025_Q2_call08.txt
+call09,PVH,PVH Corp.,Q1_2025,2025-06-05,lowered,"that's why we have to just our full year non-gap guidance down for both
+ebit margin and eps.",16444,16536,0.72,"Transcript explicitly says full-year non-GAAP guidance was taken down for EBIT margin and EPS; revenue guidance was reaffirmed, so this is a mixed signal but the conservative nearest closed-set label is lowered; offsets are 0-based [start,end).",transcript,data/gold_guidance_calls/raw_calls/PVH_2025_Q1_call09.txt
