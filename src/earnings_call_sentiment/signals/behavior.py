@@ -10,6 +10,7 @@ from typing import Any
 import pandas as pd
 
 from .rule_tables import (
+    BOILERPLATE_PATTERNS,
     OPERATOR_PATTERNS,
     QUESTION_PATTERNS,
     REASSURANCE_RULES,
@@ -19,6 +20,10 @@ from .rule_tables import (
 )
 
 SUMMARY_SCHEMA_VERSION = "1.0.0"
+MODAL_UNCERTAINTY_EXCLUSIONS = (
+    r"\bcould not be more\b",
+    r"\byou might have already seen\b",
+)
 
 
 def _iter_sentence_spans(text: str) -> list[tuple[str, int, int]]:
@@ -39,13 +44,18 @@ def _iter_sentence_spans(text: str) -> list[tuple[str, int, int]]:
 
 
 def _looks_like_operator(text: str) -> bool:
-    lowered = text.strip().lower()
+    lowered = re.sub(r"\s+", " ", text.strip().lower())
     return any(re.search(pattern, lowered) for pattern in OPERATOR_PATTERNS)
 
 
 def _looks_like_question(text: str) -> bool:
-    lowered = text.strip().lower()
+    lowered = re.sub(r"\s+", " ", text.strip().lower())
     return any(re.search(pattern, lowered) for pattern in QUESTION_PATTERNS)
+
+
+def _looks_like_boilerplate(text: str) -> bool:
+    lowered = re.sub(r"\s+", " ", text.strip().lower())
+    return any(re.search(pattern, lowered) for pattern in BOILERPLATE_PATTERNS)
 
 
 def _classify_context(text: str) -> tuple[str, str, str]:
@@ -79,7 +89,12 @@ def _level_from_score(score: int) -> str:
 def _strongest_items(rows: list[dict[str, Any]], *, text_key: str = "text") -> list[dict[str, Any]]:
     ordered = sorted(rows, key=lambda item: (-int(item.get("strength", 0)), str(item.get(text_key, ""))))
     snippets: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
     for row in ordered[:2]:
+        dedupe_key = (str(row.get("matched_phrase", "")), str(row.get(text_key, "")))
+        if dedupe_key in seen:
+            continue
+        seen.add(dedupe_key)
         snippets.append(
             {
                 "matched_phrase": str(row.get("matched_phrase", "")),
@@ -87,6 +102,8 @@ def _strongest_items(rows: list[dict[str, Any]], *, text_key: str = "text") -> l
                 "text": str(row.get(text_key, "")),
             }
         )
+        if len(snippets) >= 2:
+            break
     return snippets
 
 
@@ -163,14 +180,21 @@ def compute_behavioral_outputs(chunks_scored: pd.DataFrame) -> dict[str, Any]:
         text = str(row.get("text", "")).strip()
         if not text:
             continue
-        section, speaker_role, analyst_name = _classify_context(text)
         sentence_spans = _iter_sentence_spans(text)
 
-        if speaker_role == "management":
-            for sentence, sent_start, _ in sentence_spans:
+        for sentence, sent_start, _ in sentence_spans:
+            section, speaker_role, analyst_name = _classify_context(sentence)
+            if speaker_role == "management":
+                if _looks_like_boilerplate(sentence):
+                    continue
                 lowered = sentence.lower()
+                lowered_compact = re.sub(r"\s+", " ", lowered)
                 for rule in UNCERTAINTY_RULES:
                     for match in re.finditer(str(rule["pattern"]), lowered):
+                        if str(rule["matched_phrase"]) == "modal uncertainty" and any(
+                            re.search(pattern, lowered_compact) for pattern in MODAL_UNCERTAINTY_EXCLUSIONS
+                        ):
+                            continue
                         start_char, end_char = match.span()
                         uncertainty_rows.append(
                             {
@@ -208,38 +232,38 @@ def compute_behavioral_outputs(chunks_scored: pd.DataFrame) -> dict[str, Any]:
                             }
                         )
 
-        if speaker_role == "analyst":
-            question_id += 1
-            question_matches: list[dict[str, Any]] = []
-            lowered = text.lower()
-            for rule in SKEPTICISM_RULES:
-                for match in re.finditer(str(rule["pattern"]), lowered):
-                    question_matches.append(
+            if speaker_role == "analyst":
+                question_matches: list[dict[str, Any]] = []
+                lowered = sentence.lower()
+                for rule in SKEPTICISM_RULES:
+                    for match in re.finditer(str(rule["pattern"]), lowered):
+                        question_matches.append(
+                            {
+                                "matched_phrase": str(rule["matched_phrase"]),
+                                "strength": int(rule["strength"]),
+                                "topic_hint": str(rule["topic_hint"]),
+                                "notes": str(rule["notes"]),
+                            }
+                        )
+                if question_matches:
+                    question_id += 1
+                    total_strength = sum(int(item["strength"]) for item in question_matches)
+                    strongest = max(question_matches, key=lambda item: int(item["strength"]))
+                    skepticism_rows.append(
                         {
-                            "matched_phrase": str(rule["matched_phrase"]),
-                            "strength": int(rule["strength"]),
-                            "topic_hint": str(rule["topic_hint"]),
-                            "notes": str(rule["notes"]),
+                            "question_id": int(question_id),
+                            "analyst_name": analyst_name,
+                            "text": sentence,
+                            "skepticism_label": _level_from_score(total_strength),
+                            "matched_phrase": str(strongest["matched_phrase"]),
+                            "strength": int(total_strength),
+                            "topic_hint": _topic_hint(sentence) if strongest["topic_hint"] == "general" else str(strongest["topic_hint"]),
+                            "notes": (
+                                f"{len(question_matches)} skeptical cue(s) matched. "
+                                f"Strongest cue: {strongest['notes']}"
+                            ),
                         }
                     )
-            if question_matches:
-                total_strength = sum(int(item["strength"]) for item in question_matches)
-                strongest = max(question_matches, key=lambda item: int(item["strength"]))
-                skepticism_rows.append(
-                    {
-                        "question_id": int(question_id),
-                        "analyst_name": analyst_name,
-                        "text": text,
-                        "skepticism_label": _level_from_score(total_strength),
-                        "matched_phrase": str(strongest["matched_phrase"]),
-                        "strength": int(total_strength),
-                        "topic_hint": _topic_hint(text) if strongest["topic_hint"] == "general" else str(strongest["topic_hint"]),
-                        "notes": (
-                            f"{len(question_matches)} skeptical cue(s) matched. "
-                            f"Strongest cue: {strongest['notes']}"
-                        ),
-                    }
-                )
 
     uncertainty_df = pd.DataFrame(uncertainty_rows)
     reassurance_df = pd.DataFrame(reassurance_rows)

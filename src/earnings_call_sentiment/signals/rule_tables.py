@@ -11,13 +11,6 @@ UNCERTAINTY_RULES = (
         "notes": "Weak modal hedge.",
     },
     {
-        "pattern": r"\b(?:expect|believe|anticipate)\b",
-        "matched_phrase": "forward-looking expectation",
-        "signal_type": "forward_expectation",
-        "strength": 1,
-        "notes": "Forward-looking expectation language can soften commitment.",
-    },
-    {
         "pattern": r"\bcontinue to monitor\b",
         "matched_phrase": "continue to monitor",
         "signal_type": "monitoring_language",
@@ -174,6 +167,29 @@ SKEPTICISM_RULES = (
 
 QUESTION_PATTERNS = (
     r"\?$",
+    r"\bcould you\b",
+    r"\bcan you\b",
+    r"\bcan you tell us\b",
+    r"\bcould they\b",
+    r"\bcould we\b",
+    r"\bmay we\b",
+    r"\bhave you\b",
+    r"\bwould you\b",
+    r"\bshould we\b",
+    r"\bhow do you\b",
+    r"\bi was just wondering\b",
+    r"\bi(?:'m| am| was) (?:just )?curious\b",
+    r"\bi(?:'d| would) like to\b",
+    r"\bif i could\b",
+    r"\bmaybe you could\b",
+    r"\bmaybe we could\b",
+    r"\bi'?m curious\b",
+    r"\bif you could\b",
+    r"\bwhat that might mean\b",
+    r"\band i think you could\b",
+    r"\bwhere do you think\b",
+    r"\bwhat might\b",
+    r"\bwhat about\b",
     r"\bhelp us understand why\b",
     r"\bwhat changed\b",
     r"\bwhy should we believe\b",
@@ -186,9 +202,25 @@ QUESTION_PATTERNS = (
 
 OPERATOR_PATTERNS = (
     r"^operator\b",
+    r"\byou may begin\b",
+    r"\byou may access the replay system\b",
+    r"\byou may now disconnect\b",
+    r"\byou may register to ask a question\b",
+    r"\byou may press star\b",
+    r"\bthis call may be recorded\b",
+    r"\bcould we get the next question\b",
     r"\bour next question\b",
     r"\bnext question comes from\b",
     r"\bplease go ahead\b",
+)
+
+BOILERPLATE_PATTERNS = (
+    r"\bforward-looking\b",
+    r"\bactual results may differ materially\b",
+    r"\bsec filings\b",
+    r"\bwritten permission\b",
+    r"\bmay not be recorded\b",
+    r"\bnot promises or guarantees\b",
 )
 
 TOPIC_PATTERNS = {

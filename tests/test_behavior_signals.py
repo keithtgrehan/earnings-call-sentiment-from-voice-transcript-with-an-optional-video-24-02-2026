@@ -39,6 +39,13 @@ def test_uncertainty_negative_keeps_direct_statement_clean() -> None:
     assert payload["summary"]["uncertainty_score_overall"]["score"] == 0
 
 
+def test_uncertainty_does_not_fire_on_plain_guidance_expectation() -> None:
+    payload = compute_behavioral_outputs(
+        _chunks("We expect revenue to be between $10 billion and $11 billion next quarter.")
+    )
+    assert payload["uncertainty_df"].empty
+
+
 def test_reassurance_positive_matches_management_language() -> None:
     payload = compute_behavioral_outputs(
         _chunks("We remain confident, demand remains strong, and we are well positioned for the year.")
@@ -79,3 +86,75 @@ def test_behavior_regression_non_matches_stay_non_matches() -> None:
     assert payload["uncertainty_df"].empty
     assert payload["reassurance_df"].empty
     assert payload["skepticism_df"].empty
+
+
+def test_operator_line_does_not_count_as_management_uncertainty() -> None:
+    payload = compute_behavioral_outputs(_chunks("You may begin."))
+    assert payload["uncertainty_df"].empty
+
+
+def test_question_sentence_does_not_count_as_management_uncertainty() -> None:
+    payload = compute_behavioral_outputs(
+        _chunks("I was just wondering if you could talk about demand trends?")
+    )
+    assert payload["uncertainty_df"].empty
+
+
+def test_boilerplate_forward_looking_disclaimer_does_not_dominate_uncertainty() -> None:
+    payload = compute_behavioral_outputs(
+        _chunks(
+            "These statements are forward-looking statements and actual results may differ materially as described in our SEC filings."
+        )
+    )
+    assert payload["uncertainty_df"].empty
+
+
+def test_skepticism_uses_matched_sentence_not_full_segment_blob() -> None:
+    payload = compute_behavioral_outputs(
+        _chunks(
+            "What changed in the marketplace? Thank you for the question. We remain confident in the trajectory."
+        )
+    )
+    row = payload["skepticism_df"].iloc[0]
+    assert row["text"] == "What changed in the marketplace?"
+
+
+def test_operator_replay_and_disconnect_lines_do_not_count_as_uncertainty() -> None:
+    payload = compute_behavioral_outputs(
+        _chunks(
+            "You may access the replay system at any time.",
+            "You may now disconnect your lines.",
+            "You may press star two if you would like to remove your question from the queue.",
+        )
+    )
+    assert payload["uncertainty_df"].empty
+
+
+def test_question_stems_do_not_leak_into_management_uncertainty() -> None:
+    payload = compute_behavioral_outputs(
+        _chunks(
+            "Where do you think this could stabilize?",
+            "I'm curious if this is something we should think about as weaker.",
+            "Maybe you could just talk a little bit about that.",
+            "I have two as well if I could.",
+            "In that vein, I'd like to just dig down on something that might be a really obvious question.",
+            "And what that might mean for adherence in the real world.",
+            "And I think you could look at that performance.",
+        )
+    )
+    assert payload["uncertainty_df"].empty
+
+
+def test_could_not_be_more_excited_does_not_count_as_uncertainty() -> None:
+    payload = compute_behavioral_outputs(_chunks("We could not be more excited about the launch."))
+    assert payload["uncertainty_df"].empty
+
+
+def test_newline_split_question_stem_does_not_count_as_uncertainty() -> None:
+    payload = compute_behavioral_outputs(_chunks("And I think you\ncould look at that performance."))
+    assert payload["uncertainty_df"].empty
+
+
+def test_you_might_have_already_seen_does_not_count_as_uncertainty() -> None:
+    payload = compute_behavioral_outputs(_chunks("You might have already seen that we launched the campaign yesterday."))
+    assert payload["uncertainty_df"].empty
