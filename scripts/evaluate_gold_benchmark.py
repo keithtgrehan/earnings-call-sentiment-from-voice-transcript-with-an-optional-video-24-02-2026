@@ -30,48 +30,114 @@ SENTENCE_CUES = (
     "reaffirm",
     "prior guidance",
 )
-PATTERNS: dict[str, tuple[str, ...]] = {
+PATTERNS: dict[str, tuple[tuple[str, str], ...]] = {
     "withdrawn": (
-        r"\b(withdraw(?:n|s|ing)?|suspend(?:ed|s|ing)?|no longer provid(?:e|ing)|"
-        r"not provid(?:e|ing)|discontinu(?:e|ed|ing))\b.{0,40}\b(guidance|outlook)\b",
-        r"\b(guidance|outlook)\b.{0,40}\b(withdraw(?:n|s|ing)?|suspend(?:ed|s|ing)?|"
-        r"no longer provid(?:e|ing)|not provid(?:e|ing)|discontinu(?:e|ed|ing))\b",
+        (
+            "withdrawn_guidance",
+            r"\b(withdraw(?:n|s|ing)?|suspend(?:ed|s|ing)?|no longer provid(?:e|ing)|"
+            r"not provid(?:e|ing)|discontinu(?:e|ed|ing))\b.{0,40}\b(guidance|outlook)\b",
+        ),
+        (
+            "withdrawn_guidance_reverse",
+            r"\b(guidance|outlook)\b.{0,40}\b(withdraw(?:n|s|ing)?|suspend(?:ed|s|ing)?|"
+            r"no longer provid(?:e|ing)|not provid(?:e|ing)|discontinu(?:e|ed|ing))\b",
+        ),
     ),
     "lowered": (
-        r"\bguidance down\b",
-        r"\boutlook down\b",
-        r"\b(updated?|updating)\b.{0,30}\b(earnings|eps|guidance|outlook)\b.{0,40}"
-        r"\b(lower|down|reduce|cut|revised)\b",
-        r"\b(taken down|lowered|reduced|cut)\b.{0,50}\b(guidance|outlook)\b",
+        ("lowered_guidance_down", r"\bguidance down\b"),
+        ("lowered_outlook_down", r"\boutlook down\b"),
+        (
+            "lowered_updated_guidance",
+            r"\b(updated?|updating)\b.{0,30}\b(earnings|eps|guidance|outlook)\b.{0,40}"
+            r"\b(lower|down|reduce|cut|revised)\b",
+        ),
+        (
+            "lowered_took_down_guidance",
+            r"\b(taken down|lowered|reduced|cut)\b.{0,50}\b(guidance|outlook)\b",
+        ),
     ),
     "maintained": (
-        r"\bguidance is flat\b",
-        r"\b(reiterate(?:d|s|ing)?)\b.{0,50}\b(guidance|outlook|revenue guidance|revenue outlook)\b",
-        r"\b(reaffirm(?:ed|ing)?|maintain(?:ed|ing)?)\b.{0,50}\b(guidance|outlook|"
-        r"revenue guidance|revenue outlook)\b",
-        r"\b(guidance|outlook)\b.{0,50}\b(reaffirm(?:ed|ing)?|maintain(?:ed|ing)?|"
-        r"reiterate(?:d|s|ing)?|unchanged|flat)\b",
+        ("maintained_flat_guidance", r"\bguidance is flat\b"),
+        (
+            "maintained_reiterate_guidance",
+            r"\b(reiterate(?:d|s|ing)?)\b.{0,50}\b(guidance|outlook|revenue guidance|revenue outlook)\b",
+        ),
+        (
+            "maintained_reaffirm_guidance",
+            r"\b(reaffirm(?:ed|ing)?|maintain(?:ed|ing)?)\b.{0,50}\b(guidance|outlook|"
+            r"revenue guidance|revenue outlook)\b",
+        ),
+        (
+            "maintained_guidance_reverse",
+            r"\b(guidance|outlook)\b.{0,50}\b(reaffirm(?:ed|ing)?|maintain(?:ed|ing)?|"
+            r"reiterate(?:d|s|ing)?|unchanged|flat)\b",
+        ),
     ),
     "raised": (
-        r"\b(?:raise(?:d|s)?|raising)\b.{0,50}\b(guidance|outlook|guides)\b",
-        r"\b(guidance|outlook)\b.{0,50}\b(?:raise(?:d|s)?|raising)\b",
-        r"\b(?:raise(?:d|s)?|raising)\b.{0,60}\b(revenue|earnings|eps)\b.{0,30}\b"
-        r"(guid(?:ance|es)|outlook)\b",
-        r"\b(?:we\s+)?now\s+expect\b.{0,120}\bup from\b.{0,24}\b(?:our|the)?\s*"
-        r"(?:prior|previous)\s+(?:estimate|guidance|outlook)\b",
-        r"\b(?:higher|above)\b.{0,20}\bthan\b.{0,20}\b(?:our|the)?\s*"
-        r"(?:prior|previous)\s+(?:guidance|outlook|estimate)\b",
-        r"\bincreas(?:e|ed|es|ing)\b.{0,20}\bfrom\b.{0,20}\b(?:our|the)?\s*"
-        r"(?:prior|previous)\s+(?:guidance|outlook|estimate)\b",
-        r"\b(?:increas(?:e|ed|es|ing))\b.{0,40}\b(guidance|outlook)\b.{0,220}\b"
-        r"(?:from|compared with|compared to|as compared to)\b.{0,40}\b(?:our|the)?\s*"
-        r"(?:prior|previous)\s+(?:guidance|outlook|estimate|public comments)\b",
-        r"\b(guidance|outlook)\b.{0,80}\b(?:increas(?:e|ed|es|ing))\b.{0,60}\b"
-        r"(?:from|compared with|compared to|as compared to)\b.{0,40}\b(?:our|the)?\s*"
-        r"(?:prior|previous)\s+(?:guidance|outlook|estimate|public comments)\b",
-        r"\b(?:guidance|outlook|estimate)\b.{0,40}\b(?:higher|above|up)\b.{0,24}\b"
-        r"(?:than|from)\b.{0,20}\b(?:our|the)?\s*(?:prior|previous)\b",
+        ("raised_guidance_phrase", r"\b(?:raise(?:d|s)?|raising)\b.{0,50}\b(guidance|outlook|guides)\b"),
+        ("raised_guidance_reverse", r"\b(guidance|outlook)\b.{0,50}\b(?:raise(?:d|s)?|raising)\b"),
+        (
+            "raised_metric_guidance_phrase",
+            r"\b(?:raise(?:d|s)?|raising)\b.{0,60}\b(revenue|earnings|eps)\b.{0,30}\b"
+            r"(guid(?:ance|es)|outlook)\b",
+        ),
+        (
+            "raised_now_expect_up_from_prior",
+            r"\b(?:we\s+)?now\s+expect\b.{0,120}\bup from\b.{0,24}\b(?:our|the)?\s*"
+            r"(?:prior|previous)\s+(?:estimate|guidance|outlook)\b",
+        ),
+        (
+            "raised_higher_than_prior",
+            r"\b(?:higher|above)\b.{0,20}\bthan\b.{0,20}\b(?:our|the)?\s*"
+            r"(?:prior|previous)\s+(?:guidance|outlook|estimate)\b",
+        ),
+        (
+            "raised_increase_from_prior",
+            r"\bincreas(?:e|ed|es|ing)\b.{0,20}\bfrom\b.{0,20}\b(?:our|the)?\s*"
+            r"(?:prior|previous)\s+(?:guidance|outlook|estimate)\b",
+        ),
+        (
+            "raised_increase_guidance_comparator",
+            r"\b(?:increas(?:e|ed|es|ing))\b.{0,40}\b(guidance|outlook)\b.{0,220}\b"
+            r"(?:from|compared with|compared to|as compared to)\b.{0,40}\b(?:our|the)?\s*"
+            r"(?:prior|previous)\s+(?:guidance|outlook|estimate|public comments)\b",
+        ),
+        (
+            "raised_guidance_increase_comparator",
+            r"\b(guidance|outlook)\b.{0,80}\b(?:increas(?:e|ed|es|ing))\b.{0,60}\b"
+            r"(?:from|compared with|compared to|as compared to)\b.{0,40}\b(?:our|the)?\s*"
+            r"(?:prior|previous)\s+(?:guidance|outlook|estimate|public comments)\b",
+        ),
+        (
+            "raised_guidance_above_prior",
+            r"\b(?:guidance|outlook|estimate)\b.{0,40}\b(?:higher|above|up)\b.{0,24}\b"
+            r"(?:than|from)\b.{0,20}\b(?:our|the)?\s*(?:prior|previous)\b",
+        ),
     ),
+}
+
+RULE_EXPLANATIONS = {
+    "withdrawn_guidance": "Explicit withdrawal or suspension wording was matched against guidance or outlook language.",
+    "withdrawn_guidance_reverse": "Guidance or outlook language was paired with an explicit withdrawal or suspension phrase.",
+    "lowered_guidance_down": "The sentence explicitly said guidance was down.",
+    "lowered_outlook_down": "The sentence explicitly said outlook was down.",
+    "lowered_updated_guidance": "An updated guidance or outlook sentence explicitly paired the update with lower, down, reduce, or cut wording.",
+    "lowered_took_down_guidance": "The sentence explicitly said guidance or outlook was taken down, lowered, reduced, or cut.",
+    "maintained_flat_guidance": "The sentence explicitly said guidance was flat.",
+    "maintained_reiterate_guidance": "The sentence explicitly said guidance or outlook was reiterated.",
+    "maintained_reaffirm_guidance": "The sentence explicitly said guidance or outlook was reaffirmed or maintained.",
+    "maintained_guidance_reverse": "Guidance or outlook language was paired with explicit maintained, reiterated, reaffirmed, unchanged, or flat wording.",
+    "raised_guidance_phrase": "The sentence explicitly said guidance or outlook was being raised.",
+    "raised_guidance_reverse": "Guidance or outlook language was paired with explicit raised wording.",
+    "raised_metric_guidance_phrase": "The sentence explicitly raised revenue, earnings, or EPS guidance or outlook.",
+    "raised_now_expect_up_from_prior": "The sentence used a now-expect phrase with an explicit up-from-prior comparison.",
+    "raised_higher_than_prior": "The sentence explicitly compared current guidance or outlook above a prior value.",
+    "raised_increase_from_prior": "The sentence explicitly said guidance or outlook increased from prior guidance, outlook, or estimate.",
+    "raised_increase_guidance_comparator": "The sentence explicitly paired increasing guidance or outlook with a prior comparator.",
+    "raised_guidance_increase_comparator": "Guidance or outlook language was paired with an explicit increase versus a prior comparator.",
+    "raised_guidance_above_prior": "Guidance or outlook language explicitly said the current value was above or up from the prior value.",
+    "fallback_no_directional_verb": "Guidance text was extracted, but no explicit direction-change phrase matched the closed label set.",
+    "fallback_no_guidance_rows": "No guidance rows were extracted by the deterministic pipeline, so the prediction stayed unclear.",
 }
 
 
@@ -80,6 +146,9 @@ class Prediction:
     call_id: str
     predicted_label: str
     predicted_evidence_text: str
+    evidence_type: str
+    rule_family: str
+    explanation: str
     notes: str
 
 
@@ -102,14 +171,19 @@ def _sentence_is_candidate(sentence: str) -> bool:
     return any(cue in lowered for cue in SENTENCE_CUES)
 
 
-def _classify_sentence(sentence: str) -> str:
+def _classify_sentence_detail(sentence: str) -> tuple[str, str]:
     lowered = sentence.lower()
     if not _sentence_is_candidate(sentence):
-        return "unclear"
+        return "unclear", "not_guidance_candidate"
     for label in LABEL_ORDER:
-        if any(re.search(pattern, lowered) for pattern in PATTERNS[label]):
-            return label
-    return "unclear"
+        for rule_family, pattern in PATTERNS[label]:
+            if re.search(pattern, lowered):
+                return label, rule_family
+    return "unclear", "fallback_no_directional_verb"
+
+
+def _classify_sentence(sentence: str) -> str:
+    return _classify_sentence_detail(sentence)[0]
 
 
 def _predict_from_transcript(
@@ -123,6 +197,9 @@ def _predict_from_transcript(
             call_id="",
             predicted_label="unclear",
             predicted_evidence_text="",
+            evidence_type="no_guidance_extracted",
+            rule_family="fallback_no_guidance_rows",
+            explanation=RULE_EXPLANATIONS["fallback_no_guidance_rows"],
             notes="No usable text segments extracted from transcript.",
         )
 
@@ -133,17 +210,17 @@ def _predict_from_transcript(
     chunks_scored_df = cli_module._build_chunks_scored_df(sentiment_segments)
     guidance_df = cli_module._extract_guidance_df(chunks_scored_df)
 
-    candidates: list[tuple[str, float, str]] = []
+    candidates: list[tuple[str, float, str, str]] = []
     for _, row in guidance_df.iterrows():
         strength = float(row.get("guidance_strength", 0.0) or 0.0)
         for sentence in _normalize_sentences(str(row.get("text", ""))):
-            label = _classify_sentence(sentence)
+            label, rule_family = _classify_sentence_detail(sentence)
             if label != "unclear":
-                candidates.append((label, strength, sentence))
+                candidates.append((label, strength, sentence, rule_family))
 
     if candidates:
         labels_present = {item[0] for item in candidates}
-        chosen: tuple[str, float, str] | None = None
+        chosen: tuple[str, float, str, str] | None = None
         for label in LABEL_ORDER:
             if label not in labels_present:
                 continue
@@ -152,11 +229,14 @@ def _predict_from_transcript(
             chosen = same_label[0]
             break
         assert chosen is not None
-        label, _, evidence = chosen
+        label, _, evidence, rule_family = chosen
         return Prediction(
             call_id="",
             predicted_label=label,
             predicted_evidence_text=evidence,
+            evidence_type="explicit_directional",
+            rule_family=rule_family,
+            explanation=RULE_EXPLANATIONS[rule_family],
             notes="Explicit directional phrase found within engine-extracted guidance text.",
         )
 
@@ -178,6 +258,15 @@ def _predict_from_transcript(
         call_id="",
         predicted_label="unclear",
         predicted_evidence_text=fallback_sentence,
+        evidence_type=(
+            "forward_looking_non_directional" if not guidance_df.empty else "no_guidance_extracted"
+        ),
+        rule_family=(
+            "fallback_no_directional_verb" if not guidance_df.empty else "fallback_no_guidance_rows"
+        ),
+        explanation=RULE_EXPLANATIONS[
+            "fallback_no_directional_verb" if not guidance_df.empty else "fallback_no_guidance_rows"
+        ],
         notes=note,
     )
 
@@ -187,7 +276,15 @@ def _write_predictions(path: Path, rows: list[Prediction]) -> None:
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(
             handle,
-            fieldnames=["call_id", "predicted_label", "predicted_evidence_text", "notes"],
+            fieldnames=[
+                "call_id",
+                "predicted_label",
+                "predicted_evidence_text",
+                "evidence_type",
+                "rule_family",
+                "explanation",
+                "notes",
+            ],
         )
         writer.writeheader()
         for row in rows:
@@ -196,6 +293,9 @@ def _write_predictions(path: Path, rows: list[Prediction]) -> None:
                     "call_id": row.call_id,
                     "predicted_label": row.predicted_label,
                     "predicted_evidence_text": row.predicted_evidence_text,
+                    "evidence_type": row.evidence_type,
+                    "rule_family": row.rule_family,
+                    "explanation": row.explanation,
                     "notes": row.notes,
                 }
             )
@@ -211,6 +311,9 @@ def _write_mismatches(path: Path, rows: list[dict[str, str]]) -> None:
         "match_bool",
         "gold_evidence_text",
         "predicted_evidence_text",
+        "evidence_type",
+        "rule_family",
+        "explanation",
         "notes",
     ]
     with path.open("w", encoding="utf-8", newline="") as handle:
@@ -282,17 +385,32 @@ def _write_summary(
 
     lines.extend(
         [
+            "## Per-Call Prediction Review",
+            "| call_id | ticker | gold_label | predicted_label | evidence_type | rule_family | evidence |",
+            "|---|---|---|---|---|---|---|",
+        ]
+    )
+    for row in comparison_rows:
+        lines.append(
+            f"| {row['call_id']} | {row['ticker']} | {row['gold_label']} | {row['predicted_label']} | "
+            f"{row['evidence_type']} | {row['rule_family']} | {row['predicted_evidence_text'][:100]} |"
+        )
+    lines.append("")
+
+    lines.extend(
+        [
             "## Directional Call Check",
             f"- Directional calls matched: {directional_matched}/{len(directional_calls)}",
             f"- Unclear calls kept conservative: {unclear_conservative}/{len(unclear_calls)}",
             "",
-            "| call_id | gold_label | predicted_label | match |",
-            "|---|---|---|---|",
+            "| call_id | gold_label | predicted_label | evidence_type | rule_family | match |",
+            "|---|---|---|---|---|---|",
         ]
     )
     for row in directional_calls:
         lines.append(
-            f"| {row['call_id']} | {row['gold_label']} | {row['predicted_label']} | {row['match_bool']} |"
+            f"| {row['call_id']} | {row['gold_label']} | {row['predicted_label']} | "
+            f"{row['evidence_type']} | {row['rule_family']} | {row['match_bool']} |"
         )
     lines.append("")
 
@@ -316,19 +434,29 @@ def _write_summary(
     if mismatch_rows:
         lines.extend(
             [
-                "| call_id | ticker | gold_label | predicted_label | gold_evidence | predicted_evidence |",
-                "|---|---|---|---|---|---|",
+                "| call_id | ticker | gold_label | predicted_label | evidence_type | rule_family | gold_evidence | predicted_evidence |",
+                "|---|---|---|---|---|---|---|---|",
             ]
         )
         for row in mismatch_rows:
             lines.append(
                 f"| {row['call_id']} | {row['ticker']} | {row['gold_label']} | "
-                f"{row['predicted_label']} | {row['gold_evidence_text'][:80]} | "
-                f"{row['predicted_evidence_text'][:80]} |"
+                f"{row['predicted_label']} | {row['evidence_type']} | {row['rule_family']} | "
+                f"{row['gold_evidence_text'][:80]} | {row['predicted_evidence_text'][:80]} |"
             )
     else:
         lines.append(f"- No mismatches on `{benchmark_root}`.")
     lines.append("")
+
+    lines.extend(
+        [
+            "## Prediction Review Notes",
+            "- `explicit_directional`: an explicit rule-matched guidance phrase determined the label.",
+            "- `forward_looking_non_directional`: guidance text was extracted, but no explicit closed-set direction phrase was present, so the label stayed `unclear`.",
+            "- `no_guidance_extracted`: the deterministic pipeline did not extract a guidance row, so the label stayed `unclear`.",
+            "",
+        ]
+    )
 
     if matches == total and false_directional == 0 and directional_matched == len(directional_calls):
         judgment = "good enough as a baseline"
@@ -415,6 +543,9 @@ def main() -> int:
             call_id=gold["call_id"],
             predicted_label=prediction.predicted_label,
             predicted_evidence_text=prediction.predicted_evidence_text,
+            evidence_type=prediction.evidence_type,
+            rule_family=prediction.rule_family,
+            explanation=prediction.explanation,
             notes=prediction.notes,
         )
         predictions.append(prediction)
@@ -427,6 +558,9 @@ def main() -> int:
             "match_bool": "True" if match else "False",
             "gold_evidence_text": gold["evidence_text"],
             "predicted_evidence_text": prediction.predicted_evidence_text,
+            "evidence_type": prediction.evidence_type,
+            "rule_family": prediction.rule_family,
+            "explanation": prediction.explanation,
             "notes": prediction.notes,
         }
         comparison_rows.append(comparison)

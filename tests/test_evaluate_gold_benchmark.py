@@ -88,6 +88,24 @@ def test_classify_sentence_marks_reiterated_guidance_as_maintained() -> None:
     assert mod._classify_sentence(sentence) == "maintained"
 
 
+def test_classify_sentence_detail_exposes_rule_family() -> None:
+    mod = _load_eval_module()
+    label, rule_family = mod._classify_sentence_detail(
+        "Given the strength of our business, we are raising our full-year outlook for revenue growth and free cash flow."
+    )
+    assert label == "raised"
+    assert rule_family == "raised_guidance_phrase"
+
+
+def test_classify_sentence_detail_uses_unclear_fallback_rule_family() -> None:
+    mod = _load_eval_module()
+    label, rule_family = mod._classify_sentence_detail(
+        "We expect continued growth in the business over the coming quarter."
+    )
+    assert label == "unclear"
+    assert rule_family == "fallback_no_directional_verb"
+
+
 def test_classify_sentence_preserves_existing_directional_patterns() -> None:
     mod = _load_eval_module()
     assert mod._classify_sentence("Yeah, so our guidance is flat.") == "maintained"
@@ -103,3 +121,11 @@ def test_classify_sentence_preserves_existing_directional_patterns() -> None:
         )
         == "withdrawn"
     )
+
+
+def test_predict_from_transcript_handles_empty_text_conservatively() -> None:
+    mod = _load_eval_module()
+    prediction = mod._predict_from_transcript("", sentiment_pipeline=None)
+    assert prediction.predicted_label == "unclear"
+    assert prediction.evidence_type == "no_guidance_extracted"
+    assert prediction.rule_family == "fallback_no_guidance_rows"
