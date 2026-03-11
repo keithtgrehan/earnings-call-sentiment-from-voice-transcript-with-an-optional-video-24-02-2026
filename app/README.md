@@ -1,6 +1,6 @@
 # App
 
-This folder contains a local review interface for the earnings-call pipeline.
+This folder contains two local review interfaces for the earnings-call pipeline, both backed by the same deterministic workflow.
 
 ## Run
 
@@ -9,6 +9,22 @@ python app/server.py
 ```
 
 Open `http://127.0.0.1:7860`.
+
+Backup interface:
+- `app/server.py`
+- original panel-heavy layout
+
+Primary shell:
+
+```bash
+python app/site_server.py
+```
+
+Open `http://127.0.0.1:7861`.
+
+The primary shell is the cleaner long-term website surface. The backup interface remains available as a fallback while the shell evolves.
+
+Runs execute as local background jobs. The review page refreshes while a run is active, so long YouTube transcriptions do not hold the browser request open.
 
 ## Inputs
 - YouTube URL
@@ -19,6 +35,11 @@ Open `http://127.0.0.1:7860`.
 ## Modes
 - `Deterministic only`: transcript, sentiment, guidance, guidance revision, tone changes, metrics, report
 - `Deterministic + LLM`: keeps deterministic artifacts as source of truth and adds `llm_summary.json`
+
+## Notes
+- Document mode uses extracted text and synthetic relative timing. It writes `document_timing_note.txt` to make that explicit.
+- Legacy `.doc` extraction tries `textutil`, then `antiword`, then `soffice` if available.
+- The home screen surfaces the strongest current benchmark subset from `data/gold_guidance_calls/`.
 
 ## Suggested starting prompt
 

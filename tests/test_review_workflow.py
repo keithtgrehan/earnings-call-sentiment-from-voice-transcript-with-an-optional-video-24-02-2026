@@ -48,6 +48,9 @@ def test_load_artifact_bundle_reads_tables_json_and_text(tmp_path: Path) -> None
     review_run = prepare_review_run(repo_root=tmp_path, source_label="demo")
     out_dir = review_run.out_dir
     (out_dir / "transcript.txt").write_text("hello transcript", encoding="utf-8")
+    (out_dir / "document_timing_note.txt").write_text(
+        "relative timing only", encoding="utf-8"
+    )
     (out_dir / "report.md").write_text("# Report\n\nSummary", encoding="utf-8")
     (out_dir / "metrics.json").write_text(
         json.dumps({"sentiment_mean": 0.1}), encoding="utf-8"
@@ -60,5 +63,6 @@ def test_load_artifact_bundle_reads_tables_json_and_text(tmp_path: Path) -> None
     bundle = load_artifact_bundle(review_run)
 
     assert bundle["text"]["transcript.txt"] == "hello transcript"
+    assert bundle["text"]["document_timing_note.txt"] == "relative timing only"
     assert bundle["json"]["metrics.json"]["sentiment_mean"] == 0.1
     assert bundle["tables"]["guidance.csv"][0]["text"] == "raised guidance"

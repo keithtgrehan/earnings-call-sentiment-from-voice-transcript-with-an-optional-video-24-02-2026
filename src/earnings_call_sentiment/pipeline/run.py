@@ -11,7 +11,7 @@ from typing import Any, TypedDict
 
 import matplotlib
 import matplotlib.pyplot as plt
-from transformers import pipeline as hf_pipeline
+from transformers import AutoTokenizer, pipeline as hf_pipeline
 
 matplotlib.use("Agg")
 
@@ -123,11 +123,15 @@ def build_sentiment_pipeline(
     sentiment_revision: str = DEFAULT_SENTIMENT_MODEL_REVISION,
 ):
     """Create a transformers sentiment analysis pipeline."""
+    tokenizer = AutoTokenizer.from_pretrained(
+        sentiment_model,
+        revision=sentiment_revision,
+    )
     return hf_pipeline(
         "sentiment-analysis",
         model=sentiment_model,
         revision=sentiment_revision,
-        tokenizer=(sentiment_model, {"revision": sentiment_revision}),
+        tokenizer=tokenizer,
     )
 
 

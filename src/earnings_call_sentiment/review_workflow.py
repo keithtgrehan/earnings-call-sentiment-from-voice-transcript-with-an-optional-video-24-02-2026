@@ -8,6 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import UTC, datetime
 import json
+import tempfile
 import re
 import shutil
 import subprocess
@@ -150,10 +151,30 @@ def _extract_text_from_doc(path: Path) -> str:
         commands.append(["textutil", "-convert", "txt", "-stdout", str(path)])
     if shutil.which("antiword"):
         commands.append(["antiword", str(path)])
+    if shutil.which("soffice"):
+        with tempfile.TemporaryDirectory(prefix="ecs-doc-") as temp_dir:
+            commands.append(
+                [
+                    "soffice",
+                    "--headless",
+                    "--convert-to",
+                    "txt:Text",
+                    "--outdir",
+                    temp_dir,
+                    str(path),
+                ]
+            )
 
     for command in commands:
         proc = subprocess.run(command, check=False, capture_output=True, text=True)
-        if proc.returncode == 0 and (proc.stdout or "").strip():
+        if proc.returncode != 0:
+            continue
+        if command[0] == "soffice":
+            converted = Path(command[5]) / f"{path.stem}.txt"
+            if converted.exists() and converted.stat().st_size > 0:
+                return converted.read_text(encoding="utf-8", errors="ignore").strip()
+            continue
+        if (proc.stdout or "").strip():
             return proc.stdout.strip()
     return ""
 
@@ -273,6 +294,15 @@ def run_document_review(
         event_dt=event_dt,
         source_url=None,
     )
+    timing_note_path = review_run.out_dir / "document_timing_note.txt"
+    timing_note_path.write_text(
+        (
+            "Document-mode timing is relative only. Segment start/end values are synthetic "
+            "offsets derived from text chunk order and estimated reading duration, not from "
+            "real media timestamps."
+        ),
+        encoding="utf-8",
+    )
     summary_path = None
     if summary_config.enabled:
         summary_path = generate_optional_summary(
@@ -291,6 +321,7 @@ def run_document_review(
         "chunks_scored_csv": chunks_scored_csv,
         "chunks_scored_jsonl": chunks_scored_jsonl,
         "run_meta": run_meta_path,
+        "document_timing_note": timing_note_path,
         "summary_path": summary_path,
         **artifacts,
         **post_paths,
@@ -449,11 +480,24 @@ def _run_postscore(
 
 
 def load_artifact_bundle(review_run: ReviewRun) -> dict[str, Any]:
-    out_dir = review_run.out_dir
+    return load_artifact_bundle_for_dir(
+        out_dir=review_run.out_dir,
+        run_id=review_run.run_id,
+        cache_dir=review_run.cache_dir,
+    )
+
+
+def load_artifact_bundle_for_dir(
+    *,
+    out_dir: Path,
+    run_id: str,
+    cache_dir: Path | None = None,
+) -> dict[str, Any]:
+    out_dir = Path(out_dir).expanduser().resolve()
     bundle: dict[str, Any] = {
-        "run_id": review_run.run_id,
+        "run_id": run_id,
         "out_dir": str(out_dir),
-        "cache_dir": str(review_run.cache_dir),
+        "cache_dir": str(cache_dir) if cache_dir is not None else "",
         "artifacts": {},
         "tables": {},
         "json": {},
@@ -463,6 +507,7 @@ def load_artifact_bundle(review_run: ReviewRun) -> dict[str, Any]:
     artifact_names = [
         "transcript.txt",
         "transcript.json",
+        "document_timing_note.txt",
         "sentiment_segments.csv",
         "sentiment_timeline.png",
         "risk_metrics.json",
@@ -500,7 +545,7 @@ def load_artifact_bundle(review_run: ReviewRun) -> dict[str, Any]:
         if path.exists() and path.stat().st_size > 0:
             bundle["json"][name] = json.loads(path.read_text(encoding="utf-8"))
 
-    for name in ["transcript.txt", "report.md"]:
+    for name in ["transcript.txt", "report.md", "document_timing_note.txt"]:
         path = out_dir / name
         if path.exists() and path.stat().st_size > 0:
             bundle["text"][name] = path.read_text(encoding="utf-8")[:12000]

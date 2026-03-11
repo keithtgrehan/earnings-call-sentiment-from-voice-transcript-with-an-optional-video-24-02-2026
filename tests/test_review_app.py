@@ -3,12 +3,10 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
-from earnings_call_sentiment.review_workflow import ReviewRun
 
-
-def _load_server_module():
-    module_path = Path(__file__).resolve().parents[1] / "app" / "server.py"
-    spec = importlib.util.spec_from_file_location("review_app_server", module_path)
+def _load_app_module(module_name: str):
+    module_path = Path(__file__).resolve().parents[1] / "app" / f"{module_name}.py"
+    spec = importlib.util.spec_from_file_location(f"review_app_{module_name}", module_path)
     assert spec is not None
     assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -17,7 +15,7 @@ def _load_server_module():
 
 
 def test_review_app_index_renders() -> None:
-    server = _load_server_module()
+    server = _load_app_module("server")
     app = server.create_app()
     client = app.test_client()
 
@@ -27,10 +25,28 @@ def test_review_app_index_renders() -> None:
     text = response.get_data(as_text=True)
     assert "Earnings Call Review Lab" in text
     assert "Deterministic only" in text
+    assert "Run the existing deterministic pipeline" in text
+
+
+def test_site_app_index_renders() -> None:
+    site_server = _load_app_module("site_server")
+    app = site_server.create_app()
+    client = app.test_client()
+
+    response = client.get("/")
+
+    assert response.status_code == 200
+    text = response.get_data(as_text=True)
+    assert "Signal Desk" in text
+    assert "Deterministic earnings-call review" in text
+    assert "Recent local runs" in text
 
 
 def test_review_app_document_post_uses_review_workflow(monkeypatch, tmp_path: Path) -> None:
-    server = _load_server_module()
+    import earnings_call_sentiment.web_backend as web_backend
+    from earnings_call_sentiment.review_workflow import ReviewRun
+
+    server = _load_app_module("server")
     app = server.create_app()
     review_run = ReviewRun(
         run_id="demo-run",
@@ -65,9 +81,17 @@ def test_review_app_document_post_uses_review_workflow(monkeypatch, tmp_path: Pa
             "text": {"report.md": "# Report", "transcript.txt": "text"},
         }
 
-    monkeypatch.setattr(server, "prepare_review_run", fake_prepare_review_run)
-    monkeypatch.setattr(server, "run_document_review", fake_run_document_review)
-    monkeypatch.setattr(server, "load_artifact_bundle", fake_load_artifact_bundle)
+    def fake_start_review_job(*, review_run, form_state, payload):
+        fake_run_document_review(text=payload["document_text"])
+        web_backend._set_job_state(
+            review_run.run_id,
+            status="complete",
+            finished_at="2026-03-11T09:05:00",
+        )
+
+    monkeypatch.setattr(web_backend, "prepare_review_run", fake_prepare_review_run)
+    monkeypatch.setattr(web_backend, "load_artifact_bundle", fake_load_artifact_bundle)
+    monkeypatch.setattr(web_backend, "_start_review_job", fake_start_review_job)
 
     client = app.test_client()
     response = client.post(
@@ -79,9 +103,14 @@ def test_review_app_document_post_uses_review_workflow(monkeypatch, tmp_path: Pa
             "event_dt": "2026-03-11T09:00:00-05:00",
             "document_text": "We raised revenue guidance for the year.",
         },
+        follow_redirects=False,
     )
 
-    assert response.status_code == 200
-    text = response.get_data(as_text=True)
+    assert response.status_code == 303
+    assert response.headers["Location"].endswith("/review/demo-run")
+
+    review_response = client.get("/review/demo-run")
+    assert review_response.status_code == 200
+    text = review_response.get_data(as_text=True)
     assert "demo-run" in text
     assert called["document_text"] == "We raised revenue guidance for the year."
