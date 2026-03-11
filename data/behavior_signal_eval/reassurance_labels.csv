@@ -1,0 +1,38 @@
+item_id,source_package,source_call_id,ticker,company,signal_family,label,text,start_char,end_char,source_path,notes
+reassurance_001,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,reassurance,present,"You know, we don't provide that specific number, but it is a growing
+numbers you can imagine in our install base and so we're encouraged by the amount of devices
+now that are capable.",47695,47878,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Management cites encouraging adoption evidence.
+reassurance_002,gold_guidance_calls,GOOGL_2025_Q4_call03,GOOGL,Alphabet,reassurance,present,"This week,
+Waymo raised its largest investment
+round to date and is well positioned
+to continue its momentum with safety
+at the core.",11777,11910,data/gold_guidance_calls/raw_calls/GOOGL_2025_Q4_call03.txt,Explicit positioning reassurance.
+reassurance_003,gold_guidance_calls,GOOGL_2025_Q4_call03,GOOGL,Alphabet,reassurance,present,"We are really well positioned going
+into 2026.",12459,12505,data/gold_guidance_calls/raw_calls/GOOGL_2025_Q4_call03.txt,Explicit future positioning reassurance.
+reassurance_004,gold_guidance_calls,IBM_2025_Q4_call04,IBM,IBM,reassurance,present,"We remain on track to deliver the first large
+scale fault tolerant quantum computer by 2020.",10304,10396,data/gold_guidance_calls/raw_calls/IBM_2025_Q4_call04.txt,Explicit on-track reassurance.
+reassurance_005,gold_guidance_calls,LLY_2025_Q2_call08,LLY,Eli Lilly,reassurance,present,"We reported this year, and we're encouraged by these results.",2686,2747,data/gold_guidance_calls/raw_calls/LLY_2025_Q2_call08.txt,Results-based reassurance.
+reassurance_006,gold_guidance_calls,LLY_2025_Q2_call08,LLY,Eli Lilly,reassurance,present,"We remain confident in the long-term growth outlook for Stepan as the most widely used
+increase in therapy in the branded anti-OBCD market.",14572,14711,data/gold_guidance_calls/raw_calls/LLY_2025_Q2_call08.txt,Explicit confidence statement.
+reassurance_007,gold_guidance_calls,LLY_2025_Q2_call08,LLY,Eli Lilly,reassurance,present,We are encouraged by the underlying performance we saw across the business in the first half of the year.,15466,15571,data/gold_guidance_calls/raw_calls/LLY_2025_Q2_call08.txt,Performance-based reassurance.
+reassurance_008,gold_guidance_calls,NVDA_2026_Q4_call07,NVDA,NVIDIA,reassurance,present,We shipped our first Vera Rubin samples to customers earlier this week and we remain on track to commence production shipments in the second half of the year.,9061,9219,data/gold_guidance_calls/raw_calls/NVDA_2026_Q4_call07.txt,Execution reassurance.
+reassurance_009,gold_guidance_calls,NVDA_2026_Q4_call07,NVDA,NVIDIA,reassurance,present,"While we expect tightness in the supply for our advanced architectures to persist, we remain confident in our ability to capitalize on the growth opportunity ahead with our scale, expansive supply chain, and the longstanding partnerships continuing to serve us well.",12612,12878,data/gold_guidance_calls/raw_calls/NVDA_2026_Q4_call07.txt,Explicit management confidence.
+reassurance_010,gold_guidance_calls,PVH_2025_Q1_call09,PVH,PVH Corp.,reassurance,present,We believe we are relatively well positioned to face tariff headwinds.,28960,29030,data/gold_guidance_calls/raw_calls/PVH_2025_Q1_call09.txt,Reassurance despite headwinds.
+reassurance_011,gold_guidance_calls,PLTR_2025_Q4_call01,PLTR,Palantir,reassurance,absent,"For full year 2026 we expect
+revenue of between
+7.",21446,21496,data/gold_guidance_calls/raw_calls/PLTR_2025_Q4_call01.txt,Guidance statement without reassurance language.
+reassurance_012,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,reassurance,absent,"We expect services revenue to grow at a year-over-year rate, similar
+to what we reported in the December quarter.",19225,19338,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Plain outlook statement.
+reassurance_013,gold_guidance_calls,IBM_2025_Q4_call04,IBM,IBM,reassurance,absent,"AI is now embedded
+across our business from how we deliver services to our software portfolio to the capabilities
+we are adding to our infrastructure platforms and how we drive our own productivity.",22146,22344,data/gold_guidance_calls/raw_calls/IBM_2025_Q4_call04.txt,"Descriptive statement, not reassurance."
+reassurance_014,gold_guidance_calls,GOOGL_2025_Q4_call03,GOOGL,Alphabet,reassurance,absent,"The third area is how we
+monetize new AI user
+experiences in search.",15605,15673,data/gold_guidance_calls/raw_calls/GOOGL_2025_Q4_call03.txt,Neutral strategy statement.
+reassurance_015,gold_guidance_calls_holdout_watchlist,watchhold01,AMZN,Amazon,reassurance,absent,Net sales are expected to be between $173.,0,42,data/gold_guidance_calls_holdout_watchlist/raw_calls/AMZN_2025_Q4_watchhold01.txt,Plain guidance excerpt.
+reassurance_016,gold_guidance_calls_holdout_watchlist,watchhold05,BE,Bloom Energy,reassurance,absent,"Bloom provides outlook for the full-year 2026:
+Revenue: $3.",0,59,data/gold_guidance_calls_holdout_watchlist/raw_calls/BE_2025_Q4_watchhold05.txt,Outlook statement without reassurance cue.
+reassurance_017,gold_guidance_calls_holdout_watchlist,watchhold06,BE,Bloom Energy,reassurance,absent,Bloom reiterated its 2025 revenue and margin guidance of $1.,0,60,data/gold_guidance_calls_holdout_watchlist/raw_calls/BE_2025_Q2_watchhold06.txt,"Guidance maintenance, not reassurance wording."
+reassurance_018,gold_guidance_calls_holdout_watchlist,watchhold07,NBIS,Nebius Group,reassurance,absent,We are increasing our annualized ARR outlook for our core AI infrastructure business to more than $120 million by the end of 2025 from our previous guidance of $105 million.,0,173,data/gold_guidance_calls_holdout_watchlist/raw_calls/NBIS_2025_Q2_watchhold07.txt,"Directional guidance, not reassurance."
+reassurance_019,gold_guidance_calls_holdout,holdout07,EVER,Everus,reassurance,absent,We now expect revenues to be in the range of $3.,281,329,data/gold_guidance_calls_holdout/raw_calls/EVER_2025_Q2_holdout07.txt,Plain updated guidance excerpt.
+reassurance_020,gold_guidance_calls_holdout_watchlist,watchhold01,AMZN,Amazon,reassurance,absent,Operating income is expected to be between $16.,137,184,data/gold_guidance_calls_holdout_watchlist/raw_calls/AMZN_2025_Q4_watchhold01.txt,Plain outlook excerpt.
