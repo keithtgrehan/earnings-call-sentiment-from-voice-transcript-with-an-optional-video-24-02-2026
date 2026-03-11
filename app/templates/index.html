@@ -231,6 +231,15 @@
             {% if result %}
             <div class="dossier-grid">
               <div class="dossier-column dossier-column-main">
+                <section class="content-card review-guide-card">
+                  <h3>Start here</h3>
+                  <ol class="guide-list">
+                    <li>Read the report preview first for the top-line signal and run context.</li>
+                    <li>Check the guidance and revision tables next to see the extracted directional evidence.</li>
+                    <li>Use the transcript preview to confirm the exact wording behind any directional or unclear call.</li>
+                  </ol>
+                </section>
+
                 {% if result.text.get('report.md') %}
                 <section class="content-card">
                   <h3>Report preview</h3>
@@ -311,7 +320,12 @@
               {% if job and job.status in ['queued', 'running'] %}
               <p>The job is in flight. This dossier refreshes while deterministic artifacts are written.</p>
               {% else %}
-              <p>Run the workflow and this area fills with transcript excerpts, artifact links, metrics, tables, plots, and the optional normalized summary output.</p>
+              <h3>Suggested demo path</h3>
+              <ol class="guide-list">
+                <li>Pick one benchmark case from the right rail or paste a transcript excerpt into the form.</li>
+                <li>Run the deterministic review first so the core artifacts stay visible and auditable.</li>
+                <li>Use this dossier to walk through the report, guidance evidence, transcript, and metrics in order.</li>
+              </ol>
               {% endif %}
             </div>
             {% endif %}
@@ -373,8 +387,8 @@
 
           <section class="panel sidebar-panel emphasis-panel">
             <div class="section-head compact no-margin">
-              <p class="eyebrow">{% if result %}Review bundle{% else %}Workflow notes{% endif %}</p>
-              <h3>{% if result %}Current run outputs{% else %}What the workflow produces{% endif %}</h3>
+              <p class="eyebrow">{% if result %}Review bundle{% else %}Demo flow{% endif %}</p>
+              <h3>{% if result %}Current run outputs{% else %}What to show live{% endif %}</h3>
             </div>
             {% if result %}
             <div class="mini-summary-grid">
@@ -398,12 +412,22 @@
               <pre>{{ result.text['document_timing_note.txt'] }}</pre>
             </div>
             {% endif %}
+            <div class="note-card compact-note side-note">
+              <strong>Walkthrough order</strong>
+              <ol class="guide-list compact-guide">
+                <li>Report preview</li>
+                <li>Guidance and revision tables</li>
+                <li>Transcript evidence</li>
+                <li>Metrics and plots</li>
+              </ol>
+            </div>
             {% else %}
-            <ul class="bullet-list compact-list">
-              <li>Transcript and report previews.</li>
-              <li>Guidance, revision, tone-change, and scoring CSVs.</li>
-              <li>Metrics, plots, and optional `llm_summary.json` when enabled.</li>
-            </ul>
+            <ol class="guide-list compact-guide">
+              <li>Choose a benchmark-style transcript or paste one directly into the form.</li>
+              <li>Run <strong>Deterministic only</strong> first to keep the source-of-truth artifacts visible.</li>
+              <li>In the dossier, show the report preview before diving into transcript evidence.</li>
+              <li>Use the benchmark subset as a quick set of review-worthy examples, not as a performance claim.</li>
+            </ol>
             {% endif %}
           </section>
         </aside>

@@ -699,6 +699,10 @@ textarea {
   background: linear-gradient(180deg, rgba(52, 101, 123, 0.1), rgba(255,255,255,0.96));
 }
 
+.review-guide-card {
+  background: linear-gradient(180deg, rgba(52, 101, 123, 0.08), rgba(255,255,255,0.96));
+}
+
 .deep-accent {
   background: linear-gradient(180deg, rgba(36, 73, 90, 0.12), rgba(255,255,255,0.96));
 }
@@ -752,8 +756,34 @@ th {
   color: var(--muted);
 }
 
+.empty-state h3 {
+  margin: 0 0 10px;
+  font-family: "Space Grotesk", "Work Sans", system-ui, sans-serif;
+  font-size: 1.02rem;
+  color: var(--ink);
+}
+
 .compact-empty {
   padding: 20px 22px;
+}
+
+.guide-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.guide-list li::marker {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.compact-guide {
+  gap: 6px;
+  font-size: 0.84rem;
 }
 
 @media (max-width: 1240px) {
