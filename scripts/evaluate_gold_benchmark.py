@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import csv
 from collections import Counter, defaultdict
 from dataclasses import dataclass
@@ -219,6 +220,8 @@ def _distribution_markdown(title: str, counts: Counter[str]) -> list[str]:
 def _write_summary(
     path: Path,
     *,
+    benchmark_name: str,
+    benchmark_root: Path,
     gold_rows: list[dict[str, str]],
     predictions: list[Prediction],
     comparison_rows: list[dict[str, str]],
@@ -245,11 +248,11 @@ def _write_summary(
         confusion_counts[(row["gold_label"], row["predicted_label"])] += 1
 
     lines: list[str] = [
-        "# Frozen Gold Benchmark Evaluation",
+        f"# {benchmark_name}",
         "",
         "## Scope",
-        "- Evaluation set: frozen 9-call gold guidance benchmark",
-        "- Gold source of truth: `data/gold_guidance_calls/labels.csv`",
+        f"- Evaluation set: `{benchmark_root}`",
+        f"- Gold source of truth: `{benchmark_root / 'labels.csv'}`",
         "- Baseline method: current transcript-to-guidance extraction path plus a fixed closed-set sentence mapper over extracted guidance text.",
         "",
         "## Headline Result",
@@ -348,11 +351,29 @@ def _write_summary(
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines), encoding="utf-8")
 
-
 def main() -> int:
     repo_root = _repo_root()
-    labels_path = repo_root / "data" / "gold_guidance_calls" / "labels.csv"
-    outputs_dir = repo_root / "outputs" / "gold_eval"
+    parser = argparse.ArgumentParser(description="Evaluate a guidance-change benchmark package.")
+    parser.add_argument(
+        "--benchmark-root",
+        default="data/gold_guidance_calls",
+        help="Benchmark package root relative to the repo root.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        default="outputs/gold_eval",
+        help="Output directory for predictions, mismatches, and summary relative to the repo root.",
+    )
+    parser.add_argument(
+        "--benchmark-name",
+        default="Frozen Gold Benchmark Evaluation",
+        help="Markdown report title.",
+    )
+    args = parser.parse_args()
+
+    benchmark_root = repo_root / args.benchmark_root
+    labels_path = benchmark_root / "labels.csv"
+    outputs_dir = repo_root / args.output_dir
     predictions_path = outputs_dir / "predictions.csv"
     mismatches_path = outputs_dir / "mismatches.csv"
     summary_path = outputs_dir / "evaluation_summary.md"
@@ -401,6 +422,8 @@ def main() -> int:
     _write_mismatches(mismatches_path, mismatch_rows)
     _write_summary(
         summary_path,
+        benchmark_name=args.benchmark_name,
+        benchmark_root=Path(args.benchmark_root),
         gold_rows=gold_rows,
         predictions=predictions,
         comparison_rows=comparison_rows,
