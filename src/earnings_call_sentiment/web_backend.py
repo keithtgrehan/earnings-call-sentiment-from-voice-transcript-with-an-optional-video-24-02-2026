@@ -172,14 +172,21 @@ def create_review_app(
 
 def _load_benchmark_subset(benchmark_root: Path, limit: int = 5) -> list[dict[str, Any]]:
     manifest_path = benchmark_root / "call_manifest.csv"
-    labels_path = benchmark_root / "draft_labels.csv"
-    if not manifest_path.exists() or not labels_path.exists():
+    labels_path = benchmark_root / "labels.csv"
+    if not labels_path.exists():
         return []
-    manifest = pd.read_csv(manifest_path)
     labels = pd.read_csv(labels_path)
-    if manifest.empty or labels.empty:
+    if labels.empty:
         return []
-    merged = manifest.merge(labels[["call_id", "guidance_change_label"]], on="call_id", how="left")
+    merged = labels.copy()
+    if manifest_path.exists():
+        manifest = pd.read_csv(manifest_path)
+        if not manifest.empty:
+            merged = merged.merge(
+                manifest[["call_id", "source_url", "benchmark_quality_flag", "notes"]],
+                on="call_id",
+                how="left",
+            )
     label_priority = {"raised": 0, "lowered": 1, "maintained": 2, "withdrawn": 3, "unclear": 4}
     quality_priority = {"good": 0, "acceptable": 1, "caution": 2, "poor": 3}
     merged["label_rank"] = merged["guidance_change_label"].map(label_priority).fillna(9)
@@ -197,15 +204,10 @@ def _load_benchmark_subset(benchmark_root: Path, limit: int = 5) -> list[dict[st
                 "quality": str(row.get("benchmark_quality_flag", "")),
                 "source_url": str(row.get("source_url", "")),
                 "notes": str(row.get("notes", "")),
-                "transcript_path": _raw_transcript_path(benchmark_root, str(row["ticker"]), str(row["quarter"]), str(row["call_id"])),
+                "transcript_path": str(row.get("source_path", "")),
             }
         )
     return rows
-
-
-def _raw_transcript_path(benchmark_root: Path, ticker: str, quarter: str, call_id: str) -> str:
-    call_num = call_id.replace("call", "")
-    return str(benchmark_root / "raw_calls" / f"{ticker}_{quarter}_call{call_num}.txt")
 
 
 def _load_recent_runs(output_root: Path, limit: int = 8) -> list[dict[str, Any]]:
