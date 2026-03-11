@@ -60,8 +60,14 @@ PATTERNS: dict[str, tuple[str, ...]] = {
         r"(?:prior|previous)\s+(?:estimate|guidance|outlook)\b",
         r"\b(?:higher|above)\b.{0,20}\bthan\b.{0,20}\b(?:our|the)?\s*"
         r"(?:prior|previous)\s+(?:guidance|outlook|estimate)\b",
-        r"\bincrease(?:d|s|ing)?\b.{0,20}\bfrom\b.{0,20}\b(?:our|the)?\s*"
+        r"\bincreas(?:e|ed|es|ing)\b.{0,20}\bfrom\b.{0,20}\b(?:our|the)?\s*"
         r"(?:prior|previous)\s+(?:guidance|outlook|estimate)\b",
+        r"\b(?:increas(?:e|ed|es|ing))\b.{0,40}\b(guidance|outlook)\b.{0,220}\b"
+        r"(?:from|compared with|compared to|as compared to)\b.{0,40}\b(?:our|the)?\s*"
+        r"(?:prior|previous)\s+(?:guidance|outlook|estimate|public comments)\b",
+        r"\b(guidance|outlook)\b.{0,80}\b(?:increas(?:e|ed|es|ing))\b.{0,60}\b"
+        r"(?:from|compared with|compared to|as compared to)\b.{0,40}\b(?:our|the)?\s*"
+        r"(?:prior|previous)\s+(?:guidance|outlook|estimate|public comments)\b",
         r"\b(?:guidance|outlook|estimate)\b.{0,40}\b(?:higher|above|up)\b.{0,24}\b"
         r"(?:than|from)\b.{0,20}\b(?:our|the)?\s*(?:prior|previous)\b",
     ),

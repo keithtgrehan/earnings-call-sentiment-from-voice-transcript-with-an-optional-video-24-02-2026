@@ -61,6 +61,24 @@ def test_classify_sentence_marks_contracted_gerund_raised_guidance_as_raised() -
     assert mod._classify_sentence(sentence) == "raised"
 
 
+def test_classify_sentence_marks_increase_vs_prior_public_comments_as_raised() -> None:
+    mod = _load_eval_module()
+    sentence = (
+        "Our guidance contemplates IFP growth of 32%, a 200bps increase as compared "
+        "to our prior public comments."
+    )
+    assert mod._classify_sentence(sentence) == "raised"
+
+
+def test_classify_sentence_marks_increasing_outlook_from_prior_guidance_as_raised() -> None:
+    mod = _load_eval_module()
+    sentence = (
+        "We are increasing our annualized ARR outlook for our core AI infrastructure "
+        "business to more than $120 million by the end of 2025 from our previous guidance of $105 million."
+    )
+    assert mod._classify_sentence(sentence) == "raised"
+
+
 def test_classify_sentence_preserves_existing_directional_patterns() -> None:
     mod = _load_eval_module()
     assert mod._classify_sentence("Yeah, so our guidance is flat.") == "maintained"
