@@ -3,6 +3,7 @@
 ## Setup
 - Frozen benchmark: `data/gold_guidance_calls/labels.csv` with 9 canonical gold rows
 - Holdout benchmark: `data/gold_guidance_calls_holdout/labels.csv` with 7 currently labeled unseen rows
+- Watchlist-derived unseen holdout: `data/gold_guidance_calls_holdout_watchlist/labels.csv` with 7 currently labeled unseen rows
 - Evaluator: `scripts/evaluate_gold_benchmark.py`
 - Label set: `raised`, `maintained`, `lowered`, `withdrawn`, `unclear`
 - Method: current deterministic transcript-to-guidance extraction path plus a fixed closed-set sentence mapper over extracted guidance text
@@ -13,6 +14,7 @@
 - Initial holdout after the comparative-update refinement: `2/2`
 - Expanded holdout before the gerund-style refinement: `4/7`
 - Expanded holdout after the gerund-style raised-guidance refinement: `7/7`
+- Watchlist-derived unseen holdout after the comparative and maintained-wording refinements: `7/7`
 
 ## What changed
 - The narrow refinements were limited to explicit raised-guidance wording already observed in unseen misses:
@@ -25,11 +27,13 @@
 - The current benchmark package now shows clean agreement on:
   - frozen benchmark: `9/9`
   - expanded holdout: `7/7`
+  - watchlist-derived unseen holdout: `7/7`
 - This is still a benchmark-agreement result, not proof that the mapper is finished for broader unseen coverage.
 
 ## Limits
 - The sample sizes are still small.
 - The expanded holdout uses a mix of transcript excerpts and official-source excerpts where direct media collection was blocked.
+- The watchlist-derived unseen holdout is also excerpt-heavy and should be treated as a disciplined generalization check, not a broad validation set.
 - There is still no unseen `lowered` holdout row in the current package.
 - These results support decision-support positioning only. They do not support any predictive, alpha, or statistical-significance claim.
 

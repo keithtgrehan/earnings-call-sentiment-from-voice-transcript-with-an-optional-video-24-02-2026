@@ -98,7 +98,7 @@ Current frozen gold label distribution:
 This benchmark is intentionally conservative. If a transcript contains explicit forward guidance but no explicit direction change versus prior guidance, the gold label stays `unclear`.
 
 ## Benchmark Packages
-The repo now contains four distinct benchmark or benchmark-adjacent data areas:
+The repo now contains five distinct benchmark or benchmark-adjacent data areas:
 
 - `data/gold_guidance_calls/`
   - canonical frozen guidance-change benchmark
@@ -106,6 +106,10 @@ The repo now contains four distinct benchmark or benchmark-adjacent data areas:
 - `data/gold_guidance_calls_holdout/`
   - active unseen holdout benchmark
   - separate from the frozen benchmark and used for current unseen agreement checks
+- `data/gold_guidance_calls_holdout_watchlist/`
+  - second unseen holdout built from watchlist-derived candidate rows
+  - current agreement checkpoint: `7/7`
+  - separate from both the frozen benchmark and the original active holdout
 - `data/watchlist_earnings_candidates/`
   - metadata-first future candidate pool sourced from the supplied watchlist
   - not an active benchmark and not a canonical label source
@@ -150,6 +154,7 @@ Run:
 ```bash
 python scripts/evaluate_gold_benchmark.py
 python scripts/evaluate_gold_benchmark.py --benchmark-root data/gold_guidance_calls_holdout --output-dir outputs/holdout_eval --benchmark-name "Expanded Holdout Benchmark Evaluation"
+python scripts/evaluate_gold_benchmark.py --benchmark-root data/gold_guidance_calls_holdout_watchlist --output-dir outputs/holdout_watchlist_eval --benchmark-name "Watchlist Holdout Benchmark Evaluation"
 ```
 
 Useful companion docs:
@@ -161,7 +166,8 @@ Useful companion docs:
 ### Evaluation evidence
 - Frozen benchmark agreement on canonical gold labels: `9/9`
 - Expanded unseen holdout agreement on current labeled rows: `7/7`
-- The holdout remains small and excerpt-heavy.
+- Watchlist-derived unseen holdout agreement on current labeled rows: `7/7`
+- Both unseen sets remain small and excerpt-heavy.
 - These are benchmark-agreement results only, not predictive or statistical-significance results.
 
 ## What Remains Unproven
@@ -174,7 +180,7 @@ The current baseline is useful for structured review, but it still needs broader
 
 ## Immediate Next Steps
 - Add more defensible unseen holdout rows, especially `lowered` cases
-- Keep rerunning frozen and holdout evaluation as new unseen rows are added
+- Keep rerunning frozen, active holdout, and watchlist-holdout evaluation as new unseen rows are added
 - Keep the benchmark package separate from any predictive or backtest claims
 
 ## Usage / Validation
