@@ -126,19 +126,31 @@ It exits nonzero if:
   - `withdrawn`
   - `unclear`
 
+### Benchmark evaluator
+Run:
+
+```bash
+python scripts/evaluate_gold_benchmark.py
+python scripts/evaluate_gold_benchmark.py --benchmark-root data/gold_guidance_calls_holdout --output-dir outputs/holdout_eval --benchmark-name "Expanded Holdout Benchmark Evaluation"
+```
+
+Useful companion docs:
+- `docs/evaluation-baseline.md`
+- `docs/capstone-evaluation-summary.md`
+
 ## What Remains Unproven
 - No proven predictive edge
 - No statistical significance claim
 - No live trading claim
 - No claim that the current deterministic rule set is validated beyond the current frozen benchmark and local review workflow
 
-The current baseline is useful for structured review, but it still needs formal evaluation against the frozen gold benchmark before stronger claims are justified.
+The current baseline is useful for structured review, but it still needs broader unseen evaluation before stronger claims are justified.
 
 ## Immediate Next Steps
-- Run the frozen 9-call deterministic baseline evaluation
-- Compare deterministic benchmark predictions against gold labels
-- Produce a mismatch report with transcript evidence
-- Only then decide whether further rule-engine refinement is justified
+- Inspect the expanded holdout mismatch pattern
+- Make at most one narrow rule refinement tied to that observed failure mode
+- Re-run frozen and holdout evaluation after that change
+- Keep the benchmark package separate from any predictive or backtest claims
 
 ## Usage / Validation
 ### Compile check
