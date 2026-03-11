@@ -3,7 +3,7 @@ call01,PLTR,Palantir,Q4_2025,2026-02-02,unclear,"For full year 2026 we expect
 revenue of between
 7.182
 and 7.198 billion",21446,21517,0.90,"Explicit forward guidance range is stated, but no explicit action verb indicates raised, maintained, lowered, or withdrawn versus prior guidance; offsets are 0-based [start,end).",transcript,data/gold_guidance_calls/raw_calls/PLTR_2025_Q4_call01.txt
-call02,LEU,Centrus Energy Corp,Q4_2025,2026-02-12,maintained,"Yeah, so our guidance is flat.",27457,27487,0.82,"Management explicitly states current guidance is flat, which is the closest closed-set match to maintained; offsets are 0-based [start,end).",transcript,data/gold_guidance_calls/raw_calls/LEU_2025_Q4_call02.txt
+call02,LEU,Centrus Energy Corp,Q4_2025,2026-02-11,maintained,"Yeah, so our guidance is flat.",27457,27487,0.82,"Management explicitly states current guidance is flat, which is the closest closed-set match to maintained; offsets are 0-based [start,end).",transcript,data/gold_guidance_calls/raw_calls/LEU_2025_Q4_call02.txt
 call03,GOOGL,Alphabet,Q4_2025,2026-02-04,unclear,"Turning to our outlook, I would
 like to provide some
 commentaries on factors that
