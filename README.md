@@ -1,136 +1,181 @@
-# AI Earnings Call Signal Engine
-Transcript/audio-first signal extraction prototype for earnings calls. It produces structured, auditable artifacts to support retail trader review.
+# Earnings Call Signal Engine
+Transcript-first AI tool for extracting structured signals from earnings call audio and video sources using NLP.
 
-## What This Is
-The **Earnings Call Signal Extraction Engine** converts a single earnings call into a structured signal summary focused on:
-- guidance shifts
+This project is a local decision-support system for earnings-call review. It is not a live trading system, does not execute orders, and does not claim predictive edge or statistical significance.
+
+## Project Summary
+The repo converts one earnings call into structured, auditable artifacts that help a reviewer inspect:
+- guidance statements and guidance-change evidence
 - tone-change moments
-- transcript evidence
+- transcript-backed supporting spans
+- report and metrics outputs for local review
 
-This project is **decision support only**. It is not a trading bot and does not execute orders.
+The current workflow is transcript/audio-first and deterministic-first. Optional narrative layers exist, but the deterministic artifacts remain the source of truth.
 
-## Status At A Glance
-### Implemented now
-- End-to-end CLI pipeline (`earnings-call-sentiment`) for:
-  - YouTube/local audio ingestion
-  - normalization + transcription
-  - segment sentiment scoring
+## What Is Implemented Now
+- End-to-end CLI pipeline via `earnings-call-sentiment` for:
+  - YouTube or local media ingestion
+  - audio normalization
+  - transcription
+  - segment and chunk scoring
   - deterministic guidance extraction
-  - deterministic guidance revision vs prior `guidance.csv`
+  - deterministic guidance revision comparison
   - deterministic tone-change detection
-- Standard outputs including:
-  - `transcript.json`, `transcript.txt`
-  - `sentiment_segments.csv`, `chunks_scored.jsonl`
-  - `guidance.csv`, `guidance_revision.csv`, `tone_changes.csv`
-  - `metrics.json`, `report.md`, `run_meta.json`
-- Optional question-shift outputs:
-  - `question_sentiment_shifts.csv`, `question_shifts.png`
-- Validation helper:
-  - `scripts/verify_outputs.py`
+  - report, metrics, and artifact generation
+- Primary local review UI shell served by `app/site_server.py`
+- Benchmark subset shown in the UI and now sourced from canonical gold labels, not draft labels
+- Frozen 9-call gold guidance benchmark under `data/gold_guidance_calls/`
+- Gold benchmark summary utility:
+  - `python scripts/summarize_gold_benchmark.py`
 
-### Optional / experimental
-- Question-shift analysis (`--question-shifts`) is optional and heuristic.
-- LLM narrative layer (`scripts/run_eval.py`) is optional; deterministic mode is available with `--llm none`.
-- Backtest harness (`scripts/backtest_signals.py`) is available for offline analysis when local price data is provided.
+Artifacts currently produced by the core pipeline include:
+- `transcript.json`, `transcript.txt`
+- `chunks_scored.jsonl`, `sentiment_segments.csv`
+- `guidance.csv`, `guidance_revision.csv`, `tone_changes.csv`
+- `metrics.json`, `report.md`, `run_meta.json`
 
-### Unproven (do not over-interpret)
-- No claim of live trading capability.
-- No claim of statistical significance or persistent predictive edge from current repo artifacts alone.
-- No claim that current heuristics generalize across all companies, sectors, or earnings-call styles.
+Optional heuristic outputs still exist, but they are not the current benchmark focus:
+- question-shift artifacts
+- optional summary/eval utilities
+- offline backtest scripts
 
-## Architecture Flow
-Input
-→ Download/Load Audio
-→ Transcribe
-→ Score Segments
-→ Detect Guidance Revision
-→ Detect Tone Changes / Question Shifts
-→ Build Deterministic Report
-→ Optional LLM Summary Layer
+## UI / Local Review Shell
+The active local review shell is the primary interface served by:
 
-```mermaid
-flowchart LR
-  A[Audio / YouTube Input] --> B[Transcription]
-  B --> C[Sentiment + Risk Scoring]
-  C --> D[Guidance Revision]
-  C --> E[Tone / Question Shift Detection]
-  D --> F[Deterministic Report + Metrics]
-  E --> F
-  F --> G[Optional LLM Summary]
-```
-
-The deterministic core is the source of truth. The optional summary layer is additive and never replaces core artifacts.
-
-## Safest Demo Path (No External APIs)
-Use pre-generated artifacts and deterministic scripts only.
-
-### 1) Verify existing outputs
 ```bash
-python scripts/verify_outputs.py --out-dir ./outputs_prior
+PORT=7872 python app/site_server.py
 ```
 
-### 2) Generate deterministic evaluation summary (no LLM/network)
+Current shell structure:
+- hero and project positioning
+- left-side configuration flow:
+  - input source
+  - transcript/media/document input
+  - metadata and transcription settings
+  - deterministic vs additive summary mode
+  - primary run action
+- dossier / outputs area below the configuration flow
+- compact right rail with:
+  - recent local runs
+  - benchmark subset
+  - workflow notes
+
+This is a local review product shell for analyst-style inspection. It is not a production SaaS app.
+
+## Gold Benchmark
+The frozen gold benchmark lives under:
+
+```text
+data/gold_guidance_calls/
+```
+
+Frozen scope:
+- `call01`
+- `call02`
+- `call03`
+- `call04`
+- `call05`
+- `call06`
+- `call07`
+- `call08`
+- `call09`
+
+Canonical files:
+- `data/gold_guidance_calls/labels.csv`
+- `data/gold_guidance_calls/call_manifest.csv`
+
+`labels.csv` is now the canonical source of truth for benchmark labels.
+
+The UI benchmark subset reads from canonical gold `labels.csv` and uses manifest data only for supporting display metadata such as source URL, quality flag, and notes.
+
+Current frozen gold label distribution:
+- `raised`: 1
+- `maintained`: 1
+- `lowered`: 1
+- `withdrawn`: 0
+- `unclear`: 6
+
+This benchmark is intentionally conservative. If a transcript contains explicit forward guidance but no explicit direction change versus prior guidance, the gold label stays `unclear`.
+
+## Utility Scripts
+### Gold benchmark summary
+Run:
+
 ```bash
-python scripts/run_eval.py --out-dir ./outputs_prior --llm none
+python scripts/summarize_gold_benchmark.py
 ```
 
-### 3) Present these files
-- `outputs_prior/report.md`
-- `outputs_prior/metrics.json`
-- `outputs_prior/guidance.csv`
-- `outputs_prior/guidance_revision.csv`
-- `outputs_prior/tone_changes.csv`
-- `outputs_prior/llm_eval.json` (from step 2)
+It prints:
+- total benchmark row count
+- label distribution
+- one compact per-call table with:
+  - `call_id`
+  - `ticker`
+  - `company`
+  - `quarter`
+  - `event_date`
+  - `guidance_change_label`
 
-If `outputs_prior/` is not available in your clone, prepare a local artifact folder first, then follow the same steps.
+It exits nonzero if:
+- `labels.csv` is missing
+- duplicate `call_id` rows exist
+- any label falls outside:
+  - `raised`
+  - `maintained`
+  - `lowered`
+  - `withdrawn`
+  - `unclear`
 
-## Full Pipeline Run (Requires External Model/Media Access)
+## What Remains Unproven
+- No proven predictive edge
+- No statistical significance claim
+- No live trading claim
+- No claim that the current deterministic rule set is validated beyond the current frozen benchmark and local review workflow
+
+The current baseline is useful for structured review, but it still needs formal evaluation against the frozen gold benchmark before stronger claims are justified.
+
+## Immediate Next Steps
+- Run the frozen 9-call deterministic baseline evaluation
+- Compare deterministic benchmark predictions against gold labels
+- Produce a mismatch report with transcript evidence
+- Only then decide whether further rule-engine refinement is justified
+
+## Usage / Validation
+### Compile check
+```bash
+python -m py_compile app/server.py app/site_server.py src/earnings_call_sentiment/web_backend.py
+```
+
+### Test suite
+```bash
+pytest -q
+```
+
+### Gold benchmark sanity check
+```bash
+python scripts/summarize_gold_benchmark.py
+```
+
+### Launch the active local review shell
+```bash
+PORT=7872 python app/site_server.py
+```
+
+### Run the CLI pipeline
 ```bash
 earnings-call-sentiment \
   --youtube-url "<earnings-call-url>" \
   --cache-dir ./cache \
   --out-dir ./outputs \
-  --model tiny \
-  --chunk-seconds 20 \
-  --min-chars 20 \
+  --model small \
+  --chunk-seconds 30 \
   --symbol <TICKER> \
   --event-dt "2024-08-01T16:00:00" \
   --verbose
 ```
 
-## Optional Summary Layer (Provider-based)
-Summary mode is off by default. Enable it only when you want a narrative layer on top of deterministic artifacts.
-
-Flags:
-- `--llm-summary`
-- `--summary-provider openai_compatible`
-- `--summary-model <MODEL_ID>`
-- `--summary-base-url <BASE_URL>`
-- `--summary-api-key-env <ENV_VAR_NAME>`
-- `--summary-timeout-s <SECONDS>`
-
-Environment requirement (example):
-```bash
-export OPENAI_API_KEY=\"<secret>\"
-earnings-call-sentiment \
-  --youtube-url \"<earnings-call-url>\" \
-  --out-dir ./outputs \
-  --llm-summary \
-  --summary-provider openai_compatible \
-  --summary-model gpt-4o-mini \
-  --summary-base-url https://api.openai.com/v1 \
-  --summary-api-key-env OPENAI_API_KEY
-```
-
-Malformed provider JSON is normalized through hardened parsing (`schema_utils`) and is not trusted blindly.
-
-## CLI Notes
-Key reliability flags:
-- `--strict`: enforce required artifact contract and fail if missing/empty.
-- `--resume` / `--no-resume`: control post-score stage reuse.
-- `--force`: rerun post-score deterministic stages.
-- `--vad`: optional VAD during transcription.
-- `--prior-guidance`: compare current guidance to a prior run.
-
-## Evaluation Boundary
-This capstone prototype is intended to improve **review speed, clarity, and auditability** for earnings-call interpretation. Any predictive or trading-performance claims require separate, rigorous out-of-sample validation.
+## Notes On Scope
+- Deterministic artifacts remain the source of truth
+- The benchmark is frozen at 9 calls for the current guidance-change evaluation pass
+- Draft benchmark files still exist for review history, but they are no longer the canonical label source
+- Any predictive or trading-performance claims require separate out-of-sample evaluation work
