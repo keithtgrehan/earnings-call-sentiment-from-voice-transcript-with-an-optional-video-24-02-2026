@@ -29,6 +29,7 @@ from earnings_call_sentiment.pipeline.run import (
     write_transcript_artifacts,
 )
 import earnings_call_sentiment.question_shifts as qs
+from earnings_call_sentiment.signals import write_behavioral_outputs
 from earnings_call_sentiment.summary_config import (
     SummaryConfig,
     load_summary_config,
@@ -754,6 +755,7 @@ def _build_metrics_payload(
     guidance_df: pd.DataFrame,
     guidance_revision_df: pd.DataFrame,
     tone_changes_df: pd.DataFrame,
+    behavioral_summary: dict[str, Any] | None = None,
     prior_guidance_path: str | None,
     sentiment_model: str,
     sentiment_revision: str,
@@ -769,6 +771,12 @@ def _build_metrics_payload(
         guidance_df.get("guidance_strength", pd.Series([], dtype="float64")),
         errors="coerce",
     ).dropna()
+    if behavioral_summary is None:
+        behavioral_summary = {
+            "uncertainty_score_overall": {"score": 0, "level": "low"},
+            "reassurance_score_management": {"score": 0, "level": "low"},
+            "analyst_skepticism_score": {"score": 0, "level": "low"},
+        }
     tone_change_count = (
         int(tone_changes_df["is_change"].astype(bool).sum())
         if "is_change" in tone_changes_df.columns
@@ -800,6 +808,11 @@ def _build_metrics_payload(
         "tone_changes": {
             "row_count": int(len(tone_changes_df)),
             "change_count": tone_change_count,
+        },
+        "behavioral_signals": {
+            "uncertainty": behavioral_summary.get("uncertainty_score_overall", {}),
+            "reassurance": behavioral_summary.get("reassurance_score_management", {}),
+            "analyst_skepticism": behavioral_summary.get("analyst_skepticism_score", {}),
         },
         "guidance_revision": {
             "prior_guidance_path": (str(prior_guidance_path) if prior_guidance_path else None),
@@ -858,6 +871,7 @@ def _write_report_markdown(
     metrics_payload: dict[str, Any],
     guidance_df: pd.DataFrame,
     guidance_revision_df: pd.DataFrame,
+    behavioral_summary: dict[str, Any],
 ) -> None:
     lines = [
         "# Earnings Call Sentiment Report",
@@ -929,9 +943,43 @@ def _write_report_markdown(
 
     lines.extend(
         [
+            "## Tone & Behavioral Signals",
+            f"- uncertainty: {behavioral_summary.get('uncertainty_score_overall', {}).get('level', 'low')}",
+            f"- reassurance: {behavioral_summary.get('reassurance_score_management', {}).get('level', 'low')}",
+            f"- analyst skepticism: {behavioral_summary.get('analyst_skepticism_score', {}).get('level', 'low')}",
+            "",
+        ]
+    )
+    strongest = behavioral_summary.get("strongest_evidence", {})
+    if isinstance(strongest, dict):
+        for key, label in (
+            ("uncertainty", "Uncertainty"),
+            ("reassurance", "Management reassurance"),
+            ("analyst_skepticism", "Analyst skepticism"),
+        ):
+            rows = strongest.get(key, [])
+            lines.append(f"### {label} evidence")
+            if isinstance(rows, list) and rows:
+                for item in rows[:2]:
+                    snippet = str(item.get("text", "")).replace("\n", " ").strip()
+                    if len(snippet) > 140:
+                        snippet = f"{snippet[:137]}..."
+                    lines.append(
+                        f"- [{item.get('matched_phrase')}] strength={item.get('strength')}: {snippet}"
+                    )
+            else:
+                lines.append("- _none_")
+            lines.append("")
+
+    lines.extend(
+        [
             "## Outputs",
             "- guidance.csv",
             "- guidance_revision.csv",
+            "- uncertainty_signals.csv",
+            "- reassurance_signals.csv",
+            "- analyst_skepticism.csv",
+            "- behavioral_summary.json",
             "- metrics.json",
             "- report.md",
             "",
@@ -951,6 +999,10 @@ def _run_postscore_stages(
     guidance_path = out_dir / "guidance.csv"
     guidance_revision_path = out_dir / "guidance_revision.csv"
     tone_changes_path = out_dir / "tone_changes.csv"
+    uncertainty_path = out_dir / "uncertainty_signals.csv"
+    reassurance_path = out_dir / "reassurance_signals.csv"
+    skepticism_path = out_dir / "analyst_skepticism.csv"
+    behavioral_summary_path = out_dir / "behavioral_summary.json"
     metrics_path = out_dir / "metrics.json"
     report_path = out_dir / "report.md"
 
@@ -987,12 +1039,24 @@ def _run_postscore_stages(
     else:
         tone_changes_df = _read_csv_or_empty(tone_changes_path)
 
+    if _stage_should_run(
+        "behavioral_signals",
+        [uncertainty_path, reassurance_path, skepticism_path, behavioral_summary_path],
+        resume=resume,
+        force=force,
+    ):
+        behavioral_outputs = write_behavioral_outputs(chunks_scored_df, out_dir)
+        behavioral_summary = behavioral_outputs["summary"]
+    else:
+        behavioral_summary = json.loads(behavioral_summary_path.read_text(encoding="utf-8"))
+
     if _stage_should_run("metrics", [metrics_path], resume=resume, force=force):
         metrics_payload = _build_metrics_payload(
             chunks_scored=chunks_scored_df,
             guidance_df=guidance_df,
             guidance_revision_df=guidance_revision_df,
             tone_changes_df=tone_changes_df,
+            behavioral_summary=behavioral_summary,
             prior_guidance_path=args.prior_guidance,
             sentiment_model=str(args.sentiment_model),
             sentiment_revision=str(args.sentiment_revision),
@@ -1007,12 +1071,17 @@ def _run_postscore_stages(
             metrics_payload=metrics_payload,
             guidance_df=guidance_df,
             guidance_revision_df=guidance_revision_df,
+            behavioral_summary=behavioral_summary,
         )
 
     return {
         "guidance_csv": guidance_path,
         "guidance_revision_csv": guidance_revision_path,
         "tone_changes_csv": tone_changes_path,
+        "uncertainty_signals_csv": uncertainty_path,
+        "reassurance_signals_csv": reassurance_path,
+        "analyst_skepticism_csv": skepticism_path,
+        "behavioral_summary_json": behavioral_summary_path,
         "metrics_json": metrics_path,
         "report_md": report_path,
     }
@@ -1490,6 +1559,10 @@ def main(argv: list[str] | None = None) -> int:
                 ("Risk Metrics", str(artifacts["risk_metrics_json"])),
                 ("Guidance", str(post_paths["guidance_csv"])),
                 ("Guidance Revision", str(post_paths["guidance_revision_csv"])),
+                ("Uncertainty Signals", str(post_paths["uncertainty_signals_csv"])),
+                ("Reassurance Signals", str(post_paths["reassurance_signals_csv"])),
+                ("Analyst Skepticism", str(post_paths["analyst_skepticism_csv"])),
+                ("Behavior Summary", str(post_paths["behavioral_summary_json"])),
                 ("Metrics", str(post_paths["metrics_json"])),
                 ("Report", str(post_paths["report_md"])),
             ],
@@ -1579,6 +1652,10 @@ def main(argv: list[str] | None = None) -> int:
             ("Risk Metrics", str(result["risk_metrics_json"])),
             ("Guidance", str(post_paths["guidance_csv"])),
             ("Guidance Revision", str(post_paths["guidance_revision_csv"])),
+            ("Uncertainty Signals", str(post_paths["uncertainty_signals_csv"])),
+            ("Reassurance Signals", str(post_paths["reassurance_signals_csv"])),
+            ("Analyst Skepticism", str(post_paths["analyst_skepticism_csv"])),
+            ("Behavior Summary", str(post_paths["behavioral_summary_json"])),
             ("Metrics", str(post_paths["metrics_json"])),
             ("Report", str(post_paths["report_md"])),
         ],
