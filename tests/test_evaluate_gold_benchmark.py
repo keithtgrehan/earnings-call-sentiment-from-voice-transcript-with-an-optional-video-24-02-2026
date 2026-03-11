@@ -79,6 +79,15 @@ def test_classify_sentence_marks_increasing_outlook_from_prior_guidance_as_raise
     assert mod._classify_sentence(sentence) == "raised"
 
 
+def test_classify_sentence_marks_reiterated_guidance_as_maintained() -> None:
+    mod = _load_eval_module()
+    sentence = (
+        "Bloom reiterated its 2025 revenue and margin guidance of $1.65 billion "
+        "and approximately 29%, respectively."
+    )
+    assert mod._classify_sentence(sentence) == "maintained"
+
+
 def test_classify_sentence_preserves_existing_directional_patterns() -> None:
     mod = _load_eval_module()
     assert mod._classify_sentence("Yeah, so our guidance is flat.") == "maintained"

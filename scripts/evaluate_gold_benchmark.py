@@ -46,10 +46,11 @@ PATTERNS: dict[str, tuple[str, ...]] = {
     ),
     "maintained": (
         r"\bguidance is flat\b",
+        r"\b(reiterate(?:d|s|ing)?)\b.{0,50}\b(guidance|outlook|revenue guidance|revenue outlook)\b",
         r"\b(reaffirm(?:ed|ing)?|maintain(?:ed|ing)?)\b.{0,50}\b(guidance|outlook|"
         r"revenue guidance|revenue outlook)\b",
         r"\b(guidance|outlook)\b.{0,50}\b(reaffirm(?:ed|ing)?|maintain(?:ed|ing)?|"
-        r"unchanged|flat)\b",
+        r"reiterate(?:d|s|ing)?|unchanged|flat)\b",
     ),
     "raised": (
         r"\b(?:raise(?:d|s)?|raising)\b.{0,50}\b(guidance|outlook|guides)\b",
