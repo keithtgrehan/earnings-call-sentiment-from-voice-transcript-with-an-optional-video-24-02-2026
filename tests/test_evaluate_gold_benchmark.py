@@ -38,6 +38,29 @@ def test_classify_sentence_keeps_nondirectional_outlook_unclear() -> None:
     assert mod._classify_sentence(sentence) == "unclear"
 
 
+def test_classify_sentence_marks_gerund_raised_outlook_as_raised() -> None:
+    mod = _load_eval_module()
+    sentence = (
+        "Given the strength of our business, we are raising our full-year outlook "
+        "for revenue growth and free cash flow."
+    )
+    assert mod._classify_sentence(sentence) == "raised"
+
+
+def test_classify_sentence_marks_gerund_raised_guidance_as_raised() -> None:
+    mod = _load_eval_module()
+    assert mod._classify_sentence("we are raising our 2025 guidance.") == "raised"
+
+
+def test_classify_sentence_marks_contracted_gerund_raised_guidance_as_raised() -> None:
+    mod = _load_eval_module()
+    sentence = (
+        "we're raising our fiscal year 2025 guidance to project revenue between "
+        "$1.69 billion and $1.73 billion."
+    )
+    assert mod._classify_sentence(sentence) == "raised"
+
+
 def test_classify_sentence_preserves_existing_directional_patterns() -> None:
     mod = _load_eval_module()
     assert mod._classify_sentence("Yeah, so our guidance is flat.") == "maintained"

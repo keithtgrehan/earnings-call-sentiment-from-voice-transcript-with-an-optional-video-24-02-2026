@@ -52,9 +52,9 @@ PATTERNS: dict[str, tuple[str, ...]] = {
         r"unchanged|flat)\b",
     ),
     "raised": (
-        r"\braise(?:d|s|ing)?\b.{0,50}\b(guidance|outlook|guides)\b",
-        r"\b(guidance|outlook)\b.{0,50}\braise(?:d|s|ing)?\b",
-        r"\braise(?:d|s|ing)?\b.{0,60}\b(revenue|earnings|eps)\b.{0,30}\b"
+        r"\b(?:raise(?:d|s)?|raising)\b.{0,50}\b(guidance|outlook|guides)\b",
+        r"\b(guidance|outlook)\b.{0,50}\b(?:raise(?:d|s)?|raising)\b",
+        r"\b(?:raise(?:d|s)?|raising)\b.{0,60}\b(revenue|earnings|eps)\b.{0,30}\b"
         r"(guid(?:ance|es)|outlook)\b",
         r"\b(?:we\s+)?now\s+expect\b.{0,120}\bup from\b.{0,24}\b(?:our|the)?\s*"
         r"(?:prior|previous)\s+(?:estimate|guidance|outlook)\b",
