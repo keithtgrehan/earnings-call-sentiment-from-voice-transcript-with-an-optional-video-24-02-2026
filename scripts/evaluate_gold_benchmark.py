@@ -56,6 +56,14 @@ PATTERNS: dict[str, tuple[str, ...]] = {
         r"\b(guidance|outlook)\b.{0,50}\braise(?:d|s|ing)?\b",
         r"\braise(?:d|s|ing)?\b.{0,60}\b(revenue|earnings|eps)\b.{0,30}\b"
         r"(guid(?:ance|es)|outlook)\b",
+        r"\b(?:we\s+)?now\s+expect\b.{0,120}\bup from\b.{0,24}\b(?:our|the)?\s*"
+        r"(?:prior|previous)\s+(?:estimate|guidance|outlook)\b",
+        r"\b(?:higher|above)\b.{0,20}\bthan\b.{0,20}\b(?:our|the)?\s*"
+        r"(?:prior|previous)\s+(?:guidance|outlook|estimate)\b",
+        r"\bincrease(?:d|s|ing)?\b.{0,20}\bfrom\b.{0,20}\b(?:our|the)?\s*"
+        r"(?:prior|previous)\s+(?:guidance|outlook|estimate)\b",
+        r"\b(?:guidance|outlook|estimate)\b.{0,40}\b(?:higher|above|up)\b.{0,24}\b"
+        r"(?:than|from)\b.{0,20}\b(?:our|the)?\s*(?:prior|previous)\b",
     ),
 }
 
@@ -312,14 +320,14 @@ def _write_summary(
                 f"{row['predicted_evidence_text'][:80]} |"
             )
     else:
-        lines.append("- No mismatches on the frozen 9-call set.")
+        lines.append(f"- No mismatches on `{benchmark_root}`.")
     lines.append("")
 
     if matches == total and false_directional == 0 and directional_matched == len(directional_calls):
         judgment = "good enough as a baseline"
         reasons = [
-            "It caught all three directional benchmark calls correctly.",
-            "It stayed conservative on all six gold `unclear` cases.",
+            f"It caught all {len(directional_calls)} directional benchmark calls correctly.",
+            f"It stayed conservative on all {len(unclear_calls)} gold `unclear` cases.",
             "It made no false directional claims on ambiguous transcripts.",
         ]
     else:
