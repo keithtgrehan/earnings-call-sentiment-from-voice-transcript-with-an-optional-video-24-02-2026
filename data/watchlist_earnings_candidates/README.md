@@ -13,6 +13,12 @@ This package is a metadata-first candidate pool built only from the supplied wat
 - `transcription_status.csv`: excerpt/transcript collection state for each candidate row
 - `labels.csv`: header-only placeholder; no new gold labels were appended in this run
 
+## Benchmark safety
+- This package is not an active evaluation set.
+- It does not change the frozen benchmark under `data/gold_guidance_calls/`.
+- It does not change the active holdout benchmark under `data/gold_guidance_calls_holdout/`.
+- Any text files collected here are source excerpts unless a full transcript is explicitly documented in `transcription_status.csv`.
+
 ## Watchlist classification
 | ticker | resolved company name | candidate type | notes |
 |---|---|---|---|
@@ -38,3 +44,4 @@ This package is a metadata-first candidate pool built only from the supplied wat
 ## Notes
 - No new labels were appended in this package during this run.
 - Several rows were collected only as official-source excerpts because direct media or transcript paths were not available through the current environment.
+- A row appearing in this package does not mean it is benchmark-ready. It means the ticker/source/date combination is defensibly worth considering for future holdout or benchmark expansion.

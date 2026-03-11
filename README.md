@@ -97,6 +97,24 @@ Current frozen gold label distribution:
 
 This benchmark is intentionally conservative. If a transcript contains explicit forward guidance but no explicit direction change versus prior guidance, the gold label stays `unclear`.
 
+## Benchmark Packages
+The repo now contains four distinct benchmark or benchmark-adjacent data areas:
+
+- `data/gold_guidance_calls/`
+  - canonical frozen guidance-change benchmark
+  - active source of truth for the `9/9` frozen evaluation result
+- `data/gold_guidance_calls_holdout/`
+  - active unseen holdout benchmark
+  - separate from the frozen benchmark and used for current unseen agreement checks
+- `data/watchlist_earnings_candidates/`
+  - metadata-first future candidate pool sourced from the supplied watchlist
+  - not an active benchmark and not a canonical label source
+  - may include official-source excerpts where full transcript collection was blocked
+- `data/nvda_2025_historical_calls/`
+  - separate NVIDIA calendar-year 2025 call-history pack
+  - preserves NVIDIA's official fiscal-quarter labels for the four earnings calls that occurred during calendar year 2025
+  - not part of the frozen benchmark or active holdout benchmark
+
 ## Utility Scripts
 ### Gold benchmark summary
 Run:
@@ -137,6 +155,8 @@ python scripts/evaluate_gold_benchmark.py --benchmark-root data/gold_guidance_ca
 Useful companion docs:
 - `docs/evaluation-baseline.md`
 - `docs/capstone-evaluation-summary.md`
+- `data/watchlist_earnings_candidates/README.md`
+- `data/nvda_2025_historical_calls/README.md`
 
 ### Evaluation evidence
 - Frozen benchmark agreement on canonical gold labels: `9/9`
