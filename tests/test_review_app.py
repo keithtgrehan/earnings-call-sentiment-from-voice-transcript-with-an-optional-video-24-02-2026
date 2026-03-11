@@ -37,8 +37,12 @@ def test_site_app_index_renders() -> None:
 
     assert response.status_code == 200
     text = response.get_data(as_text=True)
-    assert "Signal Desk" in text
-    assert "Deterministic earnings-call review" in text
+    assert "Earnings Call Signal Engine" in text
+    assert "Transcript-first AI review" in text
+    assert (
+        "Transcript-first AI tool for extracting structured signals from earnings call "
+        "audio and video sources using NLP." in text
+    )
     assert "Recent local runs" in text
 
 
