@@ -138,6 +138,12 @@ Useful companion docs:
 - `docs/evaluation-baseline.md`
 - `docs/capstone-evaluation-summary.md`
 
+### Evaluation evidence
+- Frozen benchmark agreement on canonical gold labels: `9/9`
+- Expanded unseen holdout agreement on current labeled rows: `7/7`
+- The holdout remains small and excerpt-heavy.
+- These are benchmark-agreement results only, not predictive or statistical-significance results.
+
 ## What Remains Unproven
 - No proven predictive edge
 - No statistical significance claim
@@ -147,9 +153,8 @@ Useful companion docs:
 The current baseline is useful for structured review, but it still needs broader unseen evaluation before stronger claims are justified.
 
 ## Immediate Next Steps
-- Inspect the expanded holdout mismatch pattern
-- Make at most one narrow rule refinement tied to that observed failure mode
-- Re-run frozen and holdout evaluation after that change
+- Add more defensible unseen holdout rows, especially `lowered` cases
+- Keep rerunning frozen and holdout evaluation as new unseen rows are added
 - Keep the benchmark package separate from any predictive or backtest claims
 
 ## Usage / Validation
