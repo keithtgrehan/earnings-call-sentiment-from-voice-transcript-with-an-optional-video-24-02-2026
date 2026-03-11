@@ -56,8 +56,8 @@ summary {
 }
 
 .site-shell {
-  width: min(1720px, calc(100vw - 18px));
-  margin: 14px auto 24px;
+  width: min(1840px, calc(100vw - 12px));
+  margin: 10px auto 20px;
 }
 
 .hero-band,
@@ -74,19 +74,19 @@ summary {
 .hero-band {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
-  gap: 16px;
-  padding: 16px;
+  gap: 14px;
+  padding: 14px;
   background: linear-gradient(140deg, rgba(251, 252, 253, 0.98), rgba(244, 247, 250, 0.98));
 }
 
 .hero-copy,
 .hero-aside,
 .panel {
-  padding: 24px;
+  padding: 20px;
 }
 
 .hero-copy {
-  min-height: 238px;
+  min-height: 206px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -112,12 +112,12 @@ summary {
 }
 
 .hero-copy h1 {
-  font-size: clamp(2.8rem, 5.4vw, 5.4rem);
+  font-size: clamp(2.5rem, 4.8vw, 4.8rem);
   max-width: 8ch;
 }
 
 .hero-aside h2 {
-  font-size: 1.7rem;
+  font-size: 1.45rem;
 }
 
 .eyebrow {
@@ -143,17 +143,17 @@ summary strong,
 }
 
 .hero-lede {
-  margin: 12px 0 0;
+  margin: 10px 0 0;
   max-width: 58ch;
-  font-size: 1rem;
-  line-height: 1.62;
+  font-size: 0.96rem;
+  line-height: 1.55;
 }
 
 .hero-facts {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 18px;
+  gap: 6px;
+  margin-top: 14px;
 }
 
 .hero-facts span,
@@ -171,7 +171,7 @@ summary strong,
 
 .hero-facts span,
 .summary-chip {
-  padding: 9px 12px;
+  padding: 7px 10px;
   border: 1px solid rgba(52, 101, 123, 0.12);
   background: rgba(255, 255, 255, 0.82);
 }
@@ -254,16 +254,16 @@ summary strong,
 }
 
 .workspace-layout {
-  margin-top: 14px;
+  margin-top: 12px;
   display: grid;
-  grid-template-columns: minmax(0, 1.32fr) minmax(300px, 0.68fr);
-  gap: 14px;
+  grid-template-columns: minmax(0, 1.42fr) minmax(280px, 0.58fr);
+  gap: 12px;
   align-items: start;
 }
 
 .main-stack {
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 .panel,
@@ -271,7 +271,7 @@ summary strong,
 .advanced-panel,
 .sidebar-panel,
 .dossier-panel {
-  padding: 22px;
+  padding: 18px;
 }
 
 .intake-panel {
@@ -283,7 +283,7 @@ summary strong,
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 18px;
+  gap: 14px;
 }
 
 .no-margin {
@@ -300,14 +300,14 @@ summary strong,
 
 .group-card,
 .advanced-panel {
-  padding: 18px;
+  padding: 16px;
   border-radius: var(--radius-lg);
   background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(245,248,251,0.92));
   box-shadow: var(--shadow-soft);
 }
 
 .compact-card {
-  padding: 16px 18px;
+  padding: 14px 16px;
 }
 
 .segment-grid,
@@ -523,7 +523,7 @@ textarea {
 
 .sidebar-stack {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   position: sticky;
   top: 14px;
 }
@@ -546,15 +546,15 @@ textarea {
 }
 
 .dense-card {
-  padding: 10px 11px;
+  padding: 8px 10px;
 }
 
 .benchmark-list {
-  gap: 8px;
+  gap: 6px;
 }
 
 .benchmark-card {
-  gap: 4px;
+  gap: 3px;
 }
 
 .benchmark-card p,
@@ -562,38 +562,48 @@ textarea {
   line-height: 1.35;
 }
 
+.benchmark-card p {
+  font-size: 0.8rem;
+}
+
+.benchmark-card small {
+  font-size: 0.73rem;
+}
+
 .history-list {
   display: grid;
-  gap: 6px;
+  gap: 0;
+  margin-top: 4px;
+  border-top: 1px solid var(--line);
 }
 
 .history-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 9px 10px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.9);
+  gap: 10px;
+  padding: 8px 2px;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
 }
 
 .history-main,
 .history-meta {
   display: grid;
-  gap: 2px;
+  gap: 1px;
 }
 
 .history-main strong {
-  font-size: 0.9rem;
+  font-size: 0.84rem;
+  line-height: 1.2;
 }
 
 .history-main small,
 .history-meta small,
 .history-footnote {
   color: var(--muted);
-  font-size: 0.72rem;
-  line-height: 1.35;
+  font-size: 0.68rem;
+  line-height: 1.25;
 }
 
 .history-meta {
@@ -603,12 +613,12 @@ textarea {
 .history-meta a {
   color: var(--accent);
   text-decoration: none;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 600;
 }
 
 .history-footnote {
-  margin: 8px 2px 0;
+  margin: 6px 2px 0;
 }
 
 .stack-card-top {
@@ -735,7 +745,7 @@ th {
 }
 
 .empty-state {
-  padding: 22px;
+  padding: 18px;
   border-radius: var(--radius-lg);
   background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(245,248,251,0.92));
   border: 1px dashed rgba(52, 101, 123, 0.16);

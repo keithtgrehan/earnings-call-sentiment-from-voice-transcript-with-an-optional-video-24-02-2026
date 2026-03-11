@@ -321,30 +321,6 @@
         <aside class="sidebar-stack">
           <section class="panel sidebar-panel">
             <div class="section-head compact no-margin">
-              <p class="eyebrow">Benchmark subset</p>
-              <h3>Strong current review cases</h3>
-            </div>
-            {% if benchmark_rows %}
-            <div class="stack-list dense-stack benchmark-list">
-              {% for row in benchmark_rows %}
-              <article class="stack-card dense-card benchmark-card">
-                <div class="stack-card-top">
-                  <strong>{{ row.call_id }}</strong>
-                  <span class="mini-pill {{ row.label }}">{{ row.label }}</span>
-                </div>
-                <p>{{ row.ticker }} · {{ row.quarter }} · {{ row.quality }}</p>
-                <small>{{ row.notes }}</small>
-                <a href="{{ row.source_url }}" target="_blank">Open source</a>
-              </article>
-              {% endfor %}
-            </div>
-            {% else %}
-            <p class="muted-copy">No benchmark subset loaded.</p>
-            {% endif %}
-          </section>
-
-          <section class="panel sidebar-panel">
-            <div class="section-head compact no-margin">
               <p class="eyebrow">Recent local runs</p>
               <h3>History</h3>
             </div>
@@ -364,10 +340,34 @@
               {% endfor %}
             </div>
             {% if recent_runs|length > 5 %}
-            <p class="history-footnote">Showing the latest 5 runs. Open older runs from the local outputs directory if needed.</p>
+            <p class="history-footnote">Showing latest 5 runs. Older runs remain in the local outputs directory.</p>
             {% endif %}
             {% else %}
             <p class="muted-copy">No runs yet.</p>
+            {% endif %}
+          </section>
+
+          <section class="panel sidebar-panel">
+            <div class="section-head compact no-margin">
+              <p class="eyebrow">Benchmark subset</p>
+              <h3>Strong current review cases</h3>
+            </div>
+            {% if benchmark_rows %}
+            <div class="stack-list dense-stack benchmark-list">
+              {% for row in benchmark_rows %}
+              <article class="stack-card dense-card benchmark-card">
+                <div class="stack-card-top">
+                  <strong>{{ row.call_id }}</strong>
+                  <span class="mini-pill {{ row.label }}">{{ row.label }}</span>
+                </div>
+                <p>{{ row.ticker }} · {{ row.quarter }} · {{ row.quality }}</p>
+                <small>{{ row.notes }}</small>
+                <a href="{{ row.source_url }}" target="_blank">Open source</a>
+              </article>
+              {% endfor %}
+            </div>
+            {% else %}
+            <p class="muted-copy">No benchmark subset loaded.</p>
             {% endif %}
           </section>
 
