@@ -71,3 +71,12 @@
 - benchmark-quality caution: caution
 - rationale: The transcript contains an explicit sentence stating that Lilly raised revenue and earnings-per-share guidance. The source video is a repost and the ASR text is noisy, so the label is strong but not perfect.
 - assessment: high-confidence directional with ASR noise
+
+## call09
+- filename: PVH_2025_Q1_call09.txt
+- source URL: https://www.youtube.com/watch?v=6iVe-4OFx_A
+- proposed label: lowered
+- confidence: 0.72
+- benchmark-quality caution: caution
+- rationale: The transcript explicitly says full-year non-GAAP guidance was taken down for EBIT margin and EPS. Revenue guidance was reaffirmed, so this is a mixed case, but it is still the strongest transcript-backed lowered example collected in this run.
+- assessment: moderate-confidence directional with mixed guidance components

@@ -136,3 +136,14 @@
 - Updated the benchmark package to an eight-call state, including `call_manifest.csv`, `official_source_manifest.csv`, `transcription_status.csv`, `draft_labels.csv`, `draft_label_review.md`, `transcript_inventory.csv`, `docs/benchmark_progress.md`, and `docs/morning_review_package.md`.
 - Final benchmark status before UI work: eight completed transcript files, eight draft label rows, official-source supplemental data in place, prior-quarter source pack present, and morning review package written.
 - Directional expansion decision: stop after `call08` for this run. `call09` (IBM Q3 2025) remains the next best raised candidate, but the benchmark is materially stronger now and the remaining missing label family is `lowered`, not another `raised` row.
+- Stopped the in-progress IBM Q3 2025 transcription intentionally at roughly one-third completion because the benchmark already had a transcript-backed `raised` row from Lilly and the higher-priority missing family was `lowered`.
+- Pivoted the next directional transcription candidate from IBM to PVH Q1 2025 after confirming:
+  - official PVH source explicitly says the company lowered its revenue and EBIT outlook for the year
+  - a usable call video exists for the current CLI ingest path
+- `call09` (PVH) completed successfully and was promoted into the benchmark set.
+  - raw file: data/gold_guidance_calls/raw_calls/PVH_2025_Q1_call09.txt
+  - size_bytes: 56290
+  - line_count: 609
+  - draft label: `lowered`
+  - evidence: `that's why we have to just our full year non-gap guidance down for both / ebit margin and eps.`
+- The benchmark now contains transcript-backed `raised`, `lowered`, and `maintained` rows, which materially improves first-pass human evaluation usefulness.

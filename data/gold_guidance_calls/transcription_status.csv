@@ -7,3 +7,4 @@ call05,MSFT,Microsoft,Q2_2026,2026-01-28,https://www.youtube.com/watch?v=6NbiiKz
 call06,AAPL,Apple,Q1_2026,2026-01-29,https://www.youtube.com/watch?v=zq6d9_eS-YI,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,completed,48050,527,raw transcript present
 call07,NVDA,NVIDIA,Q4_2026,2026-02-25,https://www.youtube.com/watch?v=62C2BOjJM7g,data/gold_guidance_calls/raw_calls/NVDA_2026_Q4_call07.txt,completed,52819,430,raw transcript present
 call08,LLY,Eli Lilly,Q2_2025,2025-08-07,https://www.youtube.com/watch?v=maG_yQuy1_s,data/gold_guidance_calls/raw_calls/LLY_2025_Q2_call08.txt,completed,56591,706,raw transcript present
+call09,PVH,PVH Corp.,Q1_2025,2025-06-05,https://www.youtube.com/watch?v=6iVe-4OFx_A,data/gold_guidance_calls/raw_calls/PVH_2025_Q1_call09.txt,completed,56290,609,raw transcript present

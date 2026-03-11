@@ -7,3 +7,4 @@ call05,data/gold_guidance_calls/raw_calls/MSFT_2026_Q2_call05.txt,52105,561,true
 call06,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,48050,527,true,true,true,false,false,false,false
 call07,data/gold_guidance_calls/raw_calls/NVDA_2026_Q4_call07.txt,52819,430,false,true,true,false,false,true,true
 call08,data/gold_guidance_calls/raw_calls/LLY_2025_Q2_call08.txt,56591,706,true,true,true,false,true,true,true
+call09,data/gold_guidance_calls/raw_calls/PVH_2025_Q1_call09.txt,56289,609,true,true,true,true,false,true,false
