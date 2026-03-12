@@ -21,7 +21,8 @@
           <p class="hero-lede">{{ ui_meta.lede }}</p>
           <div class="hero-facts">
             <span>Deterministic artifacts stay canonical</span>
-            <span>Optional summary stays additive</span>
+            <span>Scorecard stays presentation-only</span>
+            <span>Review confidence means interpretation confidence</span>
             <span>Generated {{ generated_at }}</span>
           </div>
         </div>
@@ -32,8 +33,8 @@
           </div>
           <ul class="bullet-list compact-list">
             <li>YouTube, local media, document upload, or pasted transcript.</li>
-            <li>Guidance, revisions, tone shifts, plots, report, and metrics in one bundle.</li>
-            <li>Background jobs keep the browser responsive during long transcriptions.</li>
+            <li>Guidance, text behavior, Q&amp;A shift, audio support, optional visual support, scorecard, report, and metrics in one bundle.</li>
+            <li>Audio and visual layers are observational review aids, not truth detectors or trading claims.</li>
           </ul>
         </div>
       </section>
@@ -141,7 +142,7 @@
                 <label class="segment-card {% if form_state.analysis_mode == 'deterministic' %}active{% endif %}">
                   <input type="radio" name="analysis_mode" value="deterministic" {% if form_state.analysis_mode == 'deterministic' %}checked{% endif %}>
                   <span>Deterministic only</span>
-                  <small>Transcript, scoring, guidance, revisions, report.</small>
+                  <small>Transcript, guidance, Q&amp;A shift, audio/visual support, scorecard, report.</small>
                 </label>
                 <label class="segment-card {% if form_state.analysis_mode == 'summary' %}active{% endif %}">
                   <input type="radio" name="analysis_mode" value="summary" {% if form_state.analysis_mode == 'summary' %}checked{% endif %}>

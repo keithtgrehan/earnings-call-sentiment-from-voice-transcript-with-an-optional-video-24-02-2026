@@ -20,12 +20,13 @@
           <h1>Earnings Call Review Lab</h1>
           <p class="lede">
             Run the existing deterministic pipeline against YouTube, local media, or a transcript document.
-            Optional narrative mode stays additive and never replaces the core artifacts.
+            Guidance, Q&amp;A shift, audio support, optional visual support, and the reviewer scorecard stay additive to the core deterministic artifacts.
           </p>
         </div>
         <div class="hero-meta">
           <span>Transcript-first</span>
           <span>Deterministic source of truth</span>
+          <span>Interpretation confidence only</span>
           <span>Generated {{ generated_at }}</span>
         </div>
       </section>
@@ -173,7 +174,7 @@
             <label class="choice-card {% if form_state.analysis_mode == 'deterministic' %}active{% endif %}">
               <input type="radio" name="analysis_mode" value="deterministic" {% if form_state.analysis_mode == 'deterministic' %}checked{% endif %}>
               <span>Deterministic only</span>
-              <small>Core transcript, guidance, tone changes, metrics, report</small>
+              <small>Core transcript, guidance, Q&amp;A shift, audio/visual support, scorecard, metrics, report</small>
             </label>
             <label class="choice-card {% if form_state.analysis_mode == 'summary' %}active{% endif %}">
               <input type="radio" name="analysis_mode" value="summary" {% if form_state.analysis_mode == 'summary' %}checked{% endif %}>

@@ -1,5 +1,5 @@
 # Earnings Call Signal Engine
-Transcript-first AI tool for extracting structured signals from earnings call audio and video sources using NLP.
+Transcript-first deterministic review tool for extracting structured, auditable earnings-call signals from transcript, audio, and optional video inputs.
 
 This project is a local decision-support system for earnings-call review. It is not a live trading system, does not execute orders, and does not claim predictive edge or statistical significance.
 
@@ -9,7 +9,9 @@ The repo converts one earnings call into structured, auditable artifacts that he
 - tone-change moments
 - deterministic behavior signals such as uncertainty, reassurance, and analyst skepticism
 - deterministic Q&A shift summaries
+- deterministic audio behavior summaries for pause / hesitation review support
 - optional observational visual-behavior summaries for video-capable runs
+- deterministic scorecard presentation for reviewer-friendly ranking and triage
 - transcript-backed supporting spans
 - report and metrics outputs for local review
 
@@ -29,11 +31,17 @@ The current workflow is transcript-first and deterministic-first across audio, v
     - management reassurance
     - analyst skepticism
   - deterministic Q&A shift summary artifacts
+  - deterministic audio behavior monitoring for answer-level pause / hesitation support:
+    - pause-before-answer
+    - answer-onset delay
+    - filler density
+    - lightweight hesitation summaries
   - optional visual behavior monitoring for video-capable runs:
     - frame sampling
     - face visibility / face presence analysis
     - motion and head-shift proxies
     - segment-level visual stability summaries
+  - deterministic scorecard presentation layer that ranks current review evidence into reviewer-friendly categories
   - report, metrics, and artifact generation
 - Primary local review UI shell served by `app/site_server.py`
 - Benchmark subset shown in the UI and now sourced from canonical gold labels, not draft labels
@@ -67,15 +75,54 @@ Outputs include:
 - `qa_shift_segments.csv`
 - `qa_shift_summary.json`
 
-## Current Outputs
+## Audio Behavior
+The repo now includes a deterministic audio behavior support layer for answer-level review. It is observational only and is meant to help reviewers inspect pauses and hesitation patterns around management answers.
+
+Outputs include:
+- `audio_behavior_segments.csv`
+- `audio_behavior_summary.json`
+
+This layer is not emotion inference, not lie detection, and not a truth detector.
+
+## Review Scorecard
+The repo now includes a deterministic scorecard presentation layer derived from existing guidance, behavior, and Q&A artifacts.
+
+It adds:
+- six reviewer-facing category scores on a `1-10` scale
+- green / amber / red bands
+- an overall review signal
+- a review-confidence percentage
+- short explanations and strongest evidence snippets
+
+The scorecard is presentation-only. It does not replace raw artifacts, does not change benchmark labels, and does not add trading or alpha claims.
+
+Review confidence means confidence in the tool's interpretation of the available deterministic evidence, not investment confidence.
+
+## Current Review Layers
+- guidance extraction and guidance revision comparison
+- behavioral text signals: uncertainty, reassurance, analyst skepticism
+- deterministic Q&A shift
+- deterministic audio behavior support
+- optional visual behavior support
+- deterministic scorecard presentation layer
+
+Audio and visual layers are supporting, confidence-tagged review aids. They are not truth detectors and should not be presented as hidden-state inference.
+
+## Current Review Outputs
 Artifacts currently produced by the core pipeline include:
 - `transcript.json`, `transcript.txt`
 - `chunks_scored.jsonl`, `sentiment_segments.csv`
 - `guidance.csv`, `guidance_revision.csv`, `tone_changes.csv`
 - `uncertainty_signals.csv`, `reassurance_signals.csv`, `analyst_skepticism.csv`
 - `behavioral_summary.json`, `qa_shift_segments.csv`, `qa_shift_summary.json`
-- `visual_behavior_frames.csv`, `visual_behavior_segments.csv`, `visual_behavior_summary.json`
-- `metrics.json`, `report.md`, `run_meta.json`
+- `audio_behavior_segments.csv`, `audio_behavior_summary.json` when audio support is available
+- `visual_behavior_frames.csv`, `visual_behavior_segments.csv`, `visual_behavior_summary.json` for video-capable runs
+- `metrics.json`, including a `review_scorecard` block with:
+  - `overall_review_signal`
+  - `review_confidence_pct`
+  - ranked categories, scores, bands, explanations, and strongest evidence
+- `report.md`, which surfaces the scorecard alongside the raw deterministic summaries
+- `run_meta.json`
 
 Optional heuristic outputs still exist, but they are not the current benchmark focus:
 - question-shift artifacts
