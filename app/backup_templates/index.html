@@ -309,6 +309,8 @@
               <li>Support mode: {{ audio_behavior.get('support_mode', 'heuristic_fallback') }}</li>
               {% if audio_behavior.get('model_support', {}).get('available') %}
               <li>Model direction: {{ audio_behavior.get('model_support', {}).get('support_direction', 'neutral') }} ({{ '%+.2f'|format(audio_behavior.get('model_support', {}).get('calibrated_support_score', 0.0)) }})</li>
+              {% else %}
+              <li>Model-backed audio support unavailable; deterministic fallback active.</li>
               {% endif %}
             </ul>
             {% if audio_behavior.get('strongest_audio_evidence') %}
@@ -327,6 +329,8 @@
               <li>Support mode: {{ visual_behavior.get('support_mode', 'heuristic_fallback') }}</li>
               {% if visual_behavior.get('model_support', {}).get('available') %}
               <li>Model direction: {{ visual_behavior.get('model_support', {}).get('support_direction', 'neutral') }} ({{ '%+.2f'|format(visual_behavior.get('model_support', {}).get('calibrated_support_score', 0.0)) }})</li>
+              {% else %}
+              <li>Visual model-backed support unavailable; heuristic fallback active.</li>
               {% endif %}
             </ul>
             {% if visual_behavior.get('strongest_visual_evidence') %}
@@ -346,6 +350,7 @@
               <li>Calibrated support score: {{ '%+.2f'|format(multimodal_support.get('calibrated_support_score', 0.0)) }}</li>
               <li>Alignment: {{ multimodal_support.get('multimodal_alignment', 'low') }}</li>
               <li>Confidence adjustment: {{ multimodal_support.get('multimodal_confidence_adjustment', 0) }}</li>
+              <li>Modality weights: audio={{ '%.2f'|format(multimodal_support.get('modality_weights', {}).get('audio', 0.0)) }}, video={{ '%.2f'|format(multimodal_support.get('modality_weights', {}).get('video', 0.0)) }}</li>
             </ul>
             {% if media_quality.get('quality_notes') %}
             <p>{{ media_quality.get('quality_notes')[0] }}</p>

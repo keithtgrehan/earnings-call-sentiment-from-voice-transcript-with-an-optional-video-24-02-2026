@@ -164,10 +164,10 @@ def score_audio_support(segments_df: pd.DataFrame) -> dict[str, Any]:
     cautionary_score = hesitation["probability_means"].get("high", 0.0) + delivery["probability_means"].get("low", 0.0)
     supportive_score = hesitation["probability_means"].get("low", 0.0) + delivery["probability_means"].get("high", 0.0)
     reliability = float((hesitation["reliability_weight"] + delivery["reliability_weight"]) / 2.0)
-    signed_score = round((cautionary_score - supportive_score) * max(reliability, 0.2), 4)
-    if signed_score >= 0.15:
+    signed_score = round((cautionary_score - supportive_score) * reliability, 4)
+    if signed_score >= 0.1:
         support_direction = "cautionary"
-    elif signed_score <= -0.15:
+    elif signed_score <= -0.1:
         support_direction = "supportive"
     else:
         support_direction = "neutral"
@@ -216,10 +216,10 @@ def score_visual_support(segments_df: pd.DataFrame) -> dict[str, Any]:
     cautionary_score = visual["probability_means"].get("high", 0.0)
     supportive_score = visual["probability_means"].get("low", 0.0)
     reliability = float(visual["reliability_weight"])
-    signed_score = round((cautionary_score - supportive_score) * max(reliability, 0.2), 4)
-    if signed_score >= 0.12:
+    signed_score = round((cautionary_score - supportive_score) * reliability, 4)
+    if signed_score >= 0.08:
         support_direction = "cautionary"
-    elif signed_score <= -0.12:
+    elif signed_score <= -0.08:
         support_direction = "supportive"
     else:
         support_direction = "neutral"

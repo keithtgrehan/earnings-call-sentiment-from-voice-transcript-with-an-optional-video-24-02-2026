@@ -1175,6 +1175,8 @@ def _write_report_markdown(
                     f"{audio_model_support.get('support_direction', 'neutral')} | "
                     f"calibrated_score={float(audio_model_support.get('calibrated_support_score', 0.0)):+.2f}"
                 )
+            else:
+                lines.append("- model-backed support: unavailable | deterministic audio fallback remains active")
             strongest_audio = audio_summary.get("strongest_audio_evidence", [])
             if isinstance(strongest_audio, list) and strongest_audio:
                 top_item = strongest_audio[0]
@@ -1237,6 +1239,8 @@ def _write_report_markdown(
                     f"{visual_model_support.get('support_direction', 'neutral')} | "
                     f"calibrated_score={float(visual_model_support.get('calibrated_support_score', 0.0)):+.2f}"
                 )
+            else:
+                lines.append("- model-backed support: unavailable | visual heuristic fallback remains active")
             notable = visual_summary.get("strongest_visual_evidence", [])
             if isinstance(notable, list) and notable:
                 top_item = notable[0]
@@ -1286,6 +1290,7 @@ def _write_report_markdown(
                 f"- calibrated support score: {float(multimodal_summary.get('calibrated_support_score', 0.0)):+.2f}",
                 f"- multimodal alignment: {multimodal_summary.get('multimodal_alignment', 'low')}",
                 f"- multimodal confidence adjustment: {multimodal_summary.get('multimodal_confidence_adjustment', 0)}",
+                f"- modality weights: audio={float(multimodal_summary.get('modality_weights', {}).get('audio', 0.0)):.2f} | video={float(multimodal_summary.get('modality_weights', {}).get('video', 0.0)):.2f}",
                 "",
             ]
         )

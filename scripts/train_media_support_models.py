@@ -10,7 +10,7 @@ from sklearn.calibration import CalibratedClassifierCV
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score
 from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -95,11 +95,20 @@ def _evaluate_task(frame: pd.DataFrame, *, feature_columns: list[str], label_col
         }
 
     eval_df = pd.DataFrame(fold_rows)
+    label_order = sorted({str(value) for value in pd.concat([eval_df["y_true"], eval_df["y_pred"]]).tolist()})
     metrics = {
         "accuracy": round(float(accuracy_score(eval_df["y_true"], eval_df["y_pred"])), 4),
         "macro_f1": round(float(f1_score(eval_df["y_true"], eval_df["y_pred"], average="macro")), 4),
         "macro_precision": round(float(precision_score(eval_df["y_true"], eval_df["y_pred"], average="macro", zero_division=0)), 4),
         "macro_recall": round(float(recall_score(eval_df["y_true"], eval_df["y_pred"], average="macro", zero_division=0)), 4),
+    }
+    confusion = confusion_matrix(eval_df["y_true"], eval_df["y_pred"], labels=label_order)
+    confusion_payload = {
+        truth: {pred: int(confusion[i][j]) for j, pred in enumerate(label_order)}
+        for i, truth in enumerate(label_order)
+    }
+    holdout_row_counts = {
+        str(key): int(value) for key, value in eval_df["source_call_id"].value_counts().to_dict().items()
     }
 
     calibration_mode = "not_available"
@@ -113,13 +122,28 @@ def _evaluate_task(frame: pd.DataFrame, *, feature_columns: list[str], label_col
         )
     final_estimator.fit(X, y)
 
-    reliability_weight = round(max(0.25, min(0.75, metrics["macro_f1"])), 4)
+    group_factor = min(1.0, len(unique_groups) / 4.0)
+    row_factor = min(1.0, len(frame) / 60.0)
+    class_factor = min(1.0, min(class_counts.values()) / 6.0)
+    quality_score = (
+        (metrics["macro_f1"] * 0.5)
+        + (metrics["macro_precision"] * 0.2)
+        + (metrics["macro_recall"] * 0.2)
+        + (metrics["accuracy"] * 0.1)
+    )
+    reliability_weight = round(
+        max(0.05, min(0.75, quality_score * group_factor * row_factor * max(class_factor, 0.35))),
+        4,
+    )
     return {
         "status": "ok",
         "row_count": int(len(frame)),
         "group_count": int(len(unique_groups)),
         "class_counts": class_counts,
+        "unique_groups": unique_groups,
         "metrics": metrics,
+        "holdout_row_counts": holdout_row_counts,
+        "confusion_matrix": confusion_payload,
         "calibration_mode": calibration_mode,
         "reliability_weight": reliability_weight,
         "model": final_estimator,
