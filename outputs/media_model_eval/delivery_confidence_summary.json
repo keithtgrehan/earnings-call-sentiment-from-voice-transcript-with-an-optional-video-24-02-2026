@@ -1,0 +1,138 @@
+{
+  "status": "ok",
+  "row_count": 20,
+  "group_count": 2,
+  "class_counts": {
+    "high": 10,
+    "low": 5,
+    "medium": 5
+  },
+  "metrics": {
+    "accuracy": 0.55,
+    "macro_f1": 0.3492,
+    "macro_precision": 0.5185,
+    "macro_recall": 0.4
+  },
+  "calibration_mode": "not_available",
+  "reliability_weight": 0.3492,
+  "evaluation_rows": [
+    {
+      "y_true": "low",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "medium",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    }
+  ],
+  "feature_columns": [
+    "pause_before_answer_ms",
+    "answer_onset_delay_ms",
+    "silence_ratio",
+    "speech_duration_s",
+    "pause_count",
+    "pause_density_per_10s",
+    "pause_burst_count",
+    "mean_pause_ms",
+    "max_pause_ms",
+    "filler_density",
+    "speech_rate_wpm",
+    "articulation_rate_wpm",
+    "mean_rms_db",
+    "rms_std_db",
+    "rms_range_db",
+    "hesitation_score"
+  ]
+}

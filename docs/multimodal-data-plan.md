@@ -26,8 +26,26 @@ Audio and video should help reviewers inspect delivery under questioning. They s
 ## Download Status In This Repo
 - Downloaded in-repo for this pass: none
 - Linked and documented for acquisition planning: yes
-- Immediate planned use: feature sanity-checking and threshold calibration only
-- Training a finance-specific support model: not yet
+- Immediate external-dataset use: feature sanity-checking and threshold calibration only
+- Repo-native earnings-call media set: active and committed under `data/media_support_eval/`
+- Training a finance-specific support model: active for narrow support tasks using repo-native engineered features
+
+## Current Repo-Native Media Support Set
+- Source calls currently represented: 2
+- Total labeled segments: 28
+- Audio-labeled segments: 20
+- Video-labeled segments: 8
+- Current support tasks:
+  - hesitation pressure
+  - delivery confidence support
+  - visual tension support
+
+This seed set is intentionally small and conservative. It is used for:
+- validating repo-native feature extraction
+- training narrow support models where label coverage is sufficient
+- calibrating multimodal confidence adjustments without changing transcript-first benchmark labels
+
+It is not large enough to justify broad product claims, and weak media should still suppress or downweight support outputs.
 
 ## Priority Dataset Table
 
@@ -49,7 +67,7 @@ Audio and video should help reviewers inspect delivery under questioning. They s
 ## Project-Specific Recommendation
 
 ### Use now
-- repo-native earnings-call runs for transcript-aligned audio/video thresholds
+- repo-native earnings-call runs for transcript-aligned audio/video thresholds and narrow support-model training
 - RAVDESS for basic audio and face-pipeline sanity checks
 - RAVDESS landmark tracking for visual aggregation smoke tests
 
@@ -80,12 +98,18 @@ Audio and video should help reviewers inspect delivery under questioning. They s
 - transcript-first late fusion
 
 ### Phase 2
-Only after enough repo-native labeled evidence exists:
+Now active in a narrow, optional support role:
 - logistic regression / LightGBM / XGBoost for narrow support tasks
 - hesitation under pressure
 - delivery confidence support
 - visual tension under questioning
 - calibrated probabilities only if they improve reviewer trust and stay interpretable
+
+Current repo stance:
+- lightweight logistic models are acceptable for support scoring
+- transcript remains primary even when model-backed media support is available
+- if model artifacts or optional runtimes are unavailable, the app must fall back to deterministic heuristics
+- visual model training should stay deferred when group coverage is too small to validate responsibly
 
 ### Explicitly deferred
 - giant end-to-end multimodal transformers
@@ -93,7 +117,7 @@ Only after enough repo-native labeled evidence exists:
 - any model that turns weak media into a forced decision
 
 ## Practical Next Steps
-1. Keep expanding deterministic audio and visual support outputs on repo-native earnings-call material.
-2. Build a small internal earnings-call media eval set for pause pressure, answer latency, and face-visibility suppression.
+1. Expand the repo-native media set from 2 calls to a more balanced multi-call audio and video sample with stronger Q&A coverage.
+2. Add enough labeled visual groups to train and validate `visual_tension` instead of falling back to heuristics.
 3. Use RAVDESS and RAF/AffectNet-style resources only to sanity-check feature extraction and gating thresholds.
-4. Add interpretable trainable support models only after the repo-native eval set is stable enough to support them.
+4. Improve calibration only after the repo-native eval set supports more than two independent call groups.

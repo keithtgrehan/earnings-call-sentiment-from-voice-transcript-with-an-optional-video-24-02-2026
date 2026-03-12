@@ -1,0 +1,28 @@
+{
+  "status": "skipped",
+  "reason": "insufficient_unique_groups_or_classes",
+  "row_count": 6,
+  "group_count": 1,
+  "class_counts": {
+    "high": 2,
+    "medium": 2,
+    "low": 2
+  },
+  "feature_columns": [
+    "face_visible_pct",
+    "stable_face_pct",
+    "face_size_ratio_mean",
+    "visual_change_score",
+    "head_motion_energy",
+    "head_pose_drift_mean",
+    "gaze_stability_mean",
+    "blink_rate_per_10s",
+    "blink_burstiness_proxy",
+    "mouth_open_variance",
+    "mouth_open_delta_mean",
+    "avg_lower_face_tension",
+    "pose_visible_pct",
+    "shoulder_motion_energy",
+    "hand_visibility_pct"
+  ]
+}
