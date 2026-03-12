@@ -29,7 +29,7 @@ from earnings_call_sentiment.pipeline.run import (
     write_transcript_artifacts,
 )
 import earnings_call_sentiment.question_shifts as qs
-from earnings_call_sentiment.signals import write_behavioral_outputs
+from earnings_call_sentiment.signals import write_behavioral_outputs, write_qa_shift_outputs
 from earnings_call_sentiment.summary_config import (
     SummaryConfig,
     load_summary_config,
@@ -872,6 +872,7 @@ def _write_report_markdown(
     guidance_df: pd.DataFrame,
     guidance_revision_df: pd.DataFrame,
     behavioral_summary: dict[str, Any],
+    qa_shift_summary: dict[str, Any],
 ) -> None:
     lines = [
         "# Earnings Call Sentiment Report",
@@ -971,6 +972,47 @@ def _write_report_markdown(
                 lines.append("- _none_")
             lines.append("")
 
+    qa_strongest = qa_shift_summary.get("strongest_evidence", {}) if isinstance(qa_shift_summary, dict) else {}
+    lines.extend(
+        [
+            "## Q&A Shift",
+            (
+                "- prepared remarks vs Q&A: "
+                f"{qa_shift_summary.get('prepared_remarks_vs_q_and_a', {}).get('label', 'mixed')}"
+            ),
+            (
+                "- analyst skepticism: "
+                f"{qa_shift_summary.get('analyst_skepticism', {}).get('level', 'low')}"
+            ),
+            (
+                "- management answers vs prepared remarks uncertainty: "
+                f"{qa_shift_summary.get('management_answers_vs_prepared_uncertainty', {}).get('label', 'mixed')}"
+            ),
+            (
+                "- early vs late Q&A: "
+                f"{qa_shift_summary.get('early_vs_late_q_and_a', {}).get('label', 'mixed')}"
+            ),
+            "",
+            "### Q&A examples",
+        ]
+    )
+    pair_rows = qa_strongest.get("qa_pairs", []) if isinstance(qa_strongest, dict) else []
+    if isinstance(pair_rows, list) and pair_rows:
+        for item in pair_rows[:2]:
+            question = str(item.get("question_text", "")).replace("\n", " ").strip()
+            answer = str(item.get("answer_text", "")).replace("\n", " ").strip()
+            if len(question) > 120:
+                question = f"{question[:117]}..."
+            if len(answer) > 120:
+                answer = f"{answer[:117]}..."
+            lines.append(
+                f"- delta={float(item.get('answer_minus_question', 0.0)):+.4f} | "
+                f"Q: {question} | A: {answer}"
+            )
+    else:
+        lines.append("- _none_")
+    lines.append("")
+
     lines.extend(
         [
             "## Outputs",
@@ -980,6 +1022,8 @@ def _write_report_markdown(
             "- reassurance_signals.csv",
             "- analyst_skepticism.csv",
             "- behavioral_summary.json",
+            "- qa_shift_segments.csv",
+            "- qa_shift_summary.json",
             "- metrics.json",
             "- report.md",
             "",
@@ -1003,6 +1047,8 @@ def _run_postscore_stages(
     reassurance_path = out_dir / "reassurance_signals.csv"
     skepticism_path = out_dir / "analyst_skepticism.csv"
     behavioral_summary_path = out_dir / "behavioral_summary.json"
+    qa_shift_segments_path = out_dir / "qa_shift_segments.csv"
+    qa_shift_summary_path = out_dir / "qa_shift_summary.json"
     metrics_path = out_dir / "metrics.json"
     report_path = out_dir / "report.md"
 
@@ -1050,6 +1096,17 @@ def _run_postscore_stages(
     else:
         behavioral_summary = json.loads(behavioral_summary_path.read_text(encoding="utf-8"))
 
+    if _stage_should_run(
+        "qa_shift",
+        [qa_shift_segments_path, qa_shift_summary_path],
+        resume=resume,
+        force=force,
+    ):
+        qa_shift_outputs = write_qa_shift_outputs(chunks_scored_df, out_dir)
+        qa_shift_summary = qa_shift_outputs["summary"]
+    else:
+        qa_shift_summary = json.loads(qa_shift_summary_path.read_text(encoding="utf-8"))
+
     if _stage_should_run("metrics", [metrics_path], resume=resume, force=force):
         metrics_payload = _build_metrics_payload(
             chunks_scored=chunks_scored_df,
@@ -1072,6 +1129,7 @@ def _run_postscore_stages(
             guidance_df=guidance_df,
             guidance_revision_df=guidance_revision_df,
             behavioral_summary=behavioral_summary,
+            qa_shift_summary=qa_shift_summary,
         )
 
     return {
@@ -1082,6 +1140,8 @@ def _run_postscore_stages(
         "reassurance_signals_csv": reassurance_path,
         "analyst_skepticism_csv": skepticism_path,
         "behavioral_summary_json": behavioral_summary_path,
+        "qa_shift_segments_csv": qa_shift_segments_path,
+        "qa_shift_summary_json": qa_shift_summary_path,
         "metrics_json": metrics_path,
         "report_md": report_path,
     }

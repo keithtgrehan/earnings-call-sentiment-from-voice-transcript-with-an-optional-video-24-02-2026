@@ -516,8 +516,10 @@ def load_artifact_bundle_for_dir(
         "guidance.csv",
         "guidance_revision.csv",
         "tone_changes.csv",
+        "qa_shift_segments.csv",
         "question_sentiment_shifts.csv",
         "question_shifts.png",
+        "qa_shift_summary.json",
         "metrics.json",
         "report.md",
         "run_meta.json",
@@ -532,6 +534,7 @@ def load_artifact_bundle_for_dir(
         "guidance.csv",
         "guidance_revision.csv",
         "tone_changes.csv",
+        "qa_shift_segments.csv",
         "question_sentiment_shifts.csv",
         "sentiment_segments.csv",
     ]:
@@ -540,7 +543,7 @@ def load_artifact_bundle_for_dir(
             frame = pd.read_csv(path)
             bundle["tables"][name] = frame.head(12).fillna("").to_dict(orient="records")
 
-    for name in ["metrics.json", "risk_metrics.json", "run_meta.json", "llm_summary.json"]:
+    for name in ["metrics.json", "risk_metrics.json", "run_meta.json", "llm_summary.json", "qa_shift_summary.json"]:
         path = out_dir / name
         if path.exists() and path.stat().st_size > 0:
             bundle["json"][name] = json.loads(path.read_text(encoding="utf-8"))
