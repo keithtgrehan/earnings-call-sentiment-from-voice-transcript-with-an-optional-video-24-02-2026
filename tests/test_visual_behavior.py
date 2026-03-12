@@ -72,7 +72,35 @@ def test_report_markdown_includes_visual_section_when_summary_present(tmp_path: 
     output_path = tmp_path / "report.md"
     cli._write_report_markdown(
         output_path=output_path,
-        metrics_payload={"num_chunks_scored": 2, "sentiment_mean": 0.1, "sentiment_std": 0.2, "guidance": {"row_count": 1, "mean_strength": 0.4}},
+        metrics_payload={
+            "num_chunks_scored": 2,
+            "sentiment_mean": 0.1,
+            "sentiment_std": 0.2,
+            "guidance": {"row_count": 1, "mean_strength": 0.4},
+            "review_scorecard": {
+                "overall_review_signal": "green",
+                "review_confidence_pct": 82,
+                "confidence_note": "Confidence reflects deterministic evidence coverage, not investment conviction.",
+                "ranked_categories": [
+                    {
+                        "rank": 1,
+                        "name": "Guidance Strength",
+                        "score": 9,
+                        "color_band": "green",
+                        "explanation": "Guidance reads stronger versus prior guidance.",
+                        "strongest_evidence": ["raised: We raised revenue guidance for the year."],
+                    },
+                    {
+                        "rank": 2,
+                        "name": "Uncertainty / Hedging",
+                        "score": 8,
+                        "color_band": "green",
+                        "explanation": "Few hedging cues were detected.",
+                        "strongest_evidence": [],
+                    },
+                ],
+            },
+        },
         guidance_df=pd.DataFrame(),
         guidance_revision_df=pd.DataFrame(),
         behavioral_summary={
@@ -107,7 +135,10 @@ def test_report_markdown_includes_visual_section_when_summary_present(tmp_path: 
         },
     )
     report = output_path.read_text(encoding="utf-8")
+    assert "## Reviewer Scorecard" in report
+    assert "| Rank | Category | Score | Band | Explanation |" in report
+    assert "Guidance Strength" in report
+    assert "raised: We raised revenue guidance for the year." in report
     assert "## Visual Behavior Signals" in report
     assert "- face visibility: high" in report
     assert "- Q&A visual shift: high" in report
-

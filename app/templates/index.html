@@ -286,6 +286,54 @@
               </div>
 
               <div class="dossier-column dossier-column-side">
+                {% set metrics_payload = result.json.get('metrics.json', {}) %}
+                {% set review_scorecard = metrics_payload.get('review_scorecard', {}) %}
+
+                {% if review_scorecard %}
+                <section class="content-card scorecard-card">
+                  <div class="scorecard-topline">
+                    <div class="section-head compact no-margin">
+                      <p class="eyebrow">Reviewer scorecard</p>
+                      <h3>At-a-glance review</h3>
+                    </div>
+                    <span class="band-pill {{ review_scorecard.get('overall_review_signal', 'amber') }}">
+                      {{ review_scorecard.get('overall_review_signal', 'amber') }}
+                    </span>
+                  </div>
+                  <div class="scorecard-summary">
+                    <div class="score-highlight">
+                      <span>Confidence</span>
+                      <strong>{{ review_scorecard.get('review_confidence_pct', 'n/a') }}%</strong>
+                    </div>
+                    <div class="score-highlight">
+                      <span>Overall score</span>
+                      <strong>{{ review_scorecard.get('overall_score', 'n/a') }}/10</strong>
+                    </div>
+                  </div>
+                  <p class="muted-copy">{{ review_scorecard.get('confidence_note') }}</p>
+                  <div class="scorecard-list">
+                    {% for row in review_scorecard.get('ranked_categories', []) %}
+                    <article class="score-row">
+                      <div class="score-row-main">
+                        <div class="score-row-title">
+                          <span class="score-rank">#{{ row.get('rank', loop.index) }}</span>
+                          <strong>{{ row.get('name', 'Category') }}</strong>
+                          <span class="band-pill {{ row.get('color_band', 'amber') }}">{{ row.get('color_band', 'amber') }}</span>
+                        </div>
+                        <p class="score-explanation">{{ row.get('explanation', '') }}</p>
+                        {% if row.get('strongest_evidence') %}
+                        <p class="evidence-snippet">{{ row.get('strongest_evidence')[0] }}</p>
+                        {% else %}
+                        <p class="evidence-snippet empty">No strong excerpt was available for this category.</p>
+                        {% endif %}
+                      </div>
+                      <div class="score-chip">{{ row.get('score', 5) }}/10</div>
+                    </article>
+                    {% endfor %}
+                  </div>
+                </section>
+                {% endif %}
+
                 {% if result.json.get('metrics.json') %}
                 <section class="content-card accent-card">
                   <h3>Metrics snapshot</h3>

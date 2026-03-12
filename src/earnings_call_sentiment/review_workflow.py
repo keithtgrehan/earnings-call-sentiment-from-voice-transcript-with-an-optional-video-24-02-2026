@@ -276,6 +276,7 @@ def run_document_review(
         tone_change_threshold=tone_change_threshold,
         sentiment_model=sentiment_model,
         sentiment_revision=sentiment_revision,
+        audio_path=None,
         video_path=None,
         enable_visual=False,
         visual_note=None,
@@ -387,6 +388,7 @@ def run_media_review(
         tone_change_threshold=tone_change_threshold,
         sentiment_model=sentiment_model,
         sentiment_revision=sentiment_revision,
+        audio_path=Path(str(result["audio"])),
         video_path=(
             audio_path.expanduser().resolve()
             if audio_path is not None and cli_module.is_video_path(audio_path)
@@ -479,6 +481,7 @@ def _run_postscore(
     tone_change_threshold: float,
     sentiment_model: str,
     sentiment_revision: str,
+    audio_path: Path | None,
     video_path: Path | None,
     enable_visual: bool,
     visual_note: str | None,
@@ -507,6 +510,7 @@ def _run_postscore(
         chunks_scored_df=chunks_scored_df,
         out_dir=out_dir,
         args=args,
+        audio_path=audio_path,
         video_path=resolved_video_path,
         enable_visual=enable_visual,
         visual_note=resolved_visual_note,
@@ -551,11 +555,13 @@ def load_artifact_bundle_for_dir(
         "guidance_revision.csv",
         "tone_changes.csv",
         "qa_shift_segments.csv",
+        "audio_behavior_segments.csv",
         "visual_behavior_frames.csv",
         "visual_behavior_segments.csv",
         "question_sentiment_shifts.csv",
         "question_shifts.png",
         "qa_shift_summary.json",
+        "audio_behavior_summary.json",
         "visual_behavior_summary.json",
         "metrics.json",
         "report.md",
@@ -572,6 +578,7 @@ def load_artifact_bundle_for_dir(
         "guidance_revision.csv",
         "tone_changes.csv",
         "qa_shift_segments.csv",
+        "audio_behavior_segments.csv",
         "visual_behavior_segments.csv",
         "question_sentiment_shifts.csv",
         "sentiment_segments.csv",
@@ -581,7 +588,7 @@ def load_artifact_bundle_for_dir(
             frame = pd.read_csv(path)
             bundle["tables"][name] = frame.head(12).fillna("").to_dict(orient="records")
 
-    for name in ["metrics.json", "risk_metrics.json", "run_meta.json", "llm_summary.json", "qa_shift_summary.json", "visual_behavior_summary.json"]:
+    for name in ["metrics.json", "risk_metrics.json", "run_meta.json", "llm_summary.json", "qa_shift_summary.json", "audio_behavior_summary.json", "visual_behavior_summary.json"]:
         path = out_dir / name
         if path.exists() and path.stat().st_size > 0:
             bundle["json"][name] = json.loads(path.read_text(encoding="utf-8"))

@@ -18,6 +18,7 @@ from rich.console import Console
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
 from . import __version__
+from earnings_call_sentiment.audio import write_audio_behavior_outputs
 from earnings_call_sentiment.downloaders.youtube import download_audio, download_video
 from earnings_call_sentiment.post_summary import generate_optional_summary
 from earnings_call_sentiment.pipeline.run import (
@@ -29,6 +30,7 @@ from earnings_call_sentiment.pipeline.run import (
     write_transcript_artifacts,
 )
 import earnings_call_sentiment.question_shifts as qs
+from earnings_call_sentiment.review_scorecard import build_review_scorecard
 from earnings_call_sentiment.signals import write_behavioral_outputs, write_qa_shift_outputs
 from earnings_call_sentiment.summary_config import (
     SummaryConfig,
@@ -757,6 +759,7 @@ def _build_metrics_payload(
     guidance_revision_df: pd.DataFrame,
     tone_changes_df: pd.DataFrame,
     behavioral_summary: dict[str, Any] | None = None,
+    qa_shift_summary: dict[str, Any] | None = None,
     prior_guidance_path: str | None,
     sentiment_model: str,
     sentiment_revision: str,
@@ -777,6 +780,21 @@ def _build_metrics_payload(
             "uncertainty_score_overall": {"score": 0, "level": "low"},
             "reassurance_score_management": {"score": 0, "level": "low"},
             "analyst_skepticism_score": {"score": 0, "level": "low"},
+            "strongest_evidence": {},
+        }
+    if qa_shift_summary is None:
+        qa_shift_summary = {
+            "prepared_remarks_vs_q_and_a": {"label": "mixed", "delta": 0.0},
+            "analyst_skepticism": {"level": "low", "score": 0},
+            "management_answers_vs_prepared_uncertainty": {"label": "mixed", "delta": 0},
+            "early_vs_late_q_and_a": {"label": "mixed", "delta": 0.0},
+            "strongest_evidence": {},
+            "counts": {
+                "prepared_segments": 0,
+                "q_and_a_segments": 0,
+                "analyst_questions": 0,
+                "management_answers": 0,
+            },
         }
     tone_change_count = (
         int(tone_changes_df["is_change"].astype(bool).sum())
@@ -863,7 +881,34 @@ def _build_metrics_payload(
             "mixed_count": int((labels == "mixed").sum()),
             "top_revisions": top_revisions,
         }
+    review_scorecard = build_review_scorecard(
+        guidance_df=guidance_df,
+        guidance_revision=_as_dict(payload.get("guidance_revision")),
+        behavioral_summary=behavioral_summary,
+        qa_shift_summary=qa_shift_summary,
+    )
+    payload.update(
+        {
+            "overall_review_signal": review_scorecard["overall_review_signal"],
+            "review_confidence_pct": review_scorecard["review_confidence_pct"],
+            "guidance_strength_score": review_scorecard["guidance_strength_score"],
+            "management_confidence_score": review_scorecard["management_confidence_score"],
+            "uncertainty_score": review_scorecard["uncertainty_score"],
+            "analyst_skepticism_score": review_scorecard["analyst_skepticism_score"],
+            "qa_pressure_shift_score": review_scorecard["qa_pressure_shift_score"],
+            "answer_directness_score": review_scorecard["answer_directness_score"],
+            "review_scorecard": review_scorecard,
+        }
+    )
     return payload
+
+
+def _as_dict(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def _as_list(value: Any) -> list[Any]:
+    return value if isinstance(value, list) else []
 
 
 def _resolve_visual_source_path(
@@ -896,21 +941,66 @@ def _write_report_markdown(
     guidance_revision_df: pd.DataFrame,
     behavioral_summary: dict[str, Any],
     qa_shift_summary: dict[str, Any],
+    audio_summary: dict[str, Any] | None = None,
     visual_summary: dict[str, Any] | None = None,
 ) -> None:
+    review_scorecard = _as_dict(metrics_payload.get("review_scorecard"))
     lines = [
         "# Earnings Call Sentiment Report",
         "",
         "## Summary",
+        f"- Overall review signal: {str(review_scorecard.get('overall_review_signal', 'amber')).title()}",
+        f"- Review confidence: {review_scorecard.get('review_confidence_pct', 'n/a')}%",
         f"- Chunks scored: {metrics_payload.get('num_chunks_scored')}",
         f"- Sentiment mean: {metrics_payload.get('sentiment_mean')}",
         f"- Sentiment std: {metrics_payload.get('sentiment_std')}",
         "",
+    ]
+
+    if review_scorecard:
+        lines.extend(
+            [
+                "## Reviewer Scorecard",
+                _clip_report_line(
+                    f"- Confidence note: {review_scorecard.get('confidence_note', 'Confidence reflects deterministic evidence coverage, not investment conviction.')}"
+                ),
+                "",
+                "| Rank | Category | Score | Band | Explanation |",
+                "| --- | --- | --- | --- | --- |",
+            ]
+        )
+        for item in _as_list(review_scorecard.get("ranked_categories")):
+            row = _as_dict(item)
+            lines.append(
+                f"| {int(row.get('rank', 0))} | {str(row.get('name', 'Category'))} | "
+                f"{int(row.get('score', 5))}/10 | {str(row.get('color_band', 'amber'))} | "
+                f"{_clip_report_line(str(row.get('explanation', '')), limit=130)} |"
+            )
+        lines.extend(
+            [
+                "",
+                "### Strongest evidence snippets",
+            ]
+        )
+        for item in _as_list(review_scorecard.get("ranked_categories")):
+            row = _as_dict(item)
+            lines.append(f"#### {str(row.get('name', 'Category'))}")
+            evidence = _as_list(row.get("strongest_evidence"))
+            if evidence:
+                for snippet in evidence[:2]:
+                    lines.append(f"- {_clip_report_line(str(snippet), limit=180)}")
+            else:
+                lines.append("- _none_")
+            lines.append("")
+
+    lines.extend(
+        [
         "## Guidance",
         f"- Guidance rows: {metrics_payload.get('guidance', {}).get('row_count')}",
         f"- Mean guidance strength: {metrics_payload.get('guidance', {}).get('mean_strength')}",
         "",
-    ]
+        ]
+    )
 
     if not guidance_df.empty:
         lines.extend(
@@ -960,7 +1050,7 @@ def _write_report_markdown(
                     f"| {float(row.get('start', 0.0)):.2f} | "
                     f"{float(row.get('end', 0.0)):.2f} | "
                     f"{str(row.get('label', 'unclear'))} | "
-                    f"{float(row.get('diff', 0.0)):.4f} | {snippet} |"
+                    f"{float(row.get('diff', 0.0)):.4f} | {_clip_report_line(snippet, limit=120)} |"
                 )
         else:
             lines.append("_none_")
@@ -990,7 +1080,7 @@ def _write_report_markdown(
                     if len(snippet) > 140:
                         snippet = f"{snippet[:137]}..."
                     lines.append(
-                        f"- [{item.get('matched_phrase')}] strength={item.get('strength')}: {snippet}"
+                        f"- [{item.get('matched_phrase')}] strength={item.get('strength')}: {_clip_report_line(snippet, limit=160)}"
                     )
             else:
                 lines.append("- _none_")
@@ -1031,11 +1121,54 @@ def _write_report_markdown(
                 answer = f"{answer[:117]}..."
             lines.append(
                 f"- delta={float(item.get('answer_minus_question', 0.0)):+.4f} | "
-                f"Q: {question} | A: {answer}"
+                f"Q: {_clip_report_line(question, limit=100)} | A: {_clip_report_line(answer, limit=100)}"
             )
     else:
         lines.append("- _none_")
     lines.append("")
+
+    if audio_summary is not None:
+        hesitation = audio_summary.get("hesitation_overall", {}) if isinstance(audio_summary, dict) else {}
+        pause_summary = audio_summary.get("pauses_before_answers", {}) if isinstance(audio_summary, dict) else {}
+        prepared_audio = (
+            audio_summary.get("prepared_baseline_audio_stability", {})
+            if isinstance(audio_summary, dict)
+            else {}
+        )
+        qa_audio_shift = audio_summary.get("qa_hesitation_shift", {}) if isinstance(audio_summary, dict) else {}
+        lines.extend(
+            [
+                "## Audio Behavior Signals",
+                f"- hesitation: {hesitation.get('level', 'low')}",
+                f"- pauses before answers: {pause_summary.get('level', 'low')}",
+                f"- prepared remarks audio stability: {prepared_audio.get('level', 'high')}",
+                f"- Q&A hesitation shift: {qa_audio_shift.get('level', 'low')}",
+                "",
+            ]
+        )
+        if audio_summary.get("audio_features_available"):
+            hesitant = audio_summary.get("most_hesitant_answers", [])
+            if isinstance(hesitant, list) and hesitant:
+                top_item = hesitant[0]
+                lines.append(
+                    "- notable segment: "
+                    f"{top_item.get('section', 'segment')} "
+                    f"{float(top_item.get('start_time_s', 0.0)):.1f}s-"
+                    f"{float(top_item.get('end_time_s', 0.0)):.1f}s | "
+                    f"hesitation={top_item.get('hesitation_label', 'low')} | "
+                    f"pause_ms={top_item.get('pause_before_answer_ms', 'n/a')}"
+                )
+            low_conf = audio_summary.get("low_confidence_segments", [])
+            if isinstance(low_conf, list) and low_conf:
+                lines.append(
+                    "- caution: "
+                    f"{str(low_conf[0].get('confidence_note', 'short segment limits audio confidence'))}"
+                )
+        else:
+            limitations = audio_summary.get("limitations", [])
+            note = limitations[0] if isinstance(limitations, list) and limitations else "audio data unavailable"
+            lines.append(f"- caution: {note}")
+        lines.append("")
 
     if visual_summary is not None:
         face_visibility = visual_summary.get("face_visibility_overall", {}) if isinstance(visual_summary, dict) else {}
@@ -1088,19 +1221,26 @@ def _write_report_markdown(
             "- behavioral_summary.json",
             "- qa_shift_segments.csv",
             "- qa_shift_summary.json",
+            "- metrics.json (includes review_scorecard)",
         ]
     )
+    if audio_summary is not None:
+        lines.extend(
+            [
+                "- audio_behavior_segments.csv",
+                "- audio_behavior_summary.json",
+            ]
+        )
     if visual_summary is not None:
         lines.extend(
             [
                 "- visual_behavior_frames.csv",
                 "- visual_behavior_segments.csv",
-                "- visual_behavior_summary.json",
+            "- visual_behavior_summary.json",
             ]
         )
     lines.extend(
         [
-            "- metrics.json",
             "- report.md",
             "",
         ]
@@ -1108,11 +1248,19 @@ def _write_report_markdown(
     output_path.write_text("\n".join(lines), encoding="utf-8")
 
 
+def _clip_report_line(text: str, limit: int = 140) -> str:
+    compact = " ".join(str(text).replace("|", "/").split())
+    if len(compact) <= limit:
+        return compact
+    return f"{compact[: limit - 3]}..."
+
+
 def _run_postscore_stages(
     *,
     chunks_scored_df: pd.DataFrame,
     out_dir: Path,
     args: argparse.Namespace,
+    audio_path: Path | None = None,
     video_path: Path | None = None,
     enable_visual: bool = False,
     visual_note: str | None = None,
@@ -1128,6 +1276,8 @@ def _run_postscore_stages(
     behavioral_summary_path = out_dir / "behavioral_summary.json"
     qa_shift_segments_path = out_dir / "qa_shift_segments.csv"
     qa_shift_summary_path = out_dir / "qa_shift_summary.json"
+    audio_segments_path = out_dir / "audio_behavior_segments.csv"
+    audio_summary_path = out_dir / "audio_behavior_summary.json"
     visual_frames_path = out_dir / "visual_behavior_frames.csv"
     visual_segments_path = out_dir / "visual_behavior_segments.csv"
     visual_summary_path = out_dir / "visual_behavior_summary.json"
@@ -1190,6 +1340,19 @@ def _run_postscore_stages(
         qa_shift_summary = json.loads(qa_shift_summary_path.read_text(encoding="utf-8"))
     qa_shift_segments_df = _read_csv_or_empty(qa_shift_segments_path)
 
+    audio_summary: dict[str, Any] | None = None
+    if audio_path is not None:
+        if _stage_should_run(
+            "audio_behavior",
+            [audio_segments_path, audio_summary_path],
+            resume=resume,
+            force=force,
+        ):
+            audio_outputs = write_audio_behavior_outputs(audio_path, qa_shift_segments_df, out_dir)
+            audio_summary = audio_outputs["summary"]
+        else:
+            audio_summary = json.loads(audio_summary_path.read_text(encoding="utf-8"))
+
     visual_summary: dict[str, Any] | None = None
     if enable_visual:
         if _stage_should_run(
@@ -1236,6 +1399,7 @@ def _run_postscore_stages(
             guidance_revision_df=guidance_revision_df,
             behavioral_summary=behavioral_summary,
             qa_shift_summary=qa_shift_summary,
+            audio_summary=audio_summary,
             visual_summary=visual_summary,
         )
 
@@ -1251,6 +1415,14 @@ def _run_postscore_stages(
         "qa_shift_summary_json": qa_shift_summary_path,
         "metrics_json": metrics_path,
         "report_md": report_path,
+        **(
+            {
+                "audio_behavior_segments_csv": audio_segments_path,
+                "audio_behavior_summary_json": audio_summary_path,
+            }
+            if audio_path is not None
+            else {}
+        ),
         **(
             {
                 "visual_behavior_frames_csv": visual_frames_path,
@@ -1730,10 +1902,17 @@ def main(argv: list[str] | None = None) -> int:
         chunks_scored_df.to_csv(chunks_scored_csv, index=False)
         chunks_scored_jsonl = _write_chunks_scored_jsonl(chunks_scored_df, out_dir)
 
+        normalized_audio_for_postscore = cache_dir / "audio_normalized.wav"
+        if not normalized_audio_for_postscore.exists():
+            normalized_audio_for_postscore = None
+        elif not normalized_audio_for_postscore.is_file():
+            normalized_audio_for_postscore = None
+
         post_paths = _run_postscore_stages(
             chunks_scored_df=chunks_scored_df,
             out_dir=out_dir,
             args=args,
+            audio_path=normalized_audio_for_postscore,
             video_path=visual_source_path,
             enable_visual=visual_enabled,
             visual_note=visual_note,
@@ -1750,6 +1929,13 @@ def main(argv: list[str] | None = None) -> int:
             ("Analyst Skepticism", str(post_paths["analyst_skepticism_csv"])),
             ("Behavior Summary", str(post_paths["behavioral_summary_json"])),
         ]
+        if "audio_behavior_summary_json" in post_paths:
+            output_rows.extend(
+                [
+                    ("Audio Behavior Segments", str(post_paths["audio_behavior_segments_csv"])),
+                    ("Audio Behavior Summary", str(post_paths["audio_behavior_summary_json"])),
+                ]
+            )
         if "visual_behavior_summary_json" in post_paths:
             output_rows.extend(
                 [
@@ -1836,6 +2022,7 @@ def main(argv: list[str] | None = None) -> int:
         chunks_scored_df=chunks_scored_df,
         out_dir=out_dir,
         args=args,
+        audio_path=Path(str(result["audio"])),
         video_path=visual_source_path,
         enable_visual=visual_enabled,
         visual_note=visual_note,
@@ -1855,6 +2042,13 @@ def main(argv: list[str] | None = None) -> int:
         ("Analyst Skepticism", str(post_paths["analyst_skepticism_csv"])),
         ("Behavior Summary", str(post_paths["behavioral_summary_json"])),
     ]
+    if "audio_behavior_summary_json" in post_paths:
+        output_rows.extend(
+            [
+                ("Audio Behavior Segments", str(post_paths["audio_behavior_segments_csv"])),
+                ("Audio Behavior Summary", str(post_paths["audio_behavior_summary_json"])),
+            ]
+        )
     if "visual_behavior_summary_json" in post_paths:
         output_rows.extend(
             [
