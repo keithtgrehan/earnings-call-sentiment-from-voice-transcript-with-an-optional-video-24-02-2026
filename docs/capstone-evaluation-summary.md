@@ -15,8 +15,8 @@
 - Expanded holdout before the gerund-style refinement: `4/7`
 - Expanded holdout after the gerund-style raised-guidance refinement: `7/7`
 - Watchlist-derived unseen holdout after the comparative and maintained-wording refinements: `7/7`
-- Behavior mini eval after the skepticism refinement pass: `52/58`
-  - `uncertainty`: `14/20`
+- Behavior mini eval after the skepticism and uncertainty refinement passes: `58/58`
+  - `uncertainty`: `20/20`
   - `reassurance`: `20/20`
   - `skepticism`: `18/18`
 

@@ -180,8 +180,8 @@ python scripts/evaluate_behavior_signal_set.py
 ```
 
 Current measured result on the small internal behavior eval set:
-- overall: `52/58`
-- `uncertainty`: `14/20`
+- overall: `58/58`
+- `uncertainty`: `20/20`
 - `reassurance`: `20/20`
 - `skepticism`: `18/18`
 
@@ -191,7 +191,7 @@ This is a deterministic rule-QA check on a small curated set, not a statistical 
 - Frozen benchmark agreement on canonical gold labels: `9/9`
 - Expanded unseen holdout agreement on current labeled rows: `7/7`
 - Watchlist-derived unseen holdout agreement on current labeled rows: `7/7`
-- Behavior mini-eval agreement on current labeled rows: `52/58`
+- Behavior mini-eval agreement on current labeled rows: `58/58`
 - Both unseen sets remain small and excerpt-heavy.
 - These are benchmark-agreement and rule-QA results only, not predictive or statistical-significance results.
 
