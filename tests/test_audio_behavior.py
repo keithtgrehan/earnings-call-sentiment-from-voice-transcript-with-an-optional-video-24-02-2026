@@ -76,9 +76,14 @@ def test_audio_behavior_outputs_capture_pause_and_fillers(tmp_path: Path) -> Non
     assert int(answer_row["filler_count"]) >= 2
     assert "um" in str(answer_row["matched_fillers"])
     assert str(answer_row["hesitation_label"]) in {"medium", "high"}
+    assert float(answer_row["speech_duration_s"]) > 0.0
+    assert float(answer_row["articulation_rate_wpm"]) > 0.0
     assert payload["summary"]["audio_available"] is True
     assert payload["summary"]["audio_features_available"] is True
     assert payload["summary"]["pauses_before_answers"]["level"] in {"medium", "high"}
+    assert payload["summary"]["hesitation_level"]["level"] in {"medium", "high"}
+    assert payload["summary"]["answer_latency_pressure"]["level"] in {"medium", "high"}
+    assert payload["summary"]["strongest_audio_evidence"]
 
 
 def test_pause_before_answer_only_applies_to_first_answer_chunk(tmp_path: Path) -> None:
@@ -130,6 +135,32 @@ def test_pause_before_answer_only_applies_to_first_answer_chunk(tmp_path: Path) 
     assert float(segments_df.loc[1, "pause_before_answer_ms"]) >= 250.0
     assert pd.isna(segments_df.loc[2, "pause_before_answer_ms"])
     assert payload["summary"]["pauses_before_answers"]["median_ms"] >= 250.0
+
+
+def test_audio_behavior_quality_gate_flags_short_audio(tmp_path: Path) -> None:
+    sr = 16000
+    waveform = _tone(sr, 0.6)
+    audio_path = tmp_path / "short.wav"
+    sf.write(audio_path, waveform, sr)
+
+    qa_segments_df = pd.DataFrame(
+        [
+            {
+                "segment_id": 0,
+                "start": 0.0,
+                "end": 0.6,
+                "phase": "q_and_a",
+                "speaker_role": "management",
+                "qa_pair_id": 1,
+                "text": "We remain on track.",
+            }
+        ]
+    )
+
+    payload = compute_audio_behavior_outputs(audio_path, qa_segments_df)
+    assert payload["summary"]["audio_quality_ok"] is False
+    assert payload["summary"]["audio_confidence_support"]["suppressed"] is True
+    assert payload["summary"]["quality_gate"]["enough_speech_duration_ok"] is False
 
 
 def test_report_markdown_includes_audio_section_when_summary_present(tmp_path: Path) -> None:

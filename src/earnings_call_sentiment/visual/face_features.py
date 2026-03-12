@@ -98,11 +98,15 @@ class FaceFeatureExtractor:
                 "face_count": int(face_count),
                 "face_visible": False,
                 "landmark_confidence": round(detection_score, 4),
+                "face_size_ratio": 0.0,
                 "head_shift_score": 0.0,
                 "head_yaw": 0.0,
                 "head_pitch": 0.0,
+                "head_roll": 0.0,
                 "gaze_shift_proxy": 0.0,
                 "blink_proxy": 0.0,
+                "mouth_open_ratio": 0.0,
+                "lower_face_tension_proxy": 0.0,
                 "feature_note": feature_note or "low_face_visibility",
             }
 
@@ -116,8 +120,14 @@ class FaceFeatureExtractor:
         right_eye_outer = lmk[263]
         mouth_top = lmk[13]
         mouth_bottom = lmk[14]
+        mouth_left = lmk[61]
+        mouth_right = lmk[291]
 
+        xs = [point.x for point in lmk]
+        ys = [point.y for point in lmk]
         face_width = max(abs(right_face.x - left_face.x), _EPS)
+        face_height = max(max(ys) - min(ys), _EPS)
+        face_size_ratio = max((max(xs) - min(xs)) * face_height, 0.0)
         left_width = max(nose_tip.x - left_face.x, 0.0)
         right_width = max(right_face.x - nose_tip.x, 0.0)
         yaw = ((left_width - right_width) / face_width)
@@ -125,6 +135,7 @@ class FaceFeatureExtractor:
         eye_line_y = (left_eye_outer.y + right_eye_outer.y) / 2.0
         mouth_y = (mouth_top.y + mouth_bottom.y) / 2.0
         pitch = ((nose_tip.y - eye_line_y) / max(mouth_y - eye_line_y, _EPS)) - 0.5
+        roll = (right_eye_outer.y - left_eye_outer.y) / max(abs(right_eye_outer.x - left_eye_outer.x), _EPS)
 
         face_center = ((left_face.x + right_face.x) / 2.0, (left_face.y + right_face.y) / 2.0)
         previous_center = self._state.center_xy
@@ -140,6 +151,9 @@ class FaceFeatureExtractor:
         gaze_shift = 0.0 if previous_gaze is None else abs(gaze_offset - previous_gaze)
 
         blink_proxy = self._blink_proxy(lmk)
+        mouth_open_ratio = abs(mouth_bottom.y - mouth_top.y) / face_width
+        mouth_width = max(abs(mouth_right.x - mouth_left.x), _EPS)
+        lower_face_tension_proxy = max(0.0, min(1.0, (mouth_width - mouth_open_ratio) / max(mouth_width, _EPS)))
         self._state = FaceState(center_xy=face_center, gaze_offset=gaze_offset)
 
         return {
@@ -147,11 +161,15 @@ class FaceFeatureExtractor:
             "face_count": int(face_count),
             "face_visible": True,
             "landmark_confidence": round(detection_score, 4),
+            "face_size_ratio": round(float(face_size_ratio), 4),
             "head_shift_score": round(head_shift_score, 4),
             "head_yaw": round(float(yaw), 4),
             "head_pitch": round(float(pitch), 4),
+            "head_roll": round(float(roll), 4),
             "gaze_shift_proxy": round(float(gaze_shift), 4),
             "blink_proxy": round(float(blink_proxy), 4),
+            "mouth_open_ratio": round(float(mouth_open_ratio), 4),
+            "lower_face_tension_proxy": round(float(lower_face_tension_proxy), 4),
             "feature_note": feature_note or "ok",
         }
 
@@ -168,11 +186,15 @@ class FaceFeatureExtractor:
                 "face_count": 0,
                 "face_visible": False,
                 "landmark_confidence": 0.0,
+                "face_size_ratio": 0.0,
                 "head_shift_score": 0.0,
                 "head_yaw": 0.0,
                 "head_pitch": 0.0,
+                "head_roll": 0.0,
                 "gaze_shift_proxy": 0.0,
                 "blink_proxy": 0.0,
+                "mouth_open_ratio": 0.0,
+                "lower_face_tension_proxy": 0.0,
                 "feature_note": "no_face_detected",
             }
 
@@ -180,6 +202,7 @@ class FaceFeatureExtractor:
         x, y, w, h = max(faces, key=lambda box: box[2] * box[3])
         center_xy = ((x + (w / 2.0)) / max(frame_w, 1), (y + (h / 2.0)) / max(frame_h, 1))
         face_width = max(float(w) / max(frame_w, 1), _EPS)
+        face_size_ratio = float((w * h) / max(frame_w * frame_h, 1))
         previous_center = self._state.center_xy
         head_shift_score = 0.0
         if previous_center is not None:
@@ -193,11 +216,15 @@ class FaceFeatureExtractor:
             "face_count": int(len(faces)),
             "face_visible": True,
             "landmark_confidence": 0.6,
+            "face_size_ratio": round(face_size_ratio, 4),
             "head_shift_score": round(head_shift_score, 4),
             "head_yaw": 0.0,
             "head_pitch": 0.0,
+            "head_roll": 0.0,
             "gaze_shift_proxy": 0.0,
             "blink_proxy": 0.0,
+            "mouth_open_ratio": 0.0,
+            "lower_face_tension_proxy": 0.0,
             "feature_note": "opencv_face_detection_only",
         }
 

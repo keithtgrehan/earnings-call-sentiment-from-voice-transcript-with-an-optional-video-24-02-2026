@@ -250,6 +250,10 @@
 
           {% set metrics_payload = result.json.get('metrics.json', {}) %}
           {% set review_scorecard = metrics_payload.get('review_scorecard', {}) %}
+          {% set audio_behavior = result.json.get('audio_behavior_summary.json', {}) %}
+          {% set visual_behavior = result.json.get('visual_behavior_summary.json', {}) %}
+          {% set media_quality = result.json.get('media_quality.json', {}) %}
+          {% set multimodal_support = result.json.get('multimodal_support_summary.json', {}) %}
           {% if review_scorecard %}
           <div class="json-card scorecard-card">
             <div class="scorecard-topline">
@@ -292,6 +296,50 @@
               </article>
               {% endfor %}
             </div>
+          </div>
+          {% endif %}
+
+          {% if audio_behavior %}
+          <div class="json-card">
+            <h3>Audio behavior signals</h3>
+            <ul class="artifact-list">
+              <li>Hesitation: {{ audio_behavior.get('hesitation_level', {}).get('level', 'low') }}</li>
+              <li>Answer latency pressure: {{ audio_behavior.get('answer_latency_pressure', {}).get('level', 'low') }}</li>
+              <li>Audio confidence support: {{ audio_behavior.get('audio_confidence_support', {}).get('level', 'low') }}</li>
+            </ul>
+            {% if audio_behavior.get('strongest_audio_evidence') %}
+            <p>{{ audio_behavior.get('strongest_audio_evidence')[0].get('text', '') }}</p>
+            {% endif %}
+          </div>
+          {% endif %}
+
+          {% if visual_behavior %}
+          <div class="json-card">
+            <h3>Visual behavior signals</h3>
+            <ul class="artifact-list">
+              <li>Facial tension: {{ visual_behavior.get('facial_tension_level', {}).get('level', 'low') }}</li>
+              <li>Head motion pressure: {{ visual_behavior.get('head_motion_pressure', {}).get('level', 'low') }}</li>
+              <li>Visual confidence support: {{ visual_behavior.get('visual_confidence_support', {}).get('level', 'low') }}</li>
+            </ul>
+            {% if visual_behavior.get('strongest_visual_evidence') %}
+            <p>{{ visual_behavior.get('strongest_visual_evidence')[0].get('text', '') }}</p>
+            {% endif %}
+          </div>
+          {% endif %}
+
+          {% if multimodal_support %}
+          <div class="json-card">
+            <h3>Multimodal support</h3>
+            <ul class="artifact-list">
+              <li>Transcript primary assessment: {{ multimodal_support.get('transcript_primary_assessment', 'amber') }}</li>
+              <li>Audio direction: {{ multimodal_support.get('audio_support_direction', 'unavailable') }}</li>
+              <li>Video direction: {{ multimodal_support.get('video_support_direction', 'unavailable') }}</li>
+              <li>Alignment: {{ multimodal_support.get('multimodal_alignment', 'low') }}</li>
+              <li>Confidence adjustment: {{ multimodal_support.get('multimodal_confidence_adjustment', 0) }}</li>
+            </ul>
+            {% if media_quality.get('quality_notes') %}
+            <p>{{ media_quality.get('quality_notes')[0] }}</p>
+            {% endif %}
           </div>
           {% endif %}
 

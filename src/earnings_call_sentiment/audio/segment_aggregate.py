@@ -6,11 +6,15 @@ import pandas as pd
 
 from .pause_features import (
     AudioEnvelope,
+    articulation_rate_wpm,
     count_fillers,
     leading_silence_before,
+    pause_stats,
+    segment_rms_stats,
     silence_ratio,
     speech_rate_wpm,
 )
+from .opensmile_features import extract_egemaps_slice, opensmile_available
 
 SEGMENT_COLUMNS = [
     "segment_id",
@@ -19,13 +23,28 @@ SEGMENT_COLUMNS = [
     "qa_pair_id",
     "start_time_s",
     "end_time_s",
+    "segment_duration_s",
     "pause_before_answer_ms",
     "answer_onset_delay_ms",
     "silence_ratio",
+    "speech_duration_s",
+    "pause_count",
+    "pause_density_per_10s",
+    "pause_burst_count",
+    "mean_pause_ms",
+    "max_pause_ms",
     "filler_count",
     "filler_density",
     "matched_fillers",
     "speech_rate_wpm",
+    "articulation_rate_wpm",
+    "mean_rms_db",
+    "rms_std_db",
+    "rms_range_db",
+    "egemaps_pitch_variability",
+    "egemaps_loudness_mean",
+    "egemaps_loudness_variability",
+    "egemaps_spectral_flux",
     "hesitation_score",
     "hesitation_label",
     "confidence_note",
@@ -84,6 +103,22 @@ def _speech_rate_score(words_per_minute: float, word_count: int) -> int:
     return 0
 
 
+def _articulation_score(words_per_minute: float, word_count: int) -> int:
+    if word_count < 12 or words_per_minute <= 0.0:
+        return 0
+    if words_per_minute < 105.0:
+        return 1
+    return 0
+
+
+def _pause_burst_score(burst_count: float) -> int:
+    if burst_count >= 2.0:
+        return 2
+    if burst_count >= 1.0:
+        return 1
+    return 0
+
+
 def _confidence_note(duration_s: float, frame_count: int, word_count: int) -> str:
     if frame_count <= 0:
         return "no sampled audio frames in segment"
@@ -106,6 +141,7 @@ def aggregate_audio_segments(
     rows: list[dict[str, Any]] = []
     question_end_by_pair: dict[int, float] = {}
     seen_answer_pair_ids: set[int] = set()
+    egemaps_enabled = opensmile_available()
 
     for _, row in qa_segments_df.sort_values("start").iterrows():
         start_time_s = float(row.get("start", 0.0))
@@ -120,8 +156,11 @@ def aggregate_audio_segments(
             question_end_by_pair[qa_pair_id] = end_time_s
 
         segment_silence_ratio, frame_count = silence_ratio(envelope, start_time_s, end_time_s)
+        segment_pause = pause_stats(envelope, start_time_s, end_time_s)
+        rms_stats = segment_rms_stats(envelope, start_time_s, end_time_s)
         filler_count, filler_matches = count_fillers(text)
         speech_rate, word_count = speech_rate_wpm(text, duration_s)
+        articulation_rate = articulation_rate_wpm(text, float(segment_pause["speech_duration_s"]))
         filler_density = float((filler_count / word_count) * 100.0) if word_count > 0 else 0.0
 
         pause_before_answer_ms = float("nan")
@@ -138,11 +177,23 @@ def aggregate_audio_segments(
             if question_end is not None:
                 answer_onset_delay_ms = max(0.0, start_time_s - float(question_end)) * 1000.0
 
+        egemaps = (
+            extract_egemaps_slice(envelope, start_time_s, end_time_s)
+            if egemaps_enabled
+            else {
+                "pitch_variability": None,
+                "loudness_mean": None,
+                "loudness_variability": None,
+                "spectral_flux": None,
+            }
+        )
         hesitation_score = (
             _pause_score(None if pd.isna(pause_before_answer_ms) else float(pause_before_answer_ms))
             + _silence_score(float(segment_silence_ratio))
             + _filler_score(float(filler_density))
             + _speech_rate_score(float(speech_rate), int(word_count))
+            + _articulation_score(float(articulation_rate), int(word_count))
+            + _pause_burst_score(float(segment_pause["pause_burst_count"]))
         )
 
         rows.append(
@@ -153,6 +204,7 @@ def aggregate_audio_segments(
                 "qa_pair_id": qa_pair_id,
                 "start_time_s": round(start_time_s, 4),
                 "end_time_s": round(end_time_s, 4),
+                "segment_duration_s": round(duration_s, 4),
                 "pause_before_answer_ms": round(float(pause_before_answer_ms), 1)
                 if not pd.isna(pause_before_answer_ms)
                 else None,
@@ -160,10 +212,40 @@ def aggregate_audio_segments(
                 if not pd.isna(answer_onset_delay_ms)
                 else None,
                 "silence_ratio": round(float(segment_silence_ratio), 4),
+                "speech_duration_s": round(float(segment_pause["speech_duration_s"]), 4),
+                "pause_count": int(segment_pause["pause_count"]),
+                "pause_density_per_10s": round(float(segment_pause["pause_density_per_10s"]), 4),
+                "pause_burst_count": int(segment_pause["pause_burst_count"]),
+                "mean_pause_ms": round(float(segment_pause["mean_pause_ms"]), 1),
+                "max_pause_ms": round(float(segment_pause["max_pause_ms"]), 1),
                 "filler_count": int(filler_count),
                 "filler_density": round(float(filler_density), 4),
                 "matched_fillers": ", ".join(filler_matches),
                 "speech_rate_wpm": round(float(speech_rate), 2),
+                "articulation_rate_wpm": round(float(articulation_rate), 2),
+                "mean_rms_db": round(float(rms_stats["mean_rms_db"]), 4),
+                "rms_std_db": round(float(rms_stats["rms_std_db"]), 4),
+                "rms_range_db": round(float(rms_stats["rms_range_db"]), 4),
+                "egemaps_pitch_variability": (
+                    round(float(egemaps["pitch_variability"]), 4)
+                    if egemaps["pitch_variability"] is not None
+                    else None
+                ),
+                "egemaps_loudness_mean": (
+                    round(float(egemaps["loudness_mean"]), 4)
+                    if egemaps["loudness_mean"] is not None
+                    else None
+                ),
+                "egemaps_loudness_variability": (
+                    round(float(egemaps["loudness_variability"]), 4)
+                    if egemaps["loudness_variability"] is not None
+                    else None
+                ),
+                "egemaps_spectral_flux": (
+                    round(float(egemaps["spectral_flux"]), 4)
+                    if egemaps["spectral_flux"] is not None
+                    else None
+                ),
                 "hesitation_score": int(hesitation_score),
                 "hesitation_label": _hesitation_label(int(hesitation_score)),
                 "confidence_note": _confidence_note(duration_s, frame_count, word_count),

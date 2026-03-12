@@ -175,7 +175,33 @@ def test_site_app_review_page_renders_reviewer_scorecard(monkeypatch, tmp_path: 
                             }
                         ],
                     },
-                }
+                },
+                "audio_behavior_summary.json": {
+                    "hesitation_level": {"level": "medium"},
+                    "answer_latency_pressure": {"level": "medium"},
+                    "audio_confidence_support": {"level": "low", "suppressed": True, "reason": "quality gate suppressed confidence uplift"},
+                    "strongest_audio_evidence": [
+                        {"text": "Um, we are staying on track here."}
+                    ],
+                },
+                "visual_behavior_summary.json": {
+                    "facial_tension_level": {"level": "medium"},
+                    "head_motion_pressure": {"level": "high"},
+                    "visual_confidence_support": {"level": "low", "suppressed": True, "reason": "quality gate suppressed visual confidence uplift"},
+                    "strongest_visual_evidence": [
+                        {"text": "Visible head motion increased during Q&A."}
+                    ],
+                },
+                "media_quality.json": {
+                    "quality_notes": ["audio: short answer windows reduce confidence"],
+                },
+                "multimodal_support_summary.json": {
+                    "transcript_primary_assessment": "green",
+                    "audio_support_direction": "cautionary",
+                    "video_support_direction": "unavailable",
+                    "multimodal_alignment": "low",
+                    "multimodal_confidence_adjustment": -2,
+                },
             },
             "text": {"report.md": "# Report", "transcript.txt": "text"},
         }
@@ -206,3 +232,6 @@ def test_site_app_review_page_renders_reviewer_scorecard(monkeypatch, tmp_path: 
     assert "At-a-glance review" in text
     assert "Guidance Strength" in text
     assert "84%" in text
+    assert "Audio behavior signals" in text
+    assert "Visual behavior signals" in text
+    assert "Multimodal support" in text

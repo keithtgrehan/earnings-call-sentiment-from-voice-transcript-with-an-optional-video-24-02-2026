@@ -20,6 +20,8 @@ os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 from . import __version__
 from earnings_call_sentiment.audio import write_audio_behavior_outputs
 from earnings_call_sentiment.downloaders.youtube import download_audio, download_video
+from earnings_call_sentiment.media_quality import write_media_quality_summary
+from earnings_call_sentiment.multimodal_support import write_multimodal_support_summary
 from earnings_call_sentiment.post_summary import generate_optional_summary
 from earnings_call_sentiment.pipeline.run import (
     load_transcript_segments,
@@ -943,6 +945,8 @@ def _write_report_markdown(
     qa_shift_summary: dict[str, Any],
     audio_summary: dict[str, Any] | None = None,
     visual_summary: dict[str, Any] | None = None,
+    media_quality: dict[str, Any] | None = None,
+    multimodal_summary: dict[str, Any] | None = None,
 ) -> None:
     review_scorecard = _as_dict(metrics_payload.get("review_scorecard"))
     lines = [
@@ -1136,6 +1140,16 @@ def _write_report_markdown(
             else {}
         )
         qa_audio_shift = audio_summary.get("qa_hesitation_shift", {}) if isinstance(audio_summary, dict) else {}
+        latency_pressure = (
+            audio_summary.get("answer_latency_pressure", {})
+            if isinstance(audio_summary, dict)
+            else {}
+        )
+        confidence_support = (
+            audio_summary.get("audio_confidence_support", {})
+            if isinstance(audio_summary, dict)
+            else {}
+        )
         lines.extend(
             [
                 "## Audio Behavior Signals",
@@ -1143,20 +1157,23 @@ def _write_report_markdown(
                 f"- pauses before answers: {pause_summary.get('level', 'low')}",
                 f"- prepared remarks audio stability: {prepared_audio.get('level', 'high')}",
                 f"- Q&A hesitation shift: {qa_audio_shift.get('level', 'low')}",
+                f"- answer latency pressure: {latency_pressure.get('level', 'low')}",
+                f"- audio confidence support: {confidence_support.get('level', 'low')}",
                 "",
             ]
         )
         if audio_summary.get("audio_features_available"):
-            hesitant = audio_summary.get("most_hesitant_answers", [])
-            if isinstance(hesitant, list) and hesitant:
-                top_item = hesitant[0]
+            strongest_audio = audio_summary.get("strongest_audio_evidence", [])
+            if isinstance(strongest_audio, list) and strongest_audio:
+                top_item = strongest_audio[0]
                 lines.append(
                     "- notable segment: "
-                    f"{top_item.get('section', 'segment')} "
+                    f"{top_item.get('segment_id', 'segment')} "
                     f"{float(top_item.get('start_time_s', 0.0)):.1f}s-"
                     f"{float(top_item.get('end_time_s', 0.0)):.1f}s | "
                     f"hesitation={top_item.get('hesitation_label', 'low')} | "
-                    f"pause_ms={top_item.get('pause_before_answer_ms', 'n/a')}"
+                    f"pause_ms={top_item.get('pause_before_answer_ms', 'n/a')} | "
+                    f"latency_ms={top_item.get('answer_onset_delay_ms', 'n/a')}"
                 )
             low_conf = audio_summary.get("low_confidence_segments", [])
             if isinstance(low_conf, list) and low_conf:
@@ -1164,6 +1181,8 @@ def _write_report_markdown(
                     "- caution: "
                     f"{str(low_conf[0].get('confidence_note', 'short segment limits audio confidence'))}"
                 )
+            if confidence_support.get("suppressed"):
+                lines.append(f"- suppression: {confidence_support.get('reason', 'audio quality gate suppressed support')}")
         else:
             limitations = audio_summary.get("limitations", [])
             note = limitations[0] if isinstance(limitations, list) and limitations else "audio data unavailable"
@@ -1178,25 +1197,32 @@ def _write_report_markdown(
             else {}
         )
         qa_visual_shift = visual_summary.get("qa_visual_shift_score", {}) if isinstance(visual_summary, dict) else {}
+        facial_tension = visual_summary.get("facial_tension_level", {}) if isinstance(visual_summary, dict) else {}
+        head_motion = visual_summary.get("head_motion_pressure", {}) if isinstance(visual_summary, dict) else {}
+        visual_confidence = visual_summary.get("visual_confidence_support", {}) if isinstance(visual_summary, dict) else {}
         lines.extend(
             [
                 "## Visual Behavior Signals",
                 f"- face visibility: {face_visibility.get('level', 'low')}",
                 f"- prepared remarks visual stability: {prepared_stability.get('level', 'low')}",
                 f"- Q&A visual shift: {qa_visual_shift.get('level', 'low')}",
+                f"- facial tension: {facial_tension.get('level', 'low')}",
+                f"- head motion pressure: {head_motion.get('level', 'low')}",
+                f"- visual confidence support: {visual_confidence.get('level', 'low')}",
                 "",
             ]
         )
         if visual_summary.get("visual_features_available"):
-            notable = visual_summary.get("most_visually_changed_segments", [])
+            notable = visual_summary.get("strongest_visual_evidence", [])
             if isinstance(notable, list) and notable:
                 top_item = notable[0]
                 lines.append(
                     "- notable segment: "
-                    f"{top_item.get('section', 'segment')} "
+                    f"{top_item.get('segment_id', 'segment')} "
                     f"{float(top_item.get('start_time_s', 0.0)):.1f}s-"
                     f"{float(top_item.get('end_time_s', 0.0)):.1f}s | "
-                    f"change={float(top_item.get('visual_change_score', 0.0)):.4f}"
+                    f"change={float(top_item.get('visual_change_score', 0.0)):.4f} | "
+                    f"head_motion={float(top_item.get('head_motion_energy', 0.0)):.4f}"
                 )
             low_conf = visual_summary.get("notable_low_confidence_segments", [])
             if isinstance(low_conf, list) and low_conf:
@@ -1204,10 +1230,41 @@ def _write_report_markdown(
                     "- caution: "
                     f"{str(low_conf[0].get('confidence_note', 'low face visibility reduces confidence'))}"
                 )
+            if visual_confidence.get("suppressed"):
+                lines.append(f"- suppression: {visual_confidence.get('reason', 'visual quality gate suppressed support')}")
         else:
             limitations = visual_summary.get("limitations", [])
             note = limitations[0] if isinstance(limitations, list) and limitations else "visual data unavailable"
             lines.append(f"- caution: {note}")
+        lines.append("")
+
+    if media_quality is not None:
+        lines.extend(
+            [
+                "## Media Quality",
+                f"- audio quality ok: {media_quality.get('audio_quality_ok', False)}",
+                f"- video quality ok: {media_quality.get('video_quality_ok', False)}",
+                "",
+            ]
+        )
+        for note in media_quality.get("quality_notes", [])[:3]:
+            lines.append(f"- {note}")
+        lines.append("")
+
+    if multimodal_summary is not None:
+        lines.extend(
+            [
+                "## Multimodal Support",
+                f"- transcript primary assessment: {multimodal_summary.get('transcript_primary_assessment', 'amber')}",
+                f"- audio support direction: {multimodal_summary.get('audio_support_direction', 'unavailable')}",
+                f"- video support direction: {multimodal_summary.get('video_support_direction', 'unavailable')}",
+                f"- multimodal alignment: {multimodal_summary.get('multimodal_alignment', 'low')}",
+                f"- multimodal confidence adjustment: {multimodal_summary.get('multimodal_confidence_adjustment', 0)}",
+                "",
+            ]
+        )
+        for note in multimodal_summary.get("notes", [])[:4]:
+            lines.append(f"- {note}")
         lines.append("")
 
     lines.extend(
@@ -1236,9 +1293,13 @@ def _write_report_markdown(
             [
                 "- visual_behavior_frames.csv",
                 "- visual_behavior_segments.csv",
-            "- visual_behavior_summary.json",
+                "- visual_behavior_summary.json",
             ]
         )
+    if media_quality is not None:
+        lines.append("- media_quality.json")
+    if multimodal_summary is not None:
+        lines.append("- multimodal_support_summary.json")
     lines.extend(
         [
             "- report.md",
@@ -1281,6 +1342,8 @@ def _run_postscore_stages(
     visual_frames_path = out_dir / "visual_behavior_frames.csv"
     visual_segments_path = out_dir / "visual_behavior_segments.csv"
     visual_summary_path = out_dir / "visual_behavior_summary.json"
+    media_quality_path = out_dir / "media_quality.json"
+    multimodal_support_path = out_dir / "multimodal_support_summary.json"
     metrics_path = out_dir / "metrics.json"
     report_path = out_dir / "report.md"
 
@@ -1376,6 +1439,20 @@ def _run_postscore_stages(
         else:
             visual_summary = json.loads(visual_summary_path.read_text(encoding="utf-8"))
 
+    if _stage_should_run(
+        "media_quality",
+        [media_quality_path],
+        resume=resume,
+        force=force,
+    ):
+        media_quality = write_media_quality_summary(
+            audio_summary=audio_summary,
+            visual_summary=visual_summary,
+            out_dir=out_dir,
+        )["summary"]
+    else:
+        media_quality = json.loads(media_quality_path.read_text(encoding="utf-8"))
+
     if _stage_should_run("metrics", [metrics_path], resume=resume, force=force):
         metrics_payload = _build_metrics_payload(
             chunks_scored=chunks_scored_df,
@@ -1391,6 +1468,23 @@ def _run_postscore_stages(
     else:
         metrics_payload = json.loads(metrics_path.read_text(encoding="utf-8"))
 
+    if _stage_should_run(
+        "multimodal_support",
+        [multimodal_support_path],
+        resume=resume,
+        force=force,
+    ):
+        multimodal_summary = write_multimodal_support_summary(
+            metrics_payload=metrics_payload,
+            qa_shift_summary=qa_shift_summary,
+            audio_summary=audio_summary,
+            visual_summary=visual_summary,
+            media_quality=media_quality,
+            out_dir=out_dir,
+        )["summary"]
+    else:
+        multimodal_summary = json.loads(multimodal_support_path.read_text(encoding="utf-8"))
+
     if _stage_should_run("report", [report_path], resume=resume, force=force):
         _write_report_markdown(
             output_path=report_path,
@@ -1401,6 +1495,8 @@ def _run_postscore_stages(
             qa_shift_summary=qa_shift_summary,
             audio_summary=audio_summary,
             visual_summary=visual_summary,
+            media_quality=media_quality,
+            multimodal_summary=multimodal_summary,
         )
 
     return {
@@ -1413,6 +1509,8 @@ def _run_postscore_stages(
         "behavioral_summary_json": behavioral_summary_path,
         "qa_shift_segments_csv": qa_shift_segments_path,
         "qa_shift_summary_json": qa_shift_summary_path,
+        "media_quality_json": media_quality_path,
+        "multimodal_support_summary_json": multimodal_support_path,
         "metrics_json": metrics_path,
         "report_md": report_path,
         **(

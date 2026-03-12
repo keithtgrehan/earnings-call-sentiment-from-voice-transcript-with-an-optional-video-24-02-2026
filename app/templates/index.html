@@ -289,6 +289,10 @@
               <div class="dossier-column dossier-column-side">
                 {% set metrics_payload = result.json.get('metrics.json', {}) %}
                 {% set review_scorecard = metrics_payload.get('review_scorecard', {}) %}
+                {% set audio_behavior = result.json.get('audio_behavior_summary.json', {}) %}
+                {% set visual_behavior = result.json.get('visual_behavior_summary.json', {}) %}
+                {% set media_quality = result.json.get('media_quality.json', {}) %}
+                {% set multimodal_support = result.json.get('multimodal_support_summary.json', {}) %}
 
                 {% if review_scorecard %}
                 <section class="content-card scorecard-card">
@@ -332,6 +336,57 @@
                     </article>
                     {% endfor %}
                   </div>
+                </section>
+                {% endif %}
+
+                {% if audio_behavior %}
+                <section class="content-card">
+                  <h3>Audio behavior signals</h3>
+                  <ul class="bullet-list compact-list">
+                    <li>Hesitation: {{ audio_behavior.get('hesitation_level', {}).get('level', 'low') }}</li>
+                    <li>Answer latency pressure: {{ audio_behavior.get('answer_latency_pressure', {}).get('level', 'low') }}</li>
+                    <li>Audio confidence support: {{ audio_behavior.get('audio_confidence_support', {}).get('level', 'low') }}</li>
+                    {% if audio_behavior.get('strongest_audio_evidence') %}
+                    <li>Evidence: {{ audio_behavior.get('strongest_audio_evidence')[0].get('text', '') }}</li>
+                    {% endif %}
+                    {% if audio_behavior.get('audio_confidence_support', {}).get('suppressed') %}
+                    <li>Suppression: {{ audio_behavior.get('audio_confidence_support', {}).get('reason', 'audio quality gate suppressed support') }}</li>
+                    {% endif %}
+                  </ul>
+                </section>
+                {% endif %}
+
+                {% if visual_behavior %}
+                <section class="content-card">
+                  <h3>Visual behavior signals</h3>
+                  <ul class="bullet-list compact-list">
+                    <li>Facial tension: {{ visual_behavior.get('facial_tension_level', {}).get('level', 'low') }}</li>
+                    <li>Head motion pressure: {{ visual_behavior.get('head_motion_pressure', {}).get('level', 'low') }}</li>
+                    <li>Visual confidence support: {{ visual_behavior.get('visual_confidence_support', {}).get('level', 'low') }}</li>
+                    {% if visual_behavior.get('strongest_visual_evidence') %}
+                    <li>Evidence: {{ visual_behavior.get('strongest_visual_evidence')[0].get('text', '') }}</li>
+                    {% endif %}
+                    {% if visual_behavior.get('visual_confidence_support', {}).get('suppressed') %}
+                    <li>Suppression: {{ visual_behavior.get('visual_confidence_support', {}).get('reason', 'visual quality gate suppressed support') }}</li>
+                    {% endif %}
+                  </ul>
+                </section>
+                {% endif %}
+
+                {% if multimodal_support %}
+                <section class="content-card">
+                  <h3>Multimodal support</h3>
+                  <ul class="bullet-list compact-list">
+                    <li>Transcript primary assessment: {{ multimodal_support.get('transcript_primary_assessment', 'amber') }}</li>
+                    <li>Audio direction: {{ multimodal_support.get('audio_support_direction', 'unavailable') }}</li>
+                    <li>Video direction: {{ multimodal_support.get('video_support_direction', 'unavailable') }}</li>
+                    <li>Alignment: {{ multimodal_support.get('multimodal_alignment', 'low') }}</li>
+                    <li>Confidence adjustment: {{ multimodal_support.get('multimodal_confidence_adjustment', 0) }}</li>
+                    {% if media_quality.get('quality_notes') %}
+                    <li>Quality note: {{ media_quality.get('quality_notes')[0] }}</li>
+                    {% endif %}
+                  </ul>
+                  <p class="muted-copy">Transcript evidence remains primary. Audio and video only add support or caution when quality gates allow it.</p>
                 </section>
                 {% endif %}
 
