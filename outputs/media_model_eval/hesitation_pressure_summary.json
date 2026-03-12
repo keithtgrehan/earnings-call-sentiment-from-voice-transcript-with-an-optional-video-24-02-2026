@@ -1,94 +1,287 @@
 {
   "status": "ok",
-  "row_count": 20,
-  "group_count": 2,
+  "row_count": 52,
+  "group_count": 6,
   "class_counts": {
-    "low": 10,
-    "high": 5,
-    "medium": 5
+    "low": 25,
+    "high": 19,
+    "medium": 8
   },
+  "unique_groups": [
+    "AAPL_2026_Q1_call06",
+    "GOOGL_2025_Q4_call03",
+    "IBM_2025_Q4_call04",
+    "LLY_2025_Q2_call08",
+    "NFLX_2025_Q4_ui01",
+    "PLTR_2025_Q4_call01"
+  ],
   "metrics": {
-    "accuracy": 0.55,
-    "macro_f1": 0.3492,
-    "macro_precision": 0.5185,
-    "macro_recall": 0.4
+    "accuracy": 0.7692,
+    "macro_f1": 0.553,
+    "macro_precision": 0.5159,
+    "macro_recall": 0.5965
   },
-  "calibration_mode": "not_available",
-  "reliability_weight": 0.3492,
+  "holdout_row_counts": {
+    "NFLX_2025_Q4_ui01": 10,
+    "PLTR_2025_Q4_call01": 10,
+    "AAPL_2026_Q1_call06": 8,
+    "GOOGL_2025_Q4_call03": 8,
+    "IBM_2025_Q4_call04": 8,
+    "LLY_2025_Q2_call08": 8
+  },
+  "confusion_matrix": {
+    "high": {
+      "high": 15,
+      "low": 3,
+      "medium": 1
+    },
+    "low": {
+      "high": 0,
+      "low": 25,
+      "medium": 0
+    },
+    "medium": {
+      "high": 6,
+      "low": 2,
+      "medium": 0
+    }
+  },
+  "calibration_mode": "sigmoid_cv3",
+  "reliability_weight": 0.4991,
   "evaluation_rows": [
     {
       "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "high",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "high",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "medium",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "high",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "low",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "low",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "low",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "low",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "low",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "low",
       "y_pred": "low",
       "source_call_id": "NFLX_2025_Q4_ui01"
     },
     {
       "y_true": "high",
       "y_pred": "high",
-      "source_call_id": "NFLX_2025_Q4_ui01"
-    },
-    {
-      "y_true": "high",
-      "y_pred": "low",
-      "source_call_id": "NFLX_2025_Q4_ui01"
-    },
-    {
-      "y_true": "medium",
-      "y_pred": "low",
-      "source_call_id": "NFLX_2025_Q4_ui01"
-    },
-    {
-      "y_true": "medium",
-      "y_pred": "low",
-      "source_call_id": "NFLX_2025_Q4_ui01"
-    },
-    {
-      "y_true": "low",
-      "y_pred": "low",
-      "source_call_id": "NFLX_2025_Q4_ui01"
-    },
-    {
-      "y_true": "low",
-      "y_pred": "low",
-      "source_call_id": "NFLX_2025_Q4_ui01"
-    },
-    {
-      "y_true": "low",
-      "y_pred": "low",
-      "source_call_id": "NFLX_2025_Q4_ui01"
-    },
-    {
-      "y_true": "low",
-      "y_pred": "low",
-      "source_call_id": "NFLX_2025_Q4_ui01"
-    },
-    {
-      "y_true": "low",
-      "y_pred": "low",
-      "source_call_id": "NFLX_2025_Q4_ui01"
-    },
-    {
-      "y_true": "high",
-      "y_pred": "medium",
       "source_call_id": "PLTR_2025_Q4_call01"
     },
     {
       "y_true": "high",
-      "y_pred": "low",
+      "y_pred": "high",
       "source_call_id": "PLTR_2025_Q4_call01"
     },
     {
       "y_true": "medium",
-      "y_pred": "low",
+      "y_pred": "high",
       "source_call_id": "PLTR_2025_Q4_call01"
     },
     {
       "y_true": "medium",
-      "y_pred": "low",
+      "y_pred": "high",
       "source_call_id": "PLTR_2025_Q4_call01"
     },
     {
       "y_true": "medium",
-      "y_pred": "low",
+      "y_pred": "high",
       "source_call_id": "PLTR_2025_Q4_call01"
     },
     {
