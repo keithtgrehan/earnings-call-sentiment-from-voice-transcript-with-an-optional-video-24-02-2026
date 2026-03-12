@@ -2,14 +2,34 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+import os
 from pathlib import Path
+import re
 import shutil
+import sys
 from typing import Any, Dict, cast
+from urllib.parse import urlparse
 
 import yt_dlp
 from yt_dlp.utils import DownloadError
 
 _SUPPORTED_AUDIO_FORMATS = {"wav", "mp3", "m4a"}
+_RETRYABLE_YOUTUBE_FAILURE_MARKERS = (
+    "sign in to confirm you're not a bot",
+    "sign in to confirm you’re not a bot",
+    "use --cookies-from-browser or --cookies",
+    "cookies-from-browser",
+    "this helps protect our community",
+    "captcha",
+    "not a bot",
+)
+
+
+@dataclass(frozen=True)
+class _CookieRetrySource:
+    label: str
+    params: dict[str, Any]
 
 
 class _LoggerCapture:
@@ -34,6 +54,160 @@ def _check_ffmpeg_available() -> None:
             "ffmpeg is required for audio extraction but was not found on PATH. "
             "Install ffmpeg and retry."
         )
+
+
+def _is_youtube_url(url: str) -> bool:
+    host = urlparse(url).netloc.casefold()
+    return host in {"youtube.com", "youtu.be"} or host.endswith(".youtube.com")
+
+
+def _default_cookie_browsers() -> tuple[str, ...]:
+    if sys.platform == "darwin":
+        return ("safari", "chrome", "firefox")
+    return ("chrome", "firefox", "safari")
+
+
+def _format_download_error(exc: Exception, logger: _LoggerCapture) -> str:
+    details = "\n".join(logger.errors).strip()
+    message = str(exc).strip()
+    if details and details not in message:
+        return f"{message}\n{details}" if message else details
+    return message or details or exc.__class__.__name__
+
+
+def _is_retryable_youtube_auth_failure(youtube_url: str, error_text: str) -> bool:
+    if not _is_youtube_url(youtube_url):
+        return False
+    normalized = error_text.casefold()
+    return any(marker in normalized for marker in _RETRYABLE_YOUTUBE_FAILURE_MARKERS)
+
+
+def _parse_cookies_from_browser(browser_spec: str) -> tuple[str, str | None, str | None, str | None]:
+    spec = browser_spec.strip()
+    match = re.fullmatch(
+        r"""(?x)
+        (?P<name>[^+:]+)
+        (?:\s*\+\s*(?P<keyring>[^:]+))?
+        (?:\s*:\s*(?!:)(?P<profile>.+?))?
+        (?:\s*::\s*(?P<container>.+))?
+        """,
+        spec,
+    )
+    if match is None:
+        raise ValueError(f"invalid cookies-from-browser value: {browser_spec!r}")
+    browser_name, keyring, profile, container = match.group("name", "keyring", "profile", "container")
+    return (
+        browser_name.casefold(),
+        profile,
+        keyring.upper() if keyring else None,
+        container,
+    )
+
+
+def _build_cookie_retry_sources() -> list[_CookieRetrySource]:
+    env_browser = os.getenv("YTDLP_COOKIES_FROM_BROWSER", "").strip()
+    env_cookie_file = os.getenv("YTDLP_COOKIES_FILE", "").strip()
+    sources: list[_CookieRetrySource] = []
+
+    if env_browser:
+        sources.append(
+            _CookieRetrySource(
+                label=f"browser:{env_browser}",
+                params={"cookiesfrombrowser": _parse_cookies_from_browser(env_browser)},
+            )
+        )
+    if env_cookie_file:
+        cookie_path = Path(env_cookie_file).expanduser()
+        sources.append(
+            _CookieRetrySource(
+                label=f"cookies:{cookie_path}",
+                params={"cookiefile": str(cookie_path)},
+            )
+        )
+
+    if sources:
+        return sources
+
+    return [
+        _CookieRetrySource(
+            label=f"browser:{browser}",
+            params={"cookiesfrombrowser": (browser, None, None, None)},
+        )
+        for browser in _default_cookie_browsers()
+    ]
+
+
+def _run_yt_dlp_download(youtube_url: str, params: Dict[str, Any]) -> str | None:
+    logger = cast(_LoggerCapture, params["logger"])
+    try:
+        with yt_dlp.YoutubeDL(cast(Any, params)) as ydl:
+            ydl.extract_info(youtube_url, download=True)
+    except DownloadError as exc:
+        return _format_download_error(exc, logger)
+    except Exception as exc:
+        return _format_download_error(exc, logger)
+    return None
+
+
+def _format_cookie_retry_failure(
+    *,
+    failure_prefix: str,
+    initial_error: str,
+    retry_labels: list[str],
+    retry_errors: list[str],
+) -> str:
+    lines = [
+        "YouTube blocked anonymous download.",
+        f"The app retried with browser cookies: {', '.join(retry_labels)}.",
+        "If downloads are still blocked, use Local media or Document mode.",
+        "",
+        f"Initial error: {initial_error}",
+    ]
+    if retry_errors:
+        lines.append("Retry errors:")
+        lines.extend(f"- {item}" for item in retry_errors)
+    return f"{failure_prefix}: " + "\n".join(lines)
+
+
+def _download_with_cookie_retry(
+    *,
+    youtube_url: str,
+    params: Dict[str, Any],
+    failure_prefix: str,
+) -> None:
+    initial_error = _run_yt_dlp_download(youtube_url, params)
+    if initial_error is None:
+        return
+    if not _is_retryable_youtube_auth_failure(youtube_url, initial_error):
+        raise RuntimeError(f"{failure_prefix}: {initial_error}")
+
+    try:
+        retry_sources = _build_cookie_retry_sources()
+    except ValueError as exc:
+        raise RuntimeError(
+            f"{failure_prefix}: invalid browser cookie configuration: {exc}"
+        ) from exc
+
+    retry_labels: list[str] = []
+    retry_errors: list[str] = []
+    for source in retry_sources:
+        retry_labels.append(source.label)
+        retry_params = dict(params)
+        retry_params.update(source.params)
+        retry_params["logger"] = _LoggerCapture()
+        retry_error = _run_yt_dlp_download(youtube_url, retry_params)
+        if retry_error is None:
+            return
+        retry_errors.append(f"{source.label}: {retry_error}")
+
+    raise RuntimeError(
+        _format_cookie_retry_failure(
+            failure_prefix=failure_prefix,
+            initial_error=initial_error,
+            retry_labels=retry_labels,
+            retry_errors=retry_errors,
+        )
+    )
 
 
 def download_youtube_audio(
@@ -85,19 +259,11 @@ def download_audio(youtube_url: str, cache_dir: Path, audio_format: str) -> Path
         "logger": logger,
     }
 
-    try:
-        with yt_dlp.YoutubeDL(cast(Any, params)) as ydl:
-            ydl.extract_info(youtube_url, download=True)
-    except DownloadError as exc:
-        details = "\n".join(logger.errors).strip()
-        if details:
-            raise RuntimeError(f"YouTube download failed: {exc}\n{details}") from exc
-        raise RuntimeError(f"YouTube download failed: {exc}") from exc
-    except Exception as exc:
-        details = "\n".join(logger.errors).strip()
-        if details:
-            raise RuntimeError(f"YouTube download failed: {details}") from exc
-        raise RuntimeError(f"YouTube download failed: {exc}") from exc
+    _download_with_cookie_retry(
+        youtube_url=youtube_url,
+        params=params,
+        failure_prefix="YouTube download failed",
+    )
 
     if not target_path.exists() or not target_path.is_file():
         candidates = sorted(
@@ -142,19 +308,11 @@ def download_video(youtube_url: str, cache_dir: Path) -> Path:
         "logger": logger,
     }
 
-    try:
-        with yt_dlp.YoutubeDL(cast(Any, params)) as ydl:
-            ydl.extract_info(youtube_url, download=True)
-    except DownloadError as exc:
-        details = "\n".join(logger.errors).strip()
-        if details:
-            raise RuntimeError(f"YouTube video download failed: {exc}\n{details}") from exc
-        raise RuntimeError(f"YouTube video download failed: {exc}") from exc
-    except Exception as exc:
-        details = "\n".join(logger.errors).strip()
-        if details:
-            raise RuntimeError(f"YouTube video download failed: {details}") from exc
-        raise RuntimeError(f"YouTube video download failed: {exc}") from exc
+    _download_with_cookie_retry(
+        youtube_url=youtube_url,
+        params=params,
+        failure_prefix="YouTube video download failed",
+    )
 
     if not target_path.exists() or not target_path.is_file():
         candidates = sorted(
