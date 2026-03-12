@@ -47,6 +47,14 @@ def download_youtube_audio(
     )
 
 
+def download_youtube_video(youtube_url: str, cache_dir: Path) -> Path:
+    """Download a deterministic MP4 video file when a YouTube video source is available."""
+    return download_video(
+        youtube_url=youtube_url,
+        cache_dir=cache_dir,
+    )
+
+
 def download_audio(youtube_url: str, cache_dir: Path, audio_format: str) -> Path:
     """Download best audio and extract to audio_format using yt-dlp Python API."""
     if audio_format not in _SUPPORTED_AUDIO_FORMATS:
@@ -107,6 +115,63 @@ def download_audio(youtube_url: str, cache_dir: Path, audio_format: str) -> Path
         else:
             raise RuntimeError(
                 "YouTube download completed but converted audio file was not created: "
+                f"{target_path}"
+            )
+
+    return target_path.resolve()
+
+
+def download_video(youtube_url: str, cache_dir: Path) -> Path:
+    """Download best-effort MP4 video for optional visual analysis."""
+    cache_path = Path(cache_dir).expanduser().resolve()
+    cache_path.mkdir(parents=True, exist_ok=True)
+    _check_ffmpeg_available()
+    target_path = cache_path / "video.mp4"
+    if target_path.exists():
+        target_path.unlink()
+
+    logger = _LoggerCapture()
+    params: Dict[str, Any] = {
+        "format": "bestvideo[height<=720]+bestaudio/best[height<=720]/best",
+        "noplaylist": True,
+        "outtmpl": str(cache_path / "video.%(ext)s"),
+        "merge_output_format": "mp4",
+        "prefer_ffmpeg": True,
+        "quiet": True,
+        "no_warnings": True,
+        "logger": logger,
+    }
+
+    try:
+        with yt_dlp.YoutubeDL(cast(Any, params)) as ydl:
+            ydl.extract_info(youtube_url, download=True)
+    except DownloadError as exc:
+        details = "\n".join(logger.errors).strip()
+        if details:
+            raise RuntimeError(f"YouTube video download failed: {exc}\n{details}") from exc
+        raise RuntimeError(f"YouTube video download failed: {exc}") from exc
+    except Exception as exc:
+        details = "\n".join(logger.errors).strip()
+        if details:
+            raise RuntimeError(f"YouTube video download failed: {details}") from exc
+        raise RuntimeError(f"YouTube video download failed: {exc}") from exc
+
+    if not target_path.exists() or not target_path.is_file():
+        candidates = sorted(
+            p
+            for p in cache_path.glob("video.*")
+            if p.is_file() and p.suffix.lower() in {".mp4", ".mkv", ".webm", ".mov"}
+        )
+        if candidates:
+            try:
+                candidates[0].replace(target_path)
+            except OSError as exc:
+                raise RuntimeError(
+                    f"Video download completed but failed to write {target_path}: {exc}"
+                ) from exc
+        else:
+            raise RuntimeError(
+                "YouTube video download completed but merged video file was not created: "
                 f"{target_path}"
             )
 

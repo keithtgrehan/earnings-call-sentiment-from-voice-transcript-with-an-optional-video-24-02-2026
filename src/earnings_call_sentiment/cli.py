@@ -18,7 +18,7 @@ from rich.console import Console
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
 from . import __version__
-from earnings_call_sentiment.downloaders.youtube import download_audio
+from earnings_call_sentiment.downloaders.youtube import download_audio, download_video
 from earnings_call_sentiment.post_summary import generate_optional_summary
 from earnings_call_sentiment.pipeline.run import (
     load_transcript_segments,
@@ -35,6 +35,7 @@ from earnings_call_sentiment.summary_config import (
     load_summary_config,
     run_summary_preflight,
 )
+from earnings_call_sentiment.visual import is_video_path, write_visual_behavior_outputs
 
 
 _GUIDANCE_CUES = (
@@ -865,6 +866,28 @@ def _build_metrics_payload(
     return payload
 
 
+def _resolve_visual_source_path(
+    *,
+    youtube_url: str | None,
+    audio_path: str | Path | None,
+    cache_dir: Path,
+    verbose: bool = False,
+) -> tuple[Path | None, str | None]:
+    if audio_path is not None:
+        candidate = Path(audio_path).expanduser().resolve()
+        if is_video_path(candidate):
+            return candidate, None
+        return None, None
+    if youtube_url:
+        try:
+            video_path = Path(download_video(youtube_url, cache_dir))
+            return video_path, None
+        except Exception as exc:
+            _log(verbose, f"visual video download unavailable: {exc}")
+            return None, f"Video download unavailable: {exc}"
+    return None, None
+
+
 def _write_report_markdown(
     *,
     output_path: Path,
@@ -873,6 +896,7 @@ def _write_report_markdown(
     guidance_revision_df: pd.DataFrame,
     behavioral_summary: dict[str, Any],
     qa_shift_summary: dict[str, Any],
+    visual_summary: dict[str, Any] | None = None,
 ) -> None:
     lines = [
         "# Earnings Call Sentiment Report",
@@ -1013,6 +1037,46 @@ def _write_report_markdown(
         lines.append("- _none_")
     lines.append("")
 
+    if visual_summary is not None:
+        face_visibility = visual_summary.get("face_visibility_overall", {}) if isinstance(visual_summary, dict) else {}
+        prepared_stability = (
+            visual_summary.get("prepared_baseline_visual_stability", {})
+            if isinstance(visual_summary, dict)
+            else {}
+        )
+        qa_visual_shift = visual_summary.get("qa_visual_shift_score", {}) if isinstance(visual_summary, dict) else {}
+        lines.extend(
+            [
+                "## Visual Behavior Signals",
+                f"- face visibility: {face_visibility.get('level', 'low')}",
+                f"- prepared remarks visual stability: {prepared_stability.get('level', 'low')}",
+                f"- Q&A visual shift: {qa_visual_shift.get('level', 'low')}",
+                "",
+            ]
+        )
+        if visual_summary.get("visual_features_available"):
+            notable = visual_summary.get("most_visually_changed_segments", [])
+            if isinstance(notable, list) and notable:
+                top_item = notable[0]
+                lines.append(
+                    "- notable segment: "
+                    f"{top_item.get('section', 'segment')} "
+                    f"{float(top_item.get('start_time_s', 0.0)):.1f}s-"
+                    f"{float(top_item.get('end_time_s', 0.0)):.1f}s | "
+                    f"change={float(top_item.get('visual_change_score', 0.0)):.4f}"
+                )
+            low_conf = visual_summary.get("notable_low_confidence_segments", [])
+            if isinstance(low_conf, list) and low_conf:
+                lines.append(
+                    "- caution: "
+                    f"{str(low_conf[0].get('confidence_note', 'low face visibility reduces confidence'))}"
+                )
+        else:
+            limitations = visual_summary.get("limitations", [])
+            note = limitations[0] if isinstance(limitations, list) and limitations else "visual data unavailable"
+            lines.append(f"- caution: {note}")
+        lines.append("")
+
     lines.extend(
         [
             "## Outputs",
@@ -1024,6 +1088,18 @@ def _write_report_markdown(
             "- behavioral_summary.json",
             "- qa_shift_segments.csv",
             "- qa_shift_summary.json",
+        ]
+    )
+    if visual_summary is not None:
+        lines.extend(
+            [
+                "- visual_behavior_frames.csv",
+                "- visual_behavior_segments.csv",
+                "- visual_behavior_summary.json",
+            ]
+        )
+    lines.extend(
+        [
             "- metrics.json",
             "- report.md",
             "",
@@ -1037,6 +1113,9 @@ def _run_postscore_stages(
     chunks_scored_df: pd.DataFrame,
     out_dir: Path,
     args: argparse.Namespace,
+    video_path: Path | None = None,
+    enable_visual: bool = False,
+    visual_note: str | None = None,
 ) -> dict[str, Path]:
     resume = bool(args.resume)
     force = bool(args.force)
@@ -1049,6 +1128,9 @@ def _run_postscore_stages(
     behavioral_summary_path = out_dir / "behavioral_summary.json"
     qa_shift_segments_path = out_dir / "qa_shift_segments.csv"
     qa_shift_summary_path = out_dir / "qa_shift_summary.json"
+    visual_frames_path = out_dir / "visual_behavior_frames.csv"
+    visual_segments_path = out_dir / "visual_behavior_segments.csv"
+    visual_summary_path = out_dir / "visual_behavior_summary.json"
     metrics_path = out_dir / "metrics.json"
     report_path = out_dir / "report.md"
 
@@ -1106,6 +1188,30 @@ def _run_postscore_stages(
         qa_shift_summary = qa_shift_outputs["summary"]
     else:
         qa_shift_summary = json.loads(qa_shift_summary_path.read_text(encoding="utf-8"))
+    qa_shift_segments_df = _read_csv_or_empty(qa_shift_segments_path)
+
+    visual_summary: dict[str, Any] | None = None
+    if enable_visual:
+        if _stage_should_run(
+            "visual_behavior",
+            [visual_frames_path, visual_segments_path, visual_summary_path],
+            resume=resume,
+            force=force,
+        ):
+            visual_outputs = write_visual_behavior_outputs(
+                video_path,
+                qa_shift_segments_df,
+                out_dir,
+                sample_fps=1.0,
+            )
+            visual_summary = visual_outputs["summary"]
+            if visual_note:
+                limits = visual_summary.setdefault("limitations", [])
+                if visual_note not in limits:
+                    limits.append(visual_note)
+                visual_summary_path.write_text(json.dumps(visual_summary, indent=2), encoding="utf-8")
+        else:
+            visual_summary = json.loads(visual_summary_path.read_text(encoding="utf-8"))
 
     if _stage_should_run("metrics", [metrics_path], resume=resume, force=force):
         metrics_payload = _build_metrics_payload(
@@ -1130,6 +1236,7 @@ def _run_postscore_stages(
             guidance_revision_df=guidance_revision_df,
             behavioral_summary=behavioral_summary,
             qa_shift_summary=qa_shift_summary,
+            visual_summary=visual_summary,
         )
 
     return {
@@ -1144,6 +1251,15 @@ def _run_postscore_stages(
         "qa_shift_summary_json": qa_shift_summary_path,
         "metrics_json": metrics_path,
         "report_md": report_path,
+        **(
+            {
+                "visual_behavior_frames_csv": visual_frames_path,
+                "visual_behavior_segments_csv": visual_segments_path,
+                "visual_behavior_summary_json": visual_summary_path,
+            }
+            if enable_visual
+            else {}
+        ),
     }
 
 
@@ -1515,6 +1631,16 @@ def main(argv: list[str] | None = None) -> int:
 
     cache_dir.mkdir(parents=True, exist_ok=True)
     out_dir.mkdir(parents=True, exist_ok=True)
+    visual_enabled = bool(args.youtube_url or (args.audio_path and is_video_path(args.audio_path)))
+    visual_source_path: Path | None = None
+    visual_note: str | None = None
+    if visual_enabled:
+        visual_source_path, visual_note = _resolve_visual_source_path(
+            youtube_url=args.youtube_url,
+            audio_path=args.audio_path,
+            cache_dir=cache_dir,
+            verbose=bool(args.verbose),
+        )
     if defaulted_event_dt:
         console.print(
             "[yellow]Warning:[/yellow] --event-dt not provided; defaulting to current "
@@ -1608,25 +1734,37 @@ def main(argv: list[str] | None = None) -> int:
             chunks_scored_df=chunks_scored_df,
             out_dir=out_dir,
             args=args,
+            video_path=visual_source_path,
+            enable_visual=visual_enabled,
+            visual_note=visual_note,
         )
-        _print_outputs(
-            console,
-            "Scoring Complete",
+        output_rows = [
+            ("Transcript JSON", str(transcript_json)),
+            ("Sentiment Segments", str(artifacts["sentiment_segments_csv"])),
+            ("Sentiment Timeline", str(artifacts["sentiment_timeline_png"])),
+            ("Risk Metrics", str(artifacts["risk_metrics_json"])),
+            ("Guidance", str(post_paths["guidance_csv"])),
+            ("Guidance Revision", str(post_paths["guidance_revision_csv"])),
+            ("Uncertainty Signals", str(post_paths["uncertainty_signals_csv"])),
+            ("Reassurance Signals", str(post_paths["reassurance_signals_csv"])),
+            ("Analyst Skepticism", str(post_paths["analyst_skepticism_csv"])),
+            ("Behavior Summary", str(post_paths["behavioral_summary_json"])),
+        ]
+        if "visual_behavior_summary_json" in post_paths:
+            output_rows.extend(
+                [
+                    ("Visual Frames", str(post_paths["visual_behavior_frames_csv"])),
+                    ("Visual Segments", str(post_paths["visual_behavior_segments_csv"])),
+                    ("Visual Summary", str(post_paths["visual_behavior_summary_json"])),
+                ]
+            )
+        output_rows.extend(
             [
-                ("Transcript JSON", str(transcript_json)),
-                ("Sentiment Segments", str(artifacts["sentiment_segments_csv"])),
-                ("Sentiment Timeline", str(artifacts["sentiment_timeline_png"])),
-                ("Risk Metrics", str(artifacts["risk_metrics_json"])),
-                ("Guidance", str(post_paths["guidance_csv"])),
-                ("Guidance Revision", str(post_paths["guidance_revision_csv"])),
-                ("Uncertainty Signals", str(post_paths["uncertainty_signals_csv"])),
-                ("Reassurance Signals", str(post_paths["reassurance_signals_csv"])),
-                ("Analyst Skepticism", str(post_paths["analyst_skepticism_csv"])),
-                ("Behavior Summary", str(post_paths["behavioral_summary_json"])),
                 ("Metrics", str(post_paths["metrics_json"])),
                 ("Report", str(post_paths["report_md"])),
-            ],
+            ]
         )
+        _print_outputs(console, "Scoring Complete", output_rows)
         if args.question_shifts:
             _run_question_shift_analysis(
                 segments=segments,
@@ -1698,28 +1836,40 @@ def main(argv: list[str] | None = None) -> int:
         chunks_scored_df=chunks_scored_df,
         out_dir=out_dir,
         args=args,
+        video_path=visual_source_path,
+        enable_visual=visual_enabled,
+        visual_note=visual_note,
     )
 
-    _print_outputs(
-        console,
-        "Earnings Call Analysis Complete",
+    output_rows = [
+        ("Audio", str(result["audio"])),
+        ("Transcript JSON", str(result["transcript_json"])),
+        ("Transcript Text", str(result["transcript_txt"])),
+        ("Sentiment Segments", str(result["sentiment_segments_csv"])),
+        ("Sentiment Timeline", str(result["sentiment_timeline_png"])),
+        ("Risk Metrics", str(result["risk_metrics_json"])),
+        ("Guidance", str(post_paths["guidance_csv"])),
+        ("Guidance Revision", str(post_paths["guidance_revision_csv"])),
+        ("Uncertainty Signals", str(post_paths["uncertainty_signals_csv"])),
+        ("Reassurance Signals", str(post_paths["reassurance_signals_csv"])),
+        ("Analyst Skepticism", str(post_paths["analyst_skepticism_csv"])),
+        ("Behavior Summary", str(post_paths["behavioral_summary_json"])),
+    ]
+    if "visual_behavior_summary_json" in post_paths:
+        output_rows.extend(
+            [
+                ("Visual Frames", str(post_paths["visual_behavior_frames_csv"])),
+                ("Visual Segments", str(post_paths["visual_behavior_segments_csv"])),
+                ("Visual Summary", str(post_paths["visual_behavior_summary_json"])),
+            ]
+        )
+    output_rows.extend(
         [
-            ("Audio", str(result["audio"])),
-            ("Transcript JSON", str(result["transcript_json"])),
-            ("Transcript Text", str(result["transcript_txt"])),
-            ("Sentiment Segments", str(result["sentiment_segments_csv"])),
-            ("Sentiment Timeline", str(result["sentiment_timeline_png"])),
-            ("Risk Metrics", str(result["risk_metrics_json"])),
-            ("Guidance", str(post_paths["guidance_csv"])),
-            ("Guidance Revision", str(post_paths["guidance_revision_csv"])),
-            ("Uncertainty Signals", str(post_paths["uncertainty_signals_csv"])),
-            ("Reassurance Signals", str(post_paths["reassurance_signals_csv"])),
-            ("Analyst Skepticism", str(post_paths["analyst_skepticism_csv"])),
-            ("Behavior Summary", str(post_paths["behavioral_summary_json"])),
             ("Metrics", str(post_paths["metrics_json"])),
             ("Report", str(post_paths["report_md"])),
-        ],
+        ]
     )
+    _print_outputs(console, "Earnings Call Analysis Complete", output_rows)
 
     if args.question_shifts:
         segments = load_transcript_segments(Path(str(result["transcript_json"])))

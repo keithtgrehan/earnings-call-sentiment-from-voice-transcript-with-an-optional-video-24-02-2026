@@ -28,6 +28,8 @@ dependencies = [
   "rich",
   "matplotlib",
   "python-docx",
+  "opencv-python-headless",
+  "mediapipe",
 ]
 
 [project.optional-dependencies]
