@@ -1,0 +1,51 @@
+item_id,source_package,source_call_id,ticker,company,signal_family,label,text,start_char,end_char,source_path,notes
+uncertainty_001,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,uncertainty,strong,"We're currently constrained,
+and at this point, it's difficult to predict when supply and demand will balance.",21171,21281,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Explicit prediction difficulty.
+uncertainty_002,gold_guidance_calls,LEU_2025_Q4_call02,LEU,Centrus Energy,uncertainty,strong,"Phase two cost incurred subsequent to November, 2024
+have not been subject to a fee
+as this portion of the contract remains undefended size
+and is subject to final resolution.",12067,12242,data/gold_guidance_calls/raw_calls/LEU_2025_Q4_call02.txt,Condition remains unresolved.
+uncertainty_003,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,uncertainty,strong,It's hard to estimate with precision what the demand will be.,47141,47202,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Explicit estimation difficulty.
+uncertainty_004,gold_guidance_calls_holdout,holdout09,EVER,Everus,uncertainty,strong,"Based on our strong first quarter results and continued favorable market outlook, balanced against economic uncertainties and typical project timing movement, we are maintaining our guidance for 2025.",0,200,data/gold_guidance_calls_holdout/raw_calls/EVER_2025_Q1_holdout09.txt,Explicit macro and timing uncertainty.
+uncertainty_005,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,uncertainty,strong,"So we we feel good about doing that, and but I don't I wouldn't want
+to predict how the market reacts in the in the future.",33577,33700,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Management declines to predict market reaction.
+uncertainty_006,gold_guidance_calls,GOOGL_2025_Q4_call03,GOOGL,Alphabet,uncertainty,present,"However, the volatility in
+exchange rates could affect
+the impact of FX on Q1 revenues.",26033,26120,data/gold_guidance_calls/raw_calls/GOOGL_2025_Q4_call03.txt,Conditional impact statement.
+uncertainty_007,gold_guidance_calls,LEU_2025_Q4_call02,LEU,Centrus Energy,uncertainty,present,This could represent another source of low-cost capital.,5463,5519,data/gold_guidance_calls/raw_calls/LEU_2025_Q4_call02.txt,Possibility language without explicit concern escalation.
+uncertainty_008,gold_guidance_calls,LEU_2025_Q4_call02,LEU,Centrus Energy,uncertainty,present,"And as Amir noted,
+we were recently selected
+for the $900 million HALO Enrichment Award,
+which could increase to just over 1 billion
+with $170 million of additional options.",14140,14313,data/gold_guidance_calls/raw_calls/LEU_2025_Q4_call02.txt,Qualified growth potential.
+uncertainty_009,gold_guidance_calls,LLY_2025_Q2_call08,LLY,Eli Lilly,uncertainty,present,"We're very pleased with
+these results, which showed that in addition to the well established best-in-class weight loss
+and A1C control, Tersepatite now also provides a cardio-protective benefit
+and may provide more wide reaching health improvements, including greater kidney protection
+and a reduced overall risk of death.",18236,18558,data/gold_guidance_calls/raw_calls/LLY_2025_Q2_call08.txt,Qualified outcome statement.
+uncertainty_010,gold_guidance_calls,LLY_2025_Q2_call08,LLY,Eli Lilly,uncertainty,present,"This subpopulation had the longest follow-up, which is encouraging
+for what we might see more broadly across the total study population over time.",22861,23007,data/gold_guidance_calls/raw_calls/LLY_2025_Q2_call08.txt,Moderate hedge about generalization.
+uncertainty_011,gold_guidance_calls,LLY_2025_Q2_call08,LLY,Eli Lilly,uncertainty,present,"We believe olomeracid in combination with immunocology agents in an early setting could improve
+the standard of care for patients with Keras G12C Mutant lung cancer.",26165,26330,data/gold_guidance_calls/raw_calls/LLY_2025_Q2_call08.txt,Qualified improvement claim.
+uncertainty_012,gold_guidance_calls,LLY_2025_Q2_call08,LLY,Eli Lilly,uncertainty,present,"We believe this
+molecule could be an important non-obioid therapy for pain in the future.",26710,26799,data/gold_guidance_calls/raw_calls/LLY_2025_Q2_call08.txt,Qualified future-state claim.
+uncertainty_013,gold_guidance_calls,LLY_2025_Q2_call08,LLY,Eli Lilly,uncertainty,present,"Through the acquisition
+of birth therapeutics we added several genetic medicines for cardiovascular disease that may only
+need to be given once in a lifetime.",26800,26958,data/gold_guidance_calls/raw_calls/LLY_2025_Q2_call08.txt,Qualified medical outcome.
+uncertainty_014,gold_guidance_calls,NVDA_2026_Q4_call07,NVDA,NVIDIA,uncertainty,present,"While we expect tightness in the supply for our advanced architectures to persist, we remain confident in our ability to capitalize on the growth opportunity ahead with our scale, expansive supply chain, and the longstanding partnerships continuing to serve us well.",12612,12878,data/gold_guidance_calls/raw_calls/NVDA_2026_Q4_call07.txt,Forward-looking supply caution.
+uncertainty_015,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,uncertainty,absent,"We expect services revenue to grow at a year-over-year rate, similar
+to what we reported in the December quarter.",19225,19338,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,"Plain guidance range, not behavioral hedging."
+uncertainty_016,gold_guidance_calls,PLTR_2025_Q4_call01,PLTR,Palantir,uncertainty,absent,"For full year 2026 we expect
+revenue of between
+7.",21446,21496,data/gold_guidance_calls/raw_calls/PLTR_2025_Q4_call01.txt,"Plain forward guidance, not useful uncertainty."
+uncertainty_017,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,uncertainty,absent,"We are bringing intelligence to more of what people
+already love about our products, so we can make every experience even more capable and effortless.",6640,6790,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,"Product positioning, not uncertainty."
+uncertainty_018,gold_guidance_calls,IBM_2025_Q4_call04,IBM,IBM,uncertainty,absent,"Our flywheel for growth is underpinned by client trust, flexible and open platforms,
+sustained innovation, deep domain expertise, and a broad ecosystem and that's exactly what
+played out for the year.",2799,2999,data/gold_guidance_calls/raw_calls/IBM_2025_Q4_call04.txt,"Growth framing, not uncertainty."
+uncertainty_019,gold_guidance_calls,GOOGL_2025_Q4_call03,GOOGL,Alphabet,uncertainty,absent,"The third area is how we
+monetize new AI user
+experiences in search.",15605,15673,data/gold_guidance_calls/raw_calls/GOOGL_2025_Q4_call03.txt,Neutral strategic statement.
+uncertainty_020,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,uncertainty,absent,"Together, these innovations create an
+experience that feels both powerful and personal, and the enthusiasm we are seeing reflects
+just how strongly AirPods Pro 3 are resonating with customers.",5819,6011,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,"Product enthusiasm, not uncertainty."

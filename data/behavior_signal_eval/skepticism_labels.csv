@@ -1,0 +1,57 @@
+item_id,source_package,source_call_id,ticker,company,signal_family,label,text,start_char,end_char,source_path,notes
+skepticism_001,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,skepticism,low,"I was just wondering if you could
+you to talk about any any comps that we should be particularly aware of as we kind of think about
+each of the product categories.",26330,26493,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Gentle information-seeking question.
+skepticism_002,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,skepticism,low,"So just wanted to ask if those things
+would create tough comps or is it just less of an issue just given the new product outlook?",26600,26729,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Mild clarifying follow-up.
+skepticism_003,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,skepticism,low,What's driving the strength over here?,22355,22393,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Direct but light clarification request.
+skepticism_004,gold_guidance_calls,GOOGL_2025_Q4_call03,GOOGL,Alphabet,skepticism,low,"Sundar, I'd be curious to
+hear about as you look back
+at 2025, where do you think
+you made the most progress on
+new types of Agentec
+commerce products and then
+looking at a 26, where are
+you most optimistic to sort
+of have even more progress
+in utility for users and
+your advertisers?",28892,29176,data/gold_guidance_calls/raw_calls/GOOGL_2025_Q4_call03.txt,"Curious framing, not adversarial."
+skepticism_005,gold_guidance_calls,GOOGL_2025_Q4_call03,GOOGL,Alphabet,skepticism,low,"Could you just talk a little bit about how you align
+with partners for success there?",50063,50148,data/gold_guidance_calls/raw_calls/GOOGL_2025_Q4_call03.txt,Light clarifying question.
+skepticism_006,gold_guidance_calls,GOOGL_2025_Q4_call03,GOOGL,Alphabet,skepticism,low,"And then second, on monetization, where are you on that?",52001,52057,data/gold_guidance_calls/raw_calls/GOOGL_2025_Q4_call03.txt,Simple follow-up question.
+skepticism_007,gold_guidance_calls,LLY_2025_Q2_call08,LLY,Eli Lilly,skepticism,medium,So can you tell us what changed in the marketplace for the injectables?,46792,46863,data/gold_guidance_calls/raw_calls/LLY_2025_Q2_call08.txt,Direct challenge on change driver.
+skepticism_008,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,skepticism,medium,"Can you help us understand maybe what the revenue upside potential
+that exists with AI?",24286,24373,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Asks management to justify upside assumptions.
+skepticism_009,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,skepticism,medium,So how do you monetize AI and what's the timeline to realizing that ROI?,24632,24704,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Pushes on commercialization clarity.
+skepticism_010,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,skepticism,medium,"Now that you have kind of more time
+and data to evaluate this cycle, can you maybe help us understand what the primary factors are driving
+strengths in the iPhone?",25167,25330,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Requests evidence for observed strength.
+skepticism_011,gold_guidance_calls,GOOGL_2025_Q4_call03,GOOGL,Alphabet,skepticism,medium,"Can you talk about
+the pathway to closing
+the gaps for the need for
+compute, both internally
+and externally, and how to
+think about some of the
+outputs of closing that gap
+as the year progresses.",31748,31943,data/gold_guidance_calls/raw_calls/GOOGL_2025_Q4_call03.txt,Presses on execution gap.
+skepticism_012,gold_guidance_calls,GOOGL_2025_Q4_call03,GOOGL,Alphabet,skepticism,medium,"Are you seeing any cannibalization of search as far as activity as people
+start using that app more?",51900,52000,data/gold_guidance_calls/raw_calls/GOOGL_2025_Q4_call03.txt,Probes for weakness risk.
+skepticism_013,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,skepticism,medium,And how long will these supply impact your ability to ship through demand?,42365,42439,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Probes operational constraint impact.
+skepticism_014,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,skepticism,medium,"And are you confident you've reserved
+sufficient data center capacity to support the widespread Syria adoption, especially given that you're
+not following the other hyperscalers and sharply increasing capex?",46659,46866,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Challenges readiness assumptions.
+skepticism_015,gold_guidance_calls,PVH_2025_Q1_call09,PVH,PVH Corp.,skepticism,high,"You also mentioned that your brands have strong
+product assortments and exciting commercial plans, but what gives you confidence that both brands,
+both Calvin and Tommy, still have good momentum with consumers that they haven't lost
+moments and that part of what may be is explaining the change in the guide isn't something of that
+nature.",37095,37434,data/gold_guidance_calls/raw_calls/PVH_2025_Q1_call09.txt,Explicit confidence challenge.
+skepticism_016,gold_guidance_calls,GOOGL_2025_Q4_call03,GOOGL,Alphabet,skepticism,high,"You're at the forefront of AI and the
+impact that that's happening on software companies
+why wouldn't that be or why would it
+be undermining the economics of your
+large software SaaS company base?",38031,38227,data/gold_guidance_calls/raw_calls/GOOGL_2025_Q4_call03.txt,Strong challenge to strategic durability.
+skepticism_017,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,skepticism,high,"I'm sure there's a number of factors, but if you, if you had to point to
+one or two, just what would they be and how sustainable do you think those are?",25331,25483,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Explicit sustainability challenge.
+skepticism_018,gold_guidance_calls,AAPL_2026_Q1_call06,AAPL,Apple,skepticism,high,"We're hoping if you could
+maybe confirm that in secondarily, if it's correct, what might be some of the drivers of that,
+and what could be things that you could do to reverse that in future quarters that I'm a follow-up?",34921,35141,data/gold_guidance_calls/raw_calls/AAPL_2026_Q1_call06.txt,Direct challenge on weakness drivers and remedy.

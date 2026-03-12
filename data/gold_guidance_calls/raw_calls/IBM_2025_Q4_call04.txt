@@ -1,0 +1,633 @@
+Welcome and thank you for standing by.
+At this time, participants are in a listen only mode.
+Today's conference is being recorded.
+If you have any objections, you may disconnect at this time.
+Now I will turn the meeting over to Olympia McNurney, IBM's Global Head of Investor Relations.
+Olympia?
+You may begin.
+Thank you.
+I'd like to welcome you to IBM's fourth quarter, 2025 earnings presentation.
+I'm Olympia McNurney and I'm here today with Arvin Krishna, IBM's Chairman, President
+and Chief Executive Officer and Jim Cavanaugh, IBM Senior Vice President and Chief
+and Angela Officer.
+We'll post today's prepared remarks with a reply of today's webcast on the IBM Investor
+website within a couple of hours.
+The earnings presentation is already available.
+To provide additional information to our investors, our presentation includes certain non-gap
+measures.
+For example, all of our references to revenue and signings growth are a constant currency.
+We provided reconciliation charts for these and other non-gap financial measures at the
+end of our presentation, which is posted to our investor website.
+Finally, some comments made in this presentation may be considered forward looking under
+the private security of litigation reform Act of 1995.
+These statements involve factors that could cause our actual results to differ materially.
+Additional information about these factors is included in the company's SEC filings.
+So with that, I'll turn the call over to Arvin.
+Thank you for joining us today.
+Let me start by reflecting on our strong performance in 2025 and the execution of our
+investor day model, then getting to more detail on the quarter.
+We are excited about the progress we made in 2025.
+Delivering 6% revenue growth, our highest level of revenue growth in many years, and 14.7
+billion dollars of free cash flow, our highest level of cash generation in forward a decade.
+As we laid out at an investor day in February 2025, we are executing on our strategy to advance
+IBM as a software led hybrid cloud and AI platform company.
+We entered 2025, intently focused on investing in innovation and productivity initiatives
+to accelerate our shift towards durable, higher growth and markets in software with expanding
+margins and strong free cash flow.
+Today software represents approximately 45% of our business, up from about 25% in 2018.
+software grew 9% our highest annual growth rate in history with 3 of our 4 software
+sub-segment delivering double digital growth rates.
+Innovation value can also be seen in our IBM Z performance up 48% this year achieving
+the highest annual revenue for Z in about 20 years.
+I am proud of our achievements in 2025 as we exceeded all of our target metrics for revenue
+growth, profitability and free cash flow that we laid out at our investor day.
+Our flywheel for growth is underpinned by client trust, flexible and open platforms,
+sustained innovation, deep domain expertise, and a broad ecosystem and that's exactly what
+played out for the year. Let me not touch on the macro. We continue to operate in a dynamic environment,
+but one very prime demand remains resilient in the categories that matter most to IBM.
+Enterprises are prioritizing technology investments that drive productivity, resilience,
+and flexibility, particularly in hybrid cloud AI and mission critical infrastructure.
+These technologies are no longer viewed as incremental tools, but as platforms that fundamentally
+changes our business scale, compete and operate. As clients modernized core systems,
+redesign workflows and seek to extract more value from growing volumes of data,
+expectations for integration, security and performance continue to rise.
+These trends are structural and they align closely with IBM strategy and strengths.
+Now turning to our execution in the fourth quarter, we deliver total revenue growth of 9%
+or highest level in over three years. Software growth accelerated to 11% in the fourth quarter,
+driven by the strength of our diversified portfolio. Both data and automation are getting strong
+momentum with clients, growing 19% and 14% respectively in the quarter. As AI adoption accelerates,
+enterprise clients are increasingly focused on how to keep operations running smoothly
+in a more complex and hybrid environment fueled by a surge of new applications.
+Our intervent portfolio of leading automation and data solutions
+help clients manage and optimize operations, automate infrastructure and workflows,
+build resiliency, secure and govern data, and drive cost efficiency.
+Consulting continue to grow up 1% reflecting increased demand for AI services as clients need
+help designing, deploying, and governing AI at scale. At infrastructure, deliver another
+robust quarter, growing 17% driven by strength and Z17, which has been outpacing Z16 performance.
+A key contributor to this momentum is the innovation value we are delivering
+with Z17 processing 50% more AI inferencing operations per day than Z16
+and bringing real-time inferencing capabilities inside IBM Z. The breadth of our AI offering
+is another key differentiator. Combining an innovative technology stack with consulting at scale
+and our client zero journey. A cumulative Genie I book of business now stands at over $12.5
+billion of its software is more than 2 billion and consulting is more than 10.5 billion
+with both seeing the largest quarterly increase to date. As we look at the evolution of AI,
+our opportunity is to make it easy for clients to build AI that is specific to their data,
+their processes, and their competitive needs, including the effective use of smaller,
+more efficient models where they make sense. That is why IBM's approach spans consulting,
+what's the next, or a genetic platform orchestrate, and red hat AI. Our announced acquisition
+of confluent is another pillar in this strategy. Helping unify our hybrid cloud and automation
+solutions through a smart data platform. Confluent has the most capable technology to unlock
+real-time value of data across applications, clouds, APIs, and as AI agent said to their
+enterprise, they will need access to that data in real-time. Confluent is a great way to deliver
+that in a controlled, secured, and governed manner. Our hybrid approach to models also enables
+clients to use the best option for each use case. IBM's grant models, third body models,
+or open models from hugging face, meta, and mistrol. In addition to being a demand driver,
+AI is also a powerful productivity driver for IBM, contributing to our strong financial performance.
+In 2023, we set out on a goal to achieve 2 billion dollars of productivity savings,
+exiting 2024, and today we are well ahead of that, exiting 2025 with 4.5 billion dollars
+of annual run rate savings. We have been accelerating our productivity initiatives to enable
+investment in innovation and highly strategic acquisitions like Hoshikop and Confluent
+while continuing to deliver strong modern expansion and three-cart flow growth.
+Hoshikop continues to accelerate within IBM, benefiting from our go-to-market distribution
+and joint product innovation. We see a similar opportunity with the announced acquisition
+of Confluent, leveraging IBM's global go-to-market reach to accelerate growth and discipline
+G&S structure. Accelerating organic innovation is a core focus for IBM. Project Bob
+is IBM's next generation AI-based software development system designed to transform
+developer productivity. Bob introduces intelligent orchestration between industrial
+leading frontier models such as anthropic, cloud, and mistrol, small language models,
+including IBM granite, and custom models all optimize for constant performance.
+We have more than 20,000 IBMers that are using Project Bob, reporting productivity gains
+averaging 45% of powerful cloud zero use case. We are also advancing innovation
+to deep M&A product synergies. For example, we recently developed Hoshikop infrograph
+a real-time graph of infrastructure and application configuration,
+by fusing infrographs insights with IBM automation products like concerts, we unlock
+true root cause analysis and proactive prevention for clients. All this leads to real
+tangible value for our clients. Companies like Morgan Stanley and FedEx are leveraging
+our technology solutions and infusing our genuine products into core workflows, and master
+core is leveraging our technology solutions, including data management platforms,
+software platforms, and gen AI products and solutions. Infrastructure, clients such as CVS,
+are turning to Z17's AI capabilities for enhanced management of mainframe application workloads
+and increase resiliency. We also announce new or deep in strategic partnerships through
+the year with AMD and Tropic, AWS, Microsoft, Open AI and Oracle. Recently, we announced
+a partnership between Red Hat and Nvidia that allides our hybrid AI solutions and Nvidia's AI
+stack. This collaboration allows enterprises to deploy AI accelerated applications
+across any environment from the data center to the public cloud using a unified automated infrastructure.
+It represents a significant step forward in making high performance AI more accessible
+and scalable for a hybrid enterprise. Innovation combined with us strategic partnerships across
+consulting with key hyperscaler and ISP relationships and software with key data providers
+drive a multiplier effect that fuels our flywheel for growth. We continue to make steady progress
+in quantum computing. Over the past quarter, we advanced our development roadmap, improved
+error correction capabilities, and expanded ecosystem partnerships. Our collaboration with
+organizations such as Cisco and participation in government initiatives like the US Department
+of Energy's Genesis mission and our past quantum benchmarking initiative to reflect growing
+confidence in IBM's approach to building scalable fault tolerant quantum systems.
+Quantum advantage will require high performing hardware and in December we deployed our first
+120 qubit IBM Quantum Nighthawk base system for use by our clients. Back in 2024, we predicted
+that we see quantum advantage by the end of 2022 and with the help of IBM hardware, software,
+and rapid cycles of learning, our partners in the scientific computing community are starting
+to make the first credible advantage claims. We remain on track to deliver the first large
+scale fault tolerant quantum computer by 2020. To conclude, we finished the year with strong
+execution and continued progress against our strategy. IBM has long been known for innovation,
+what matters most is how that innovation is used to help clients operate better, grow faster,
+and compete more effectively. We made a clear set of strategic choices for the last several years
+to help our clients do exactly that and it is playing out in our results today and going forward.
+We entered 2026 with momentum and confidence in our ability to sustain 5% plus revenue growth
+and grow free cash flow by about $1 billion. With that, let me hand it over to Jim to go through
+the financials. Thanks, Arvin. As we enter 2025, we provided guidance of accelerating 5 plus
+percent revenue growth, greater than a half a point of operating pre-text margin expansion,
+double digit adjusted even a growth, and about $13.5 billion of free cash flow.
+We exit at 2025, beating all of these metrics. Delivering 6% revenue growth,
+100 basis points of operating pre-text margin expansion, 17% adjusted even a growth,
+and $14.7 billion of free cash flow, growing 16% over last year. This represents our highest free
+cash flow margin in reported history. And we deliver 12% growth in operating deluded earnings per share.
+This performance reflects strong execution of our flywheel for growth.
+Through client trust, leadership and hybrid cloud and gen AI, accelerating innovation,
+deep domain expertise, and an ecosystem multiplier effect. In 2025, we were intently
+focused on strengthening and accelerating our software portfolio, delivering innovation value
+with our next generation mainframe launch, expanding our early leadership in gen AI and quantum,
+and executing M&A growth synergies across IBM. All of our segments accelerated in the second
+half of 2025, with these drivers playing out in demonstrating momentum across our diversified business.
+For the full year, software grew 9%. Our highest annual growth rate in history, with three of
+our four sub segments delivering double-digit growth rates. Infrastructure was up 10%. We
+collecting a record Z17 launch, achieving the highest annual revenue for IBM Z in about 20 years,
+and outpacing Z16 over the first three quarters of the program. And consulting
+reflected back to growth in the second half, driven by Gen AI momentum, with our Gen AI book of
+business and consulting at more than ten and a half billion dollars in section to date.
+Let me now dive deeper into our fourth quarter performance.
+Software revenue growth accelerated to 11%. On top of last year's growth of 11.5%, which was
+the highest in 15 years. Growth was driven by the strength of our recurring revenue base,
+our shift to higher growth and markets, innovation, including our early leadership in Gen AI,
+M&A growth synergies and monetization of our strong IBM Z placement with an inflection
+in transaction processing. Our ARR was strong at $23.6 billion, up over $2 billion from the end of
+2024. This quarter's performance was broad-based across our synergistic portfolio,
+with organic growth accelerating to over 7%. Data grew 19%. Fueled by the demand for our
+Gen AI products and strong performance with established strategic partners, who enable customers
+to power our AI innovation and mission critical workloads. These market dynamics underscore
+the synergy opportunity we see what confluent. Automation grew 14% including another record
+bookings quarter for high-shape quarter. Let have decelerated to 8%. Driven partially by the
+wrap on last year's elevated consumption-based services that we called out last quarter.
+And also from the in-quarter yield on single-digit bookings growth driven by the
+LAS and US federal business deal activity related to the government shutdown. While in longer
+growth arc virtualization continues to gain momentum, including over $500 million of contract
+signed over the last two years. Open shift is now $1.9 billion ARR business,
+growing more than 30%. And as we expected last quarter given the record Z-17 placement this year,
+transaction processing inflected back to growth of 4%. Consulting revenue grew 1% in a fourth quarter,
+with intelligent operations up 3% in strategy and technology remaining stable.
+Performance was driven by steady demand across key offerings. Business application transformation,
+application migration and modernization, application operations, and cybersecurity.
+As clients prioritize cost efficiency while continuing to invest in AI-enabled transformation.
+As ARR been noted, clients are moving beyond experimentation and need support designing,
+deploying and governing AIF scale. Our consulting generative AI book of business surpass $2 billion
+in the quarter. Our largest quarter of Gen AI reflecting continued momentum. We are also expanding
+our impact through client zero, applying our generative AI experience in driving productivity
+and efficiency to help clients operationalize AIF scale. This practical experience
+combined with our domain expertise is resonating with clients. While overall signings were
+down as we wrapped on record fourth quarter signings last year, the mix continued to improve with
+a greater share of strategic wins from both new clients and expanded engagements within existing ones.
+Infrastructure revenue grew 17% this quarter, with hybrid infrastructure up 24%
+and infrastructure support down 2%. Within hybrid infrastructure, IBM Z had another outstanding
+quarter delivering its highest fourth quarter revenue in more than two decades.
+Up 61% year to year, reflecting the enduring value of the platform and the success of our
+latest Z-17 program. Clients are investing in Z-17 for its differentiated capabilities.
+We'll time AI-enferencing, quantum safe security, and AI-driven operational efficiency.
+Which are critical as enterprises modernized mission critical workloads in scale for data-intensive
+environments. IBM Z continues to be the backbone of enterprise IT, enabling clients to
+integrate seamlessly with hybrid cloud by unlocking new levels of resiliency, scalability,
+and performance. Distributed infrastructure revenue was flat, with product cycle dynamics impacting
+storage, offset by growth and power supported by solid adoption of our newly launched solutions.
+Now turning the profitability. In 2025, we delivered our highest operating gross profit margin
+in reported history and highest operating pre-text margin in a decade. Demonstrating the
+evolution of our portfolio mix and our laser focus on productivity. For the full year,
+productivity, mix and revenue scale drove expansion of operating gross profit margin by 170 basis points.
+Adjusted even a margin by 230 basis points and operating pre-text margin
+by 100 basis points. And we achieved this, despite absorbing more than $300 million of delusion
+from Hashie Corp. Given the announcement of our intent to acquire confluent, we accelerated
+productivity initiatives in the fourth quarter to help mitigate 2026 delusion, similar to our
+playbook on Hashie Corp. Excluding resulting workforce rebalancing charges we took in the fourth quarter,
+operating pre-text margin expanded by 140 basis points for the full year.
+Segment profit margins expanded by 100 basis points in software, 180 basis points in
+consulting, with consulting margins at the highest level in three years, and 450 basis points
+in infrastructure. For the full year, we generated $14.7 billion of free cash flow up $2 billion
+year over year, resulting in the highest free cash flow margin in reported history.
+The primary driver of this growth is adjusted EBITDA up $2.8 billion over year,
+partially offset by increase investments in catbacks, higher cash taxes, and higher net interest
+expense as we expected coming into 2025. Let me talk about our free cash flow evolution in a
+little more detail. Our repositioning to a software-led business, in addition to our cost discipline
+and productivity initiatives, drives significant operating leverage in our financial model.
+Since 2022, we have consistently delivered double-digit growth in free cash flow,
+while in excess of revenue growth, demonstrating this business model evolution.
+Our flag will for growth and discipline execution of productivity initiatives
+lead to sustainable and high-quality free cash flow generation. This durable cash flow
+engine enables us to invest in our business to accelerate growth. This includes increased organic
+innovation with R&D up about $2.5 billion since 2019, and it allows us to pursue highly
+strategic M&A transactions like App Deal, Software AG, Hashie Corp, Data Stacks, and Confluent
+that drive M&A synergies across IBM. Our diversified and integrated business drives a platform
+multiplier fact that uniquely allows us to deliver M&A synergies. This includes synergies from
+our global-go-to-market distribution scale, platform synergies that amplify value with IBM's
+complementary offerings and operational synergies through our G&A discipline. Most recently,
+this can be seen with Hashie Corp, delivering adjusted EBITDA creation ahead of expectations
+within the first full year in IBM. Our financial flexibility fuels innovation and our discipline
+capital allocation policy, including our commitment to return capital to shareholders. We exit
+at 2025 with a strong liquidity position and a solid investment-grade balance sheet, with cash
+of $14.5 billion. We invested $8.3 billion in acquisitions, and return $6.3 billion
+for shareholders in the form of dividends. Our debt balance ending the year was $61.3 billion,
+including $15.1 billion in debt for financing business, with the receivables portfolio
+that is almost 80% investment-grade. Now, let me discuss our expectations for
+2022. Our strong performance in 2025 reflects the strength of our diversified portfolio and a
+multi-year execution of our strategic repositioning. Consistent with our investor-day model,
+we expect a sustained constant currency revenue growth of 5% plus in 2026, and free cash flow
+to be up about $1 billion year over year, growing high single digits. Our revenue expectations
+are underpinned by our durable and accelerating software business, which we expect to grow
+10% this year. This acceleration is led by our organic growth, driven by the strength of our recurring
+revenue base, our shift to higher growth and markets, Jenny I traction, M&A growth synergies,
+and monetization of our record z-placement with an inflection in transaction processing,
+a tremendous source of profitability, and free cash flow for IBM. And we continue to expect
+that conflict will close by the middle of 2026. In consulting, our backlog levels and momentum
+in Jenny I, with backlog penetration over 25% support and acceleration in revenue growth to
+low to mid-single digits for the year. The powerful combination of our integrated platforms,
+services, as software model, and client zero experience, allow us to deliver differentiated value
+to clients. We enter 2026-3-quarters into the Z-17 launch. We expect the infrastructure revenue
+to be down low single digits, about a half a point impact to IBM. With Z growth in the first quarter,
+balanced by product cycle dynamics throughout the rest of the year. The strength of our Z placement
+fuels are flywheel for growth, with its attractive three to four-expect multiplier across IBM.
+Let me now touch on our Jenny I book a business before I turn to profit. We have been reporting
+our cumulative Jenny I book a business since a third quarter of 2023 when it was in the low
+hundreds of millions of dollars. We exit in 2025 with the Jenny I book a business greater than
+12 and a half billion dollars. Demonstrating strong momentum in consulting and software.
+This would be the last quarter in which we report this metric separately. AI is now embedded
+across our business from how we deliver services to our software portfolio to the capabilities
+we are adding to our infrastructure platforms and how we drive our own productivity. As a result,
+a standalone Jenny I metric no longer reflects the full scope of how AI is driving value across IBM.
+For the full year we expect IBM's operating pre-text margin to expand by about a point.
+Our software portfolio mix and ongoing productivity initiatives continue to drive margin expansion
+and mitigate Z product cycles and the impact of delusion from acquisitions. Our operating
+tax rate for the year should be in the mid-teens and the timing of discrete items can
+cost a rate to vary within the year. Let me give a little bit more color on confluent delusion
+dynamics. We anticipate absorbing about $600 million of delusion from confluent in 2026
+driven largely by stock-based compensation and interest expense. We expect confluent
+will be accretive to adjust it EBITDA within the first full year and to free cash flow in year two
+post-close. We have multiple levers that underpin our confidence in these accretion targets
+including revenue synergies, operational spend synergies and ongoing productivity savings.
+Revenue synergies include both the ability to accelerate revenue leveraging our go-to-market
+distribution platform as well as drive product synergies which play out over time.
+We expect to realize about $500 million of operational spend run-rate synergies by the end of
+2027. We continue to accelerate our productivity initiatives and now expect an incremental
+$1 billion of productivity savings this year. Driving $5.5 billion of annual run-rate savings
+by the end of 2026. Taking this on to account, we are confident in our ability to expand
+operating pre-text margin by about a point in 2026. For free cash flow, we expect to grow about
+$1 billion in 2026 in line with our investor-day model of high single-digit growth.
+Given the strong fundamentals of our business, adjusted EBITDA growth will be the primary driver
+of our free cash flow, offset by similar factors as last year, including cash tax headwinds,
+higher capex, and higher net interest expense. Looking to the first quarter, we expect our
+currency revenue growth rate to be similar to the full year, and for operating pre-text margin,
+we expect about a hundred basis points of expansion with workforce rebalancing fairly consistent
+with the prior year. Our first quarter operating tax rate should be in the mid-teens.
+We are excited about our prospects in 2026. Our growth accelerators, portfolio mix,
+integrated value, and continued investment in innovation are driving sustainable revenue growth
+and strong free cash flow. As we shift toward a software-led business and speed our pace of innovation,
+our growth fly will continue to strengthen. We enter 2026 with the solid momentum across our business
+and remain focused on discipline execution with unwavering focus on productivity,
+enabling investing for the future and delivering value for our shareholders.
+Arvan and I are now happy to take your questions. Olympia, let's get started.
+Thank you, Jim. Before we begin Q&A, I'd like to mention a couple of items. First,
+supplemental information is provided at the end of the presentation, and then second, as always,
+I'd ask you to refrain from asking multi-par questions. Operator, let's please open it up for questions.
+Thank you. And at this time, we'll begin the question and answer session of the conference.
+If you would like to ask a question, please press star 1 under telephone keypad.
+The confirmation told what indicate your line is in the question Q.
+You may press star 2 if you would like to remove your question from the Q.
+For participants using speaker equipment, it may be necessary to pick up your handset
+before pressing the star keys. Our first question comes from Brent Phil, with Jeffers. Please go ahead.
+Thanks. Good afternoon. Arvan, good to see the comment on software growth,
+accelerating to double as your growth. This year, I was just curious if you could maybe dig into
+the components and why you're excited for that organic led initiative, and then anything else that's
+important to note this year on software portfolio that maybe we haven't seen in 2025. Thanks.
+Give you a bit of a perspective on the dynamics of the different parts of the software
+business, and then for quantification, I'll turn it over to Jen. So first, we are incredibly pleased
+with how we got to the end of the year on software. We are pleased with the organic growth
+in software, and we are pleased with the inorganic contribution. If I sort of feel it first from
+the sub-sagments, automation, I think is on a secular demand increase. The reason for that is
+as people have more and more infrastructure, they put more and more AI, they put more and more compute.
+They need that software to help the manager all of it, and we're seeing that play through in the
+demand for Hoshika, which helps you deploy hardware and software with the demand for
+Hoshika, which helps you manage the costs and gives you a perspective of what is happening,
+as well as all of the pieces around how do you integrate applications, how do you integrate
+data, and all of those components. So I think that expecting well into double-digital growth for
+that part is appropriate, and we see that in our early demand signals. If I look at data, data benefits
+both from our data products that we provide, the organic innovation we have done with WatsonX,
+both the AI pieces and the orchestrate piece for agents, and we expect that that demand will keep
+pulling through and going forward as people are deploying AI for enterprise productivity and inside
+the enterprise. Then we also have a lot of partnerships in the data space that VCs
+strong demand for, and that we expect are going to continue. Mainframe given the very strong
+cycle we had, somewhere between low to mid-single-digit growth, is reasonable, and we have seen
+that dynamic play through, but it can't follow the hardware placement by a few orders. So all
+that hardware has people consumed is going to cause that to grow. And then we get to write at first,
+as we are very pleased with the doubling, almost more than doubling, of the red hat business,
+and see acquired it. It was 3.3 billion, 3.2 billion, when we made the acquisition,
+finishing the year at 7.5 on a run rate, just extrapolating for the fourth quarter towards
+8 billion, VCs strong demand in many of the pieces there, including on red hat lyrics. But that
+probably in the mid-single-digits more than in the high to double, which is in line with
+server growth. You still taking share, and the piece there that continues to be very, very
+attractive to growth is open-shift, which is almost a 2 billion, and running at a 30% growth rate,
+and we expect that to continue both for containers, for hybrid applications, and for virtualization,
+so if you put all of that together, then that gives the confidence on the growth that
+you made out about 10% for the year. This all assumes a mid-year closing for a confluent,
+which is sort of baked into our expectations right now. Now, of course we're going to
+describe to do even better, but I think that this is a prudent set of numbers to put out.
+Yet, the only thing I would add, just to wrap it up, and I'll say it on behalf of Arvins
+given how humbly is. When you look at 2025 in our software execution, I think what you see one
+is the strength of our portfolio and the diversification of that portfolio. And that's a reflection
+of a multi-year strategic repositioning of the IBM company to a software-led platform
+center company. We finished 25 with one of the highest growths we've ever had in software overall,
+but it's pervasive with three of our four software categories growing double digits.
+You dial back only about three years ago. We only had one growth factor,
+and that was Red Hat, that is the foundation of our high-book cloud and AI strategy. The work we've
+done around repositioning the portfolio, a discipline capital allocation, to build out an automation
+portfolio, a data portfolio, and always capitalizing on that high-profit margin, transaction
+processing portfolio has just been phenomenal and it's leading to a sustainable, durable growth
+engine that gives us that conviction of double-digit growth here in 2026. But when you cut to the
+underpinnings, it reflects that diversity, ARR, roughly $24 billion growing high single-digits
+Gen AI over $2 billion book of business up to X in the fourth quarter, and that M&A growth
+synergies, you're just seeing the beginnings of that playout with Hashi with another record quarter
+overall. So we are excited about the opportunity ahead, and we feel confident about software now
+at double digits, not approaching double digits. Operator, let's take the next question.
+Your next question comes from Amit, Dharjanani with Evercore ISI, please stay your question.
+Good afternoon, everyone, and congratulations on some nice numbers here. You guys want to focus
+on free cash flow a bit, and if I go back to the start of the year in 25, you know, you folks talked
+about 13.5 or then free cash flow guide, you said any of it being 14.7 billion, I think,
+where it's all set and done, and I think revenue growth helped you some more, but it was really
+good free cash flow margin conversion. So I'd love to know from your perspective, what drove
+the strength of better performance in free cash flow in 25? And there really want to go with this,
+I want to understand the 15.7 billion free cash flow guide for this year, which is impressive,
+but it implies high single-digits free cash flow growth, more to the 16% if you saw last year.
+So please don't tell me a question. Was there something unique that you saw in 25 that led to the
+16% and any percentage on the 15.7 numbers of this year?
+Thanks, Simon. I appreciate the question. As we've been talking about for five years,
+six years now going on, as Arvin's taken over this company, we've got two key measures that we
+drive this company on. Revenue growth and free cash flow generation. By the way, there's synergistically
+a line, because it provides that flywheel of investment flexibility. But you're exactly right.
+We entered the year, and I remember a year ago sitting in this chair, I got asked the question
+by I think it was either you or Ben about our, you know, my words. Are we sandbagging free
+cash flow? And at that time, we said 13 and a half billion hours, and the underpinnings behind that
+was double-digit growth and adjusted even a, and that we would have partially mitigating that
+some headwinds on, or I would talk about tailwinds, higher cash tax, because we've got a higher
+profit profile, higher cat backs, because we're going to invest in this business for long-term,
+future growth, and we were going to have higher net interest in acquisition related charges.
+Now you fast forward a year later, we posted $14.7 billion, by the way, up to $2 billion,
+up 16%, highest free cash flow. We've seen in well over a decade, highest free cash flow margin
+on record of 114 year history of our great company. And the underpinnings behind that cash flow
+were entirely driven by the fundamentals of our business. The acceleration we saw in our revenue
+growth throughout the year, and the strong operating leverage we continue to get out of this business.
+Where we started with adjusted EBITDA and double-digit growth, we finished at 17%,
+that's an incremental $1 billion of adjusted EBITDA from where we were a year ago. And by the way,
+that's a flywheel engine. Revenue acceleration, operating leverage,
+and driving an efficient balance sheet where we're very proud about a solid investment-grade
+balance sheet generates significant substantial free cash flow. So now you're fast forward
+to this year. We enter 2026 with a lot of momentum confidence, by the way, I should have said
+over the last three years, we've grown free cash flow five and a half billion dollars. So that
+growth factor, what's been happening. But you look at 2026, our investor models high-single digit,
+we've got a lot of work to do in 2026. We said we'd guide confidently up a billion dollars
+at $15.7 billion. That's on a high-single digit growth. It's early in the year,
+high-single digit growth of adjusted EBITDA. And we are sitting here with the tremendous amount
+of leverage and opportunity just like we were a year ago. And our goal is to continue driving
+the durable sustainable performance of this company as we move forward. So why do we feel
+excited? One, we have a focus for folio, discipline, capital allocation, the versification of our
+business model, and a relentless focus on profitability that drives the durability of free cash flow
+engine in this company that gives us the financial flexibility to continue to invest for long-term
+sustainable advantage. So we feel confident about that 15-7, and our job is to beat it this year.
+Operator, let's take the next question. Our next question comes from Ben Ritesis with
+Melios Research, please, their question. Yeah, hey guys, thanks a lot. At the risk of getting
+in trouble with Olympia here, I'm at the question. I was surprised you didn't say there's a multi-hundred
+million hit due to a confluent in the cash flow guide, which without it would be higher. But
+my real question is with regard to Red Hat. And I wanted to just clarify, I appreciate the double
+digit guidance for software. I wanted to see how we're going to bridge Red Hat. How do we
+get the aid to the mid-teens or mid-teens no longer the growth rate there? Obviously, everything
+else was great and better than our model. But I'd like to just focus laser focus on Red Hat and
+how we bridge it within your forecast and towards the prior goals. Thanks. Yeah, thanks Ben. And
+I didn't say the delusion effect because to be honest, we think delusions part of our model.
+Our investors expect us to be disciplined capitalicators. I think we've earned a credibility about
+that. And we have to take that into account. That's why we drive portfolio mix.
+We drive revenue scale. We drive productivity, which by the way, I also didn't say we exited
+last year, four and a half billion dollars over the last two years. And we see that going up
+by another billion dollars this year. So we got a lot of levers in this business. And we understand
+that delusion. But you know what? The strategic value of confluent and the synergistic value of
+what it does to our portfolio. We definitely can take into account that delusion. So I know
+you were trying to help on 157s higher. Yes, it is. But all in, which is how we operate and report,
+we got a deliver or beat that number. So, but let's get back to software. You know, we taught
+a lot about the first question. We entered 26 with confidence around the momentum, the diversification
+of our portfolio, about the strategic repositioning, about the flywheel of growth. And we expect
+now double digit growth. Underneath that, one, that's going to deliver four and a over four
+and a half points to IBM's growth in 26. Above our model and as Arvin said, an acceleration
+organic growth. Organic will be north to seven points this year in acquisitions about three points.
+How are we going to do that? We're going to do that. One, we have to acknowledge we're operating
+in an attractive 10. What a market backdrop for tech that we think is pretty exciting and Arvin
+has been on that point about opportunities to we continue the thing. I think it's under
+appreciating our discipline capitalicator. We continue to shift this portfolio mix the higher
+growth and markets with companies that we buy, which we always say category leaders and
+structurally growing markets that we can provide unique value, integrate and deliver differentiated
+synergies to accelerate growth. That is shifting our underlying portfolio that's also advancing
+our organic or a profile. The newty strength, 24 billion exiting the year, growing high single
+digits, 8 plus percent, new innovation, Jenny I, Jenny I in a fourth quarter up two X and we see
+that continuing as we move forward, M&A growth synergies kicking in off of a record
+past year and Arvin talked about T.P. Cycle monetization. By the way, one point on T.P.
+that I think is under appreciated. We talk about a very similar to Z16 Cycle. Z16 first year at
+Cycle T.P. was flat. We finished this year flat. One big difference. That flat on Z16 was off
+the down nine. The flat this year in 2025 was off a plus 10. So you can see the compounding effect
+of what's happening to T.P. and we see that in fact in the growth. So underpinning and Arvin gave
+you some of the math. One data, high teams contributing about four points at that software growth,
+well above model. That's going to be driven by new innovation, Jenny I, KPBODY, platform economics,
+two hybrid cloud. We think that's double digit. Back to why I started my first answer.
+Three, four years ago we only have one growth factor. Now we got three growth factors that are
+growing double digit. Underpinning that we got a subscription revenue under contract that's
+growing midteens. That's not at model. We only deliver single digit ACV bookings in a fourth quarter
+because as we stated in prepared remarks, we were disrupted by the shutdown in the federal
+government. We got to get through that, we're monitoring it, and I would say the word choices were
+being prudent on Red Hat's guidance right now because we only need that at double digit
+to get software over the line of double digit. Upside will deliver upside to software overall.
+Automation, great portfolio, low double digit, two and a half point contribution to software,
+honor better than the model. And that's leveraging M&A growth synergies off Hashi's success,
+and MTP. We're pretty much back to model. We'll single mid-single digit growth,
+capitalizing on that economic multiplier. So it gives you a little of the underpinnings behind
+why we're confident in that 10 plus percent growth is software. Let's take the next question.
+Your next question comes from Wanzi, Mohan with Bank of America. Please see your question.
+Yes, thank you so much. Just to follow up, a clarification quickly on the last couple of
+questions around hybrid cloud growth. Are you anticipating any potential pressure on the server
+refresh cycle from higher memory pricing and could that sort of have any adverse effect on the
+Red Hat Enterprise Linux side of things? And my my question really is Jim.
+On the cadence of BTI improvement, certainly you're driving a lot of productivity improvement
+in being able to absorb entirely the dilution from compliment and then some. So how should we
+think about the cadence of the progress of that given that conference going to hit mid-year,
+but you already taken some productivity actions here and forth you have last year. So should
+we be seeing more outside BTI improvements in maybe second quarter. I think you already said more
+less in the first quarter, but like in the second quarter, it's not the right way to think about it.
+Thank you so much. Okay. So Wanzi, let me take the first part of the question and I'll
+ask Jim to address the second part of your question. Look, the server dynamics are volatile and you're
+right. If I remember correctly, what memory DRAM prices are six times that of last year.
+A big reason for that for those who are interested is because a lot of the capacity is moving
+over to HBM or high bandwidth memory, which is required for AI servers. And if I remember correctly,
+it takes about four maybe eight times the capacity of DRAM to do HBM and the pricing and the
+demand for HBM is driving all the vendors into that. I personally believe as long as that dynamic
+is there, those pricing issues are going to be there through the year. Now, the demand side,
+there is no AI server without a bunch of CPUs right next to it. So the reality becomes that the
+AI demand also drives demand for normal servers that in turn feed and load up those servers.
+So I don't expect that the overall server dynamic on which there may be a little bit of
+issue is actually going to be any headwind to us on the hybrid cloud or the Linux side. And the
+reason for that is that there is enough growth going on. There is also a market share movement towards
+Red Hat as opposed to alternate answers in the marketplace. So that makes overall. I think keeps
+us growing well. I also believe that both Red Hat, AI and OpenShift AI will feed into the demand
+from the AI servers, which was going to help that demand. So let's acknowledge there is going to be
+memory pressure and that probably lasts at least a couple of years. But as we look at that,
+it also gives opportunity for the AI portions of the portfolio to get a lot of a lot of tailwinds.
+So with that, I'll give it to Jim for things another free cash growth question.
+Yeah, and this skew of profitability worms, I think was your question. So thanks very much and I
+appreciate that just given we do still expect confident to close by mid-year this year. Obviously,
+very excited about the strategic capabilities that's going to add. But I think I was very transparent
+in the prepare remarks about the level of delusion, etc. But let me bring it up a level first.
+Around how do we run this company and how do we drive the operating leverage that's been going
+up well above our model over the last three to four years? We drive this through portfolio mix.
+That's why software being the underpinning of IBM's leverage around 45% of IBM's revenue.
+But about two thirds of our profit. Also, the high value recurring revenue are AR,
+book of business, high marginal profit dollar. So portfolio mix being one-level, productivity,
+every dollar we invest in this company around good-a-market, around R&D, around innovation,
+and around our consulting services. We look and we drive a very maniacal ROI concept around that.
+Profile just as you would expect us to as an investor like an Interorganic M&A acquisition.
+And three, we drive the bring this company the most productive company in the world and getting
+G&A scale leverage overall. Fundamentally, you manage those three separate buckets differently.
+When you look at 2026, we set about a point, growth and margin. We're going to get about a half
+of point out a revenue scale. Just given the leverage of the acceleration of revenue. We will lose
+a half a point on portfolio mix. Because we are going to wrap on an unprecedented launch momentum
+on mainframe, which carries higher prior profit and higher mix. The remaining full point,
+basically, is going to be driven out of productivity. And our model, as you know quite well,
+we've been driving north to 300 basis points per year, a productivity, and we've been reinvesting
+about 200 basis points to that. That's why you've seen over the last handful of years. Our R&D
+up double-digit growth year over year. And we've taken over the last five years. We've taken
+two and a half billion dollars of R&D up overall. But when you look at 2026,
+productivity is going to drive the day. We feel confident. We took up our productivity target
+at the five and a half billion. We will get revenue scale leverage on G&A, which will mitigate
+dilution and mitigate product cycles overall. To your last question, we think the skew with that
+profit ability is going to follow our normal historical attainment. First quarter will be pretty
+much on historical attainment. By the way, you do the math. That's double-digit profit growth,
+double-digit EPS growth. So pretty consistent, building off the momentum and fourth quarter.
+Other next questions, please? Thank you. And your next question comes from Gem Schneider
+with Goldman Sachs. Please, Peter question. Good afternoon. Thanks for taking my question.
+As well, one of you could maybe outline the path or trajectory you're expecting for the consulting
+business throughout the year. You know, sightings were a little bit weaker in this quarter, but you
+didn't know that the strong backlog and AI that you're seeing. So we talk about how you expect
+that to convert into revenue over the course of the year. And whether you see any kind of further
+improvement in discretionary or short-cycle spending and projects as you head throughout 206. Thank you.
+Great, Jim. It's good here for me and I appreciate the question. First of all, we're encouraged
+by the inflection shift that we see in consulting business, exiting in 25. We return to business
+back the durable sustainable growth in the second half, a little bit over 1%. But more importantly,
+and I think, under appreciated, we get a lot ahead of room to go and the team is working diligently
+around improving the fundamentals of this business and our operating pretext margins are up
+by almost 200 basis points in 2025. When you look at the market, market definitely remains dynamic
+as we talked about earlier. We continue to see opportunity for growth as clients accelerate
+their investments in AI driven transformation to unlock operational efficiency, to unlock
+business model innovation and unlock growth. I think it's a very different mindset and
+client buying behavior, and we saw 18 months ago when it was pure disruption and discretionary
+spend that's moving out. So as we look at 26, this gives us the confidence that we guided
+low-single to mid-single, which we think is going to be pretty much where the market is out
+overall, and we still believe we've got continued headroom on operating margins. We guide about
+another point and a half improvement year over year. Both of them are going to be a creative and
+contribution to IBM overall. How's that going to happen? One, I would put in a handful of buckets,
+one, backlog realization, and what we see, two, our Jenny, I, momentum, and the rate and
+pacing growth and acceleration we're seeing, three strategic partnership headroom that we still have,
+four, our portfolio composition we've been talking about is aligned to much more growth
+and markets, higher growth and markets. You know, where portfolio is less around pure BPO,
+it's more around digital transformation, application modernization, AI around data transformation,
+cybersecurity governance, and in five, you know, Mohammed and team, we've been doing a ton of work
+around reshaping our model to an asset-based services as software model with our industry leading IBM
+consulting advantage. So let me talk about just a couple of them to give you some math and
+statistics on why we feel confident. One, backlog, 32 billion up 2% overall, but underpinning
+record low erosion duration that is continued to come down, and our realization to your question,
+we see a realization out of that backlog that fully supports that load a mid-single-digit growth,
+and we see it pretty much modestly growing throughout the year. So low-single-digit first quarter
+and then growing throughout the year. Two, we added over 400 new clients this year, and that is
+improved our net new business contribution as we've been talking about by eight points, which is having
+a higher revenue realization by four points year over year. So backlog composition and the acceleration
+is one aspect. Jenny eyes the second. Jenny eye now represents over a third of our bookings,
+over 25% of our backlog right now, 32 billion are backlog and over 15% of our revenue on an exit run rate.
+We have a $3.6 billion ARR, Jenny eye revenue run rate in consulting, and we see that
+continue to accelerate, and then finally the repositioning. We see more headroom on margin leverage,
+about a point and a half as we go forward, and that's due productivity portfolio mix.
+But we have to manage, we are operating in a very aggressive pricing environment, and we'll continue
+monitoring it. Operator next question. Thank you, and your next question comes from Eric Woodrey,
+with Morgan Stanley. Please say a question. Awesome. Thank you guys for excuse me in here.
+In order to really strong infrastructure here, obviously outstanding performance in the
+I think there's an argument to be made, and I hear from you that with the tell-and-to-processor,
+giving the amount of data and transactions on the main frame, the main frame can be an AI workhorse.
+You had really strong out performance relative to your historical model in the Z,
+you're guiding to a bit of infrastructure to climb in 2026, and so I'm just trying to understand,
+what was it just, some kind of difference buying trends in 2025 and perhaps a bit of pull forward,
+that was different than maybe capacity launches, or could you just be a bit conservative as you look
+out into 2026, and are you site-cycle dynamics, but could you see some more sustainability
+in the infrastructure business in the Z cycle, that may be isn't fully accounted for
+in the infrastructure guidance that you give. Thanks so much. Eric, as Jim actually explained in
+answers to a few questions, we want to give guidance and we want to be where we have incredibly
+high confidence that we can hit or beat those numbers. So let me just caution that all guidance
+we give is with that in mind. Let me just actually go back to a few of the dynamics that are
+driving even stronger adoption of the main frame. Let's point out, Z17 has been the strongest start
+three quarters in. Before that, Z16 was the strongest in about 20 years. Before that, Z15 was
+better than 1430 and 12, so we've been on this continuing improvement. Let me point to, I think
+at least three second of factors under it. Number one, there is a lot more demand for people to
+have. We can use the word sovereignty or we can use the word on premise control, which goes
+along with the economics of the main frame platform. I think more and more plans have
+broken up to that for certain workloads, the main frame is actually the lowest unit cost
+economics platform, and that is really important. Number two, the thing often is, well, but it's a
+very hard platform for our developers to use and for our operators to leverage. The Gen AI tools we
+have provided with the Watson code assistant for Z, really takes that bonus away. It can refactor
+co-ball into Java. It can help people understand a code that is already running on the platform.
+It can help you refactor that code if you want to keep it exactly as it is. It can help you take
+things out, so that headwind of people saying this is a hard platform to modernize, has gone away.
+That then comes to your AI capabilities. You're right. I'm incredibly excited by our ability
+to do AI right in line. If you can do it right in line with the transactions, that's a milliseconds
+delay as opposed to multiple seconds if you take it off platform, which is how people have been
+doing it so far. That capability, while we introduced it in the beginning of 2025,
+really came to market only in the fourth quarter of 2025. So I do expect and we look forward to
+helping our clients install that and a very large number of our clients actually told us they're
+interested and they kept space in the machines to put in those cards. We call them the
+Spire cards or you can think of it at the Gen AI card, which gives you all that capability.
+As those cards go in, then the software stack to support that goes in, but we also have to give
+help to our clients to let the models run on the platform and to get their use cases up and going.
+I expect that to take some months to happen, but that does provide possible tailwinds,
+but again, some of the dynamics that both Jim and I have explained.
+Operator, let's take one last question. Thank you. And this question comes from Matt Swanson with
+RBC. Please see your question. Great. Thank you. Marvin, if I could maybe take a more holistic
+view of a part of your answer, you just said, so I mean, as you were talking about, there's been
+a lot more conversations right now about where Enterprise Gen AI workload should reside. And it
+really feels like that conversation, the intersection of your dual pillars of AI and hybrid cloud.
+But when looking at the strength of the refresh cycles, you mentioned, it was also the strength
+and demand for the data segment, the automation segment, or conversations and consulting.
+What do you think, combining all these things, says about the current state of Enterprise
+transformation for Gen AI, maybe today and, you know, heading into 26? Matt, thanks.
+And thank you for the question, because it is one, as you can imagine, that people think about a lot
+and then play out various scenarios. So let's look at Gen AI so far. Gen AI so far has largely been
+a consumer topic. People use chat parts, people use it to improve the emails, people are using
+it to improve document writing, you have the videos if I leave the statistics I read and
+are generated with the help of AI. I'm not saying only AI, but with the help of AI. All of that
+tends to be AI that is running on a high-per-skiller public cloud somewhere and that people go
+to the overall average. As we look forward now to the Enterprise, I am convinced this is an
+end world. I'm not saying that the high-per-skiller public model usage is going to decline,
+but the enterprise is going to get concerned with how much of not the data, I don't think
+people are going to steal data though that has happened a few times, but I do think that there
+is going to be a lot of concern around the nature of what other models learning from answering
+these questions and do we really want to share that with everybody else or not that is going
+to be issues around sovereignty on the users of these models and there is going to be questions
+around just basic privacy. This is not data that we want to take everywhere else. So I take that
+into, I believe if I look out 3 to 5 years, 50% of the enterprise usage of AI is going to be
+in either a private cloud or is going to be in their own data centers and the other 50%
+is going to be usage of public models. Now there is also an efficiency question. So if
+what we use on premise is smaller models that actually it could be that 80 to 90% of all the
+influencing is really in a private slash on premise and 10% of the influencing is on a public,
+but that 10% could be at 5 to 10 times the price and hence the dollar sort of even out. We see
+this playing out really importantly over the next 3 to 5 years and that is why we have been positioning
+very strongly. We use the word sovereign or sovereignty for how people want to manage that
+technology. We announce the sovereign core offering last week to help get this done but we do believe that
+this is going to play out. The main premise is an important element but not the only element in
+that story. So it is an add. It is a very long answer but this is what is going to play out
+over the next 3 to 5 years. So thank you all for all of these questions. As you can see we have
+been excited about our year and the changes we have made to our business over the last few years
+and our performance in 2025 reinforced our confidence on the next chapter of our growth.
+We look forward to continuing this dialogue through the year. Thank you, Arvind.
+Operator, let me turn it back to you to close out the call. Thank you for participating on today's
+call. The conference is now ended. You made this connect at this time.

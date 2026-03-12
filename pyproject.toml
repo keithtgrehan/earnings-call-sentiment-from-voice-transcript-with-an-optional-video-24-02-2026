@@ -12,6 +12,7 @@ authors = [{ name = "Keith" }]
 license = { text = "MIT" }
 
 dependencies = [
+  "flask",
   "faster-whisper",
   "transformers",
   "torch",
@@ -26,6 +27,7 @@ dependencies = [
   "typer",
   "rich",
   "matplotlib",
+  "python-docx",
 ]
 
 [project.optional-dependencies]

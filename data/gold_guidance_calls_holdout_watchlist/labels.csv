@@ -1,0 +1,18 @@
+call_id,ticker,company,quarter,event_date,guidance_change_label,evidence_text,evidence_start,evidence_end,label_confidence,notes,source_type,source_path
+watchhold01,AMZN,"Amazon.com, Inc.",Q4_2025,2026-02-05,unclear,"Net sales are expected to be between $173.5 billion and $178.5 billion, or to grow between 11% and 15% compared with first quarter 2025.
+Operating income is expected to be between $16.5 billion and $21.5 billion, compared with $18.4 billion in first quarter 2025.",0,263,0.84,Official Amazon Q4 2025 release excerpt provides explicit forward outlook but no explicit direction change versus prior guidance.,official_excerpt,data/gold_guidance_calls_holdout_watchlist/raw_calls/AMZN_2025_Q4_watchhold01.txt
+watchhold02,ETN,Eaton,Q4_2025,2026-02-03,unclear,"For the full year 2026, the company anticipates:
+- Organic growth of 7-9%
+- Segment margins of 24.6-25.0%
+- Earnings per share between $11.57 and $12.07
+- Adjusted earnings per share between $13.00 and $13.50",0,208,0.84,"Official Eaton excerpt contains explicit outlook bullets without raised, maintained, lowered, or withdrawn guidance action.",official_excerpt,data/gold_guidance_calls_holdout_watchlist/raw_calls/ETN_2025_Q4_watchhold02.txt
+watchhold03,VRT,Vertiv,Q3_2025,2025-10-22,raised,"Given the strong backlog and pipelines, Vertiv is raising its full-year 2025 guidance across key metrics. The company has increased its adjusted diluted EPS from $3.80 to $4.10, adjusted operating profit from $1,990 million to $2,060 million and adjusted free cash flow from $1,400 million to $1,500 million.",0,308,0.88,Official Vertiv release explicitly states the company is raising full-year 2025 guidance across key metrics.,official_excerpt,data/gold_guidance_calls_holdout_watchlist/raw_calls/VRT_2025_Q3_watchhold03.txt
+watchhold04,LMND,Lemonade,Q4_2025,2026-02-19,raised,"Our guidance contemplates IFP growth of 32%, a 200bps increase as compared to our prior public comments.
+Our FY Adj. EBITDA guidance of ($52m)-($48m) represents a >50% improvement in our Adj. EBITDA loss as compared to 2025.",0,224,0.88,"Official Lemonade shareholder letter says guidance contemplates a 200bps increase compared with prior public comments, which is supportable as raised within the closed set.",official_excerpt,data/gold_guidance_calls_holdout_watchlist/raw_calls/LMND_2025_Q4_watchhold04.txt
+watchhold05,BE,Bloom Energy,Q4_2025,2026-02-05,unclear,"Bloom provides outlook for the full-year 2026:
+Revenue: $3.1B – $3.3B
+Non-GAAP Gross Margin: ~32%
+Non-GAAP Operating Income: $425M – $475M
+Non-GAAP EPS: $1.33 – $1.48",0,166,0.84,Official Bloom Energy Q4 2025 excerpt provides explicit outlook bullets without a direction-change action.,official_excerpt,data/gold_guidance_calls_holdout_watchlist/raw_calls/BE_2025_Q4_watchhold05.txt
+watchhold06,BE,Bloom Energy,Q2_2025,2025-08-07,maintained,"Bloom reiterated its 2025 revenue and margin guidance of $1.65 billion and approximately 29%, respectively.",0,107,0.88,Official Bloom Energy Q2 2025 release explicitly says the company reiterated its 2025 revenue and margin guidance.,official_excerpt,data/gold_guidance_calls_holdout_watchlist/raw_calls/BE_2025_Q2_watchhold06.txt
+watchhold07,NBIS,Nebius Group,Q2_2025,2025-08-07,raised,We are increasing our annualized ARR outlook for our core AI infrastructure business to more than $120 million by the end of 2025 from our previous guidance of $105 million.,0,173,0.88,Official Nebius Q2 2025 release explicitly states the company is increasing its ARR outlook from prior guidance.,official_excerpt,data/gold_guidance_calls_holdout_watchlist/raw_calls/NBIS_2025_Q2_watchhold07.txt
