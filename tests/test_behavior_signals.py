@@ -75,6 +75,43 @@ def test_skepticism_low_medium_high_examples() -> None:
     assert high_payload["skepticism_df"].iloc[0]["skepticism_label"] == "high"
 
 
+def test_skepticism_covers_light_probe_stems() -> None:
+    payload = compute_behavioral_outputs(
+        _chunks("What's driving the strength over here?", "Could you just talk a little bit about the partner motion?")
+    )
+    labels = list(payload["skepticism_df"]["skepticism_label"])
+    assert labels == ["low", "low"]
+
+
+def test_skepticism_covers_medium_probe_stems() -> None:
+    payload = compute_behavioral_outputs(
+        _chunks(
+            "Can you help us understand maybe what the revenue upside potential is with AI?",
+            "Are you seeing any cannibalization of search as far as activity as people start using that app more?",
+            "And are you confident you've reserved sufficient data center capacity to support the rollout?",
+        )
+    )
+    assert list(payload["skepticism_df"]["skepticism_label"]) == ["medium", "medium", "medium"]
+
+
+def test_skepticism_covers_high_confidence_and_sustainability_challenges() -> None:
+    payload = compute_behavioral_outputs(
+        _chunks(
+            "But what gives you confidence that both brands still have good momentum with consumers?",
+            "How sustainable do you think those are?",
+            "What could be things that you could do to reverse that in future quarters?",
+        )
+    )
+    assert list(payload["skepticism_df"]["skepticism_label"]) == ["high", "high", "high"]
+
+
+def test_skepticism_does_not_flag_plain_information_request() -> None:
+    payload = compute_behavioral_outputs(
+        _chunks("Could you walk us through the sequence of prepared remarks before we move to Q&A?")
+    )
+    assert payload["skepticism_df"].empty
+
+
 def test_behavior_regression_non_matches_stay_non_matches() -> None:
     payload = compute_behavioral_outputs(
         _chunks(
