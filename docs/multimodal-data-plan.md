@@ -1,182 +1,99 @@
 # Multimodal Data Plan
 
-## Purpose
-This repo should stay transcript-first. Multimodal work should strengthen reviewer decision support, not replace the deterministic text backbone.
+## Product Guardrails
+This repo stays transcript-first.
 
 Priority order:
-1. transcript + Q&A + behavior signals
-2. audio hesitation / pause features
-3. video behavior as optional support
+1. transcript + guidance + text behavior + Q&A shift
+2. audio delivery support
+3. optional visual support
+4. late fusion that only adjusts interpretation confidence modestly
 
-This remains a decision-support system for structured earnings-call review. It is not a predictive trading system, not proof of alpha, not emotion-truth inference, and not lie detection.
+This is not:
+- a deception detector
+- a truth detector
+- an emotion-product
+- a trading or alpha system
 
-## Current Readiness
+Audio and video should help reviewers inspect delivery under questioning. They should never replace the transcript evidence or force a conclusion when media quality is weak.
 
-### Text: usable now
-- Transcript ingestion already supports YouTube, local media, document upload, and pasted text.
-- The repo already produces:
-  - guidance extraction and guidance revision artifacts
-  - tone-change artifacts
-  - behavior artifacts: uncertainty, reassurance, analyst skepticism
-  - Q&A shift artifacts
-- The guidance benchmark stack is already stable:
-  - frozen benchmark: `data/gold_guidance_calls/labels.csv`
-  - active holdout: `data/gold_guidance_calls_holdout/labels.csv`
-  - watchlist-derived unseen holdout: `data/gold_guidance_calls_holdout_watchlist/labels.csv`
+## Current Repo Stance
+- Transcript artifacts remain canonical and benchmarked.
+- Audio and visual outputs are support layers only.
+- Weak media should be suppressed, not stretched into a confident read.
+- Generic emotion datasets are calibration resources, not earnings-call ground truth.
 
-### Audio: partly ready, but not labeled yet
-- Transcript chunks and scored segments already carry timing fields that can anchor answer-level audio windows.
-- The CLI already normalizes audio and keeps enough run-level structure to add pause and hesitation extraction without redesigning the workflow.
-- Q&A shift logic already separates prepared remarks from Q&A and identifies answer windows, which is the right attachment point for audio features.
-- What is missing:
-  - answer-level pause / onset latency extraction
-  - filler density and hesitation labels
-  - small audio gold eval set
-  - overlap / interruption handling benchmarked on repo-native calls
+## Download Status In This Repo
+- Downloaded in-repo for this pass: none
+- Linked and documented for acquisition planning: yes
+- Immediate planned use: feature sanity-checking and threshold calibration only
+- Training a finance-specific support model: not yet
 
-### Video: now optional support, not core
-- Video-capable runs can now emit observational visual behavior outputs.
-- Current video layer is best treated as a support layer because source framing, face visibility, and webcast layouts vary widely.
-- What is missing:
-  - broader smoke coverage on real investor-webcast video sources
-  - any finance-specific evaluation set for visual labels
-  - stable speaker-on-camera mapping for mixed layouts
+## Priority Dataset Table
 
-### Not worth doing yet
-- emotion classification
-- deception or intent inference
-- large end-to-end multimodal models
-- broad public dataset ingestion pipelines
-- topic-specific tone modeling before audio answer-level basics are measured
+| Dataset | Modality | Official access | Current access status | Likely usefulness here | Main risks / domain mismatch | Planned use |
+| --- | --- | --- | --- | --- | --- | --- |
+| [RAVDESS](https://smartlaboratory.org/resources/speech-song-database-ravdess/) | audio + AV + video-only | SMART Lab page links to Zenodo download | Open download for research; non-commercial license; commercial license sold separately | Good for pause, loudness, and coarse delivery-feature sanity checks across audio and AV clips | Acted emotion corpus, not earnings calls; short scripted utterances; poor match for investor Q&A pressure | Feature sanity-checking only |
+| [RAVDESS Facial Landmark Tracking](https://zenodo.org/doi/10.5281/zenodo.3255102) | landmark-derived face tracks | Zenodo | Open download | Useful for validating face-motion, head-motion, and landmark aggregation code without building trackers from scratch | Still acted and studio-recorded; not webcast framing; not speaker-pressure ground truth | Visual feature sanity-checking only |
+| [IEMOCAP](https://sail.usc.edu/iemocap/index.html) | audio + video + motion capture + transcript | USC SAIL release flow | Gated / agreement-based release via USC | Strong candidate for multimodal turn-taking, answer-latency, and delivery-under-interaction prototypes | Acted dyadic interactions, not management/analyst calls; licensing friction; motion-capture setting unlike webcast video | Validation and limited calibration only |
+| [AffectNet / AffectNet+](https://www.mohammadmahoor.com/pages/databases/affectnet/) | face images with expression/valence/arousal labels | AffectNet page / AffectNet+ request flow | Research-only request path; AffectNet is distributed as part of AffectNet+ | Good for stress-testing face-quality gates, in-the-wild landmark robustness, and weak-label visual proxy experiments | Static image dataset; not video, not earnings calls, not answer-pressure behavior | Feature robustness checks only |
+| [RAF-DB](https://www.whdeng.cn/RAF/model1.html) | face images + landmarks + attributes | RAF-DB official page | Non-commercial research only; email request and password required | Good for verifying face-size, pose, and expression-landmark pipelines on unconstrained images | Static image dataset; not video, not finance; access is gated and usage restricted | Feature robustness checks only |
 
-## Intended Multimodal Stack
+## What The Official Sources Say
+- RAVDESS: the SMART Lab page says it can be downloaded free of charge from Zenodo and is released under a non-commercial Creative Commons license, with separate commercial licensing available.
+- RAVDESS Facial Landmark Tracking: the Zenodo project page marks it as open and links it directly to the underlying RAVDESS material.
+- IEMOCAP: the USC SAIL site describes it as an audiovisual and motion-capture corpus with transcripts, while the release flow is agreement-based rather than one-click open download.
+- AffectNet: the official page says it is released for research purposes only and is currently requested through the AffectNet+ path.
+- RAF-DB: the official page says it is for non-commercial research only and requires an institutional email plus password request before download.
 
-### 1. Text layer
-Primary product layer.
-- transcript
-- guidance change
-- guidance revision comparison
-- uncertainty / hedging
-- management reassurance
-- analyst skepticism
-- Q&A shift
+## Project-Specific Recommendation
 
-Why it stays first:
-- every benchmark already depends on transcript evidence
-- text coverage is highest across earnings-call sources
-- transcript outputs are already auditable and benchmarked
+### Use now
+- repo-native earnings-call runs for transcript-aligned audio/video thresholds
+- RAVDESS for basic audio and face-pipeline sanity checks
+- RAVDESS landmark tracking for visual aggregation smoke tests
 
-### 2. Audio layer
-Next best expansion.
-- pause length
-- hesitation / filler markers
-- speaking rate
-- silence before answer
-- answer onset latency
-- interruption / overlap if supportable
-- optional pitch / energy variability only if extraction is stable and cheap
+### Use next, if access is approved
+- IEMOCAP for interaction-aware audio/video feature validation
+- RAF-DB and AffectNet for visual gate robustness, not product labels
 
-Why audio comes second:
-- audio is present even when video is absent or low quality
-- hesitation and pause behavior are easier to define conservatively than facial interpretation
-- answer-level timing can reuse existing transcript and Q&A windows
+### Do not use as product truth
+- emotion classes from any of the above datasets
+- acted affect labels as a direct proxy for management honesty, confidence, or earnings-call quality
+- any dataset split as a stand-in benchmark for guidance labels
 
-### 3. Video layer
-Optional support layer only.
-- face visibility
-- motion / stability proxies
-- head movement / gaze-change proxies
-- optional posture / hand visibility when framing supports it
+## Planned Evaluation Roles
 
-Why video stays third:
-- many earnings-call videos are poorly framed, static, or presenter-switching
-- webcast layouts often reduce face confidence
-- visual outputs should support the reviewer, not drive the product
+| Role | Recommended source | Why |
+| --- | --- | --- |
+| Audio feature sanity-check | RAVDESS + repo-native clips | Easy access, clean recordings, useful for pause/prosody feature validation |
+| Visual pipeline sanity-check | RAVDESS landmark tracking + RAF-DB / AffectNet | Helps test face visibility, landmark stability, and motion aggregation under different image conditions |
+| Interaction / turn-taking validation | IEMOCAP | Better fit for question/answer contrast and response-latency experimentation |
+| Product-level validation | repo-native earnings-call set only | Only source that actually matches the review task and benchmark contract |
 
-### 4. Fusion layer
-Reviewer-facing summary layer, not a model layer.
-- answer-level pressure response summary
-- multimodal answer-stability review
-- text-first, audio-second, video-third weighting
+## Modeling Plan
 
-Interpretation rule:
-- text evidence remains canonical
-- audio can raise or lower reviewer attention on answer stability
-- video can add observational context only when confidence is usable
+### Phase 1
+- deterministic engineered features only
+- no training required
+- strict quality gates
+- transcript-first late fusion
 
-## Labeling Plan By Modality
+### Phase 2
+Only after enough repo-native labeled evidence exists:
+- logistic regression / LightGBM / XGBoost for narrow support tasks
+- hesitation under pressure
+- delivery confidence support
+- visual tension under questioning
+- calibrated probabilities only if they improve reviewer trust and stay interpretable
 
-### Text labels
-Already present or directly adjacent to current work.
-- guidance change: `raised | maintained | lowered | withdrawn | unclear`
-- uncertainty: `absent | present | strong`
-- reassurance: `absent | present`
-- skepticism: `low | medium | high`
-- Q&A shift: summary labels already emitted by deterministic logic
+### Explicitly deferred
+- giant end-to-end multimodal transformers
+- generic seven-emotion classifier as the main product signal
+- any model that turns weak media into a forced decision
 
-### Audio labels
-Planned next.
-- hesitation: `low | medium | high`
-- pause before answer: `low | medium | high`
-- filler density: `low | medium | high`
-- answer onset delay: `low | medium | high`
-- interruption / overlap: `none | present | strong` only if extraction is supportable
-
-### Video labels
-Support-only.
-- face visibility: `low | medium | high`
-- visual stability: `low | medium | high`
-- visual change during answer: `low | medium | high`
-- visual confidence: `low | medium | high`
-
-### Fusion labels
-Planned after audio is usable.
-- answer pressure response: `low | medium | high`
-- multimodal change vs prepared remarks: `low | medium | high`
-
-## Data Acquisition Priority
-
-### Tier 1: repo-native earnings-call data
-Best next use of time.
-- existing full transcripts with Q&A and timing
-- locally reproducible earnings-call sources already present in benchmark packages
-- future calls with defensible transcript/audio/video paths
-
-Target use:
-- answer-level audio hesitation labels
-- pause / latency labels
-- multimodal answer review examples
-
-### Tier 2: public multimodal calibration resources
-Use only for sanity-checking feature design.
-- AMI Meeting Corpus
-  - modality: audio + video + turns
-  - intended use: overlap / pause and turn-boundary sanity checks
-  - limitation: meetings, not earnings calls
-- NoXi
-  - modality: audio + video + interaction
-  - intended use: conversational shift and visible-attention proxy sanity checks
-  - limitation: tutoring dialogue, not finance
-- AVA-ActiveSpeaker
-  - modality: video + speech activity
-  - intended use: speaker-visible alignment sanity checks if webcast layouts become more complex
-  - limitation: web video benchmark, not finance-specific behavior evidence
-
-### Tier 3: optional calibration references
-Use only if a specific feature is blocked.
-- audio DSP baselines for pause / filler extraction
-- open computer-vision references for face visibility and head-motion thresholds
-
-These resources are support material only. They are not earnings-call benchmarks and do not justify finance-specific claims.
-
-## Practical Next Implementation Path
-1. add deterministic audio hesitation / pause extraction at answer level
-2. create a small labeled audio eval set under a dedicated package
-3. build an answer-level pressure-response summary that combines text + audio
-4. keep video as optional support where source quality is good enough
-
-## Decision Rules
-- If a source has full transcript + clean Q&A + stable audio, prioritize it over a prettier video source.
-- If a source has only a short excerpt, use it for candidate scouting, not for answer-level multimodal labeling.
-- If video framing is weak, keep visual outputs secondary and confidence-tagged.
-- Do not broaden into topic tone, emotion inference, or predictive claims until the audio layer is measured on a small internal eval set.
+## Practical Next Steps
+1. Keep expanding deterministic audio and visual support outputs on repo-native earnings-call material.
+2. Build a small internal earnings-call media eval set for pause pressure, answer latency, and face-visibility suppression.
+3. Use RAVDESS and RAF/AffectNet-style resources only to sanity-check feature extraction and gating thresholds.
+4. Add interpretable trainable support models only after the repo-native eval set is stable enough to support them.
