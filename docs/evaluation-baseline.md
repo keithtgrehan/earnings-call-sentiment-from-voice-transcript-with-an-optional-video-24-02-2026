@@ -30,6 +30,18 @@
   - `unclear`: 3
 - This package is separate from the active holdout and was built from watchlist-derived candidate rows that were defensible enough to promote into a second unseen check.
 
+## Behavior mini eval
+- Source of truth: `data/behavior_signal_eval/`
+- Current labeled scope: 58 rows
+- Evaluator: `scripts/evaluate_behavior_signal_set.py`
+- Current overall agreement: `52/58 = 89.7%`
+- Current family-level agreement:
+  - `uncertainty`: `14/20 = 70.0%`
+  - `reassurance`: `20/20 = 100.0%`
+  - `skepticism`: `18/18 = 100.0%`
+- This eval set is separate from the guidance benchmark packages and is used only for deterministic behavior-signal QA.
+- The current skepticism result reflects a narrow measured refinement pass over explicit probing question stems; it is not evidence that the full Q&A behavior layer is complete.
+
 ## Evaluator
 - Script: `scripts/evaluate_gold_benchmark.py`
 - Benchmark sanity utility: `scripts/summarize_gold_benchmark.py`
@@ -39,6 +51,7 @@
 - Frozen benchmark agreement: `9/9`
 - Expanded holdout agreement: `7/7`
 - Watchlist-derived unseen holdout agreement: `7/7`
+- Behavior mini-eval agreement: `52/58`
 - This is evidence of closed-label agreement on the current benchmark packages only.
 - It is not evidence of predictive edge, alpha, or statistical significance.
 
@@ -47,4 +60,5 @@
 - It is not evidence of predictive edge, alpha, or statistical significance.
 - The holdout remains small and uses a mix of transcript excerpts and official-source excerpts where direct media collection was blocked.
 - The watchlist-derived unseen holdout is also small and excerpt-heavy.
+- The behavior eval set is also small and manually selected for deterministic QA, not for broad statistical claims.
 - The current results justify transcript-first decision-support positioning, not broader claims about generalization or trading performance.

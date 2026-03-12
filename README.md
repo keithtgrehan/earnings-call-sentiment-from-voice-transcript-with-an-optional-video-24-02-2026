@@ -7,6 +7,7 @@ This project is a local decision-support system for earnings-call review. It is 
 The repo converts one earnings call into structured, auditable artifacts that help a reviewer inspect:
 - guidance statements and guidance-change evidence
 - tone-change moments
+- deterministic behavior signals such as uncertainty, reassurance, and analyst skepticism
 - transcript-backed supporting spans
 - report and metrics outputs for local review
 
@@ -21,6 +22,11 @@ The current workflow is transcript/audio-first and deterministic-first. Optional
   - deterministic guidance extraction
   - deterministic guidance revision comparison
   - deterministic tone-change detection
+  - deterministic behavior-signal extraction:
+    - uncertainty / hedging
+    - management reassurance
+    - analyst skepticism
+  - deterministic Q&A shift summary artifacts
   - report, metrics, and artifact generation
 - Primary local review UI shell served by `app/site_server.py`
 - Benchmark subset shown in the UI and now sourced from canonical gold labels, not draft labels
@@ -32,6 +38,8 @@ Artifacts currently produced by the core pipeline include:
 - `transcript.json`, `transcript.txt`
 - `chunks_scored.jsonl`, `sentiment_segments.csv`
 - `guidance.csv`, `guidance_revision.csv`, `tone_changes.csv`
+- `uncertainty_signals.csv`, `reassurance_signals.csv`, `analyst_skepticism.csv`
+- `behavioral_summary.json`, `qa_shift_segments.csv`, `qa_shift_summary.json`
 - `metrics.json`, `report.md`, `run_meta.json`
 
 Optional heuristic outputs still exist, but they are not the current benchmark focus:
@@ -163,12 +171,29 @@ Useful companion docs:
 - `data/watchlist_earnings_candidates/README.md`
 - `data/nvda_2025_historical_calls/README.md`
 
+### Behavior mini-eval
+Run:
+
+```bash
+python scripts/summarize_behavior_eval_set.py
+python scripts/evaluate_behavior_signal_set.py
+```
+
+Current measured result on the small internal behavior eval set:
+- overall: `52/58`
+- `uncertainty`: `14/20`
+- `reassurance`: `20/20`
+- `skepticism`: `18/18`
+
+This is a deterministic rule-QA check on a small curated set, not a statistical validation set.
+
 ### Evaluation evidence
 - Frozen benchmark agreement on canonical gold labels: `9/9`
 - Expanded unseen holdout agreement on current labeled rows: `7/7`
 - Watchlist-derived unseen holdout agreement on current labeled rows: `7/7`
+- Behavior mini-eval agreement on current labeled rows: `52/58`
 - Both unseen sets remain small and excerpt-heavy.
-- These are benchmark-agreement results only, not predictive or statistical-significance results.
+- These are benchmark-agreement and rule-QA results only, not predictive or statistical-significance results.
 
 ## What Remains Unproven
 - No proven predictive edge
