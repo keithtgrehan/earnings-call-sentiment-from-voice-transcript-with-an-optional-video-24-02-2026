@@ -93,9 +93,9 @@ def test_report_markdown_includes_visual_section_when_summary_present(tmp_path: 
                     {
                         "rank": 2,
                         "name": "Uncertainty / Hedging",
-                        "score": 8,
+                        "score": 2,
                         "color_band": "green",
-                        "explanation": "Few hedging cues were detected.",
+                        "explanation": "Management language shows limited hedging, so uncertainty stays low.",
                         "strongest_evidence": [],
                     },
                 ],
