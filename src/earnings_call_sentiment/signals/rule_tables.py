@@ -25,6 +25,13 @@ UNCERTAINTY_RULES = (
         "notes": "Management qualified the statement with a condition.",
     },
     {
+        "pattern": r"\bsubject to final resolution\b",
+        "matched_phrase": "subject to final resolution",
+        "signal_type": "conditional_resolution",
+        "strength": 3,
+        "notes": "Management explicitly said the outcome remains subject to final resolution.",
+    },
+    {
         "pattern": r"\bvisibility (?:remains|is) limited\b|\blimited visibility\b",
         "matched_phrase": "limited visibility",
         "signal_type": "visibility_constraint",
@@ -35,8 +42,15 @@ UNCERTAINTY_RULES = (
         "pattern": r"\bdifficult to predict\b|\bhard to predict\b",
         "matched_phrase": "difficult to predict",
         "signal_type": "prediction_difficulty",
-        "strength": 3,
+        "strength": 5,
         "notes": "Management explicitly said the outcome was difficult to predict.",
+    },
+    {
+        "pattern": r"\bhard to estimate(?: with precision)?\b",
+        "matched_phrase": "hard to estimate with precision",
+        "signal_type": "estimation_difficulty",
+        "strength": 5,
+        "notes": "Management explicitly said the outcome was hard to estimate with precision.",
     },
     {
         "pattern": r"\btiming uncertainty\b|\buncertain timing\b",
@@ -46,11 +60,25 @@ UNCERTAINTY_RULES = (
         "notes": "Management explicitly flagged timing uncertainty.",
     },
     {
-        "pattern": r"\bmacro(?:economic)? uncertainty\b",
+        "pattern": r"\bmacro(?:economic)? uncertainty\b|\beconomic uncertainties\b",
         "matched_phrase": "macro uncertainty",
         "signal_type": "macro_uncertainty",
-        "strength": 3,
+        "strength": 5,
         "notes": "Management explicitly referenced macro uncertainty.",
+    },
+    {
+        "pattern": r"\bwouldn'?t want\s+to predict\b",
+        "matched_phrase": "wouldn't want to predict",
+        "signal_type": "refusal_to_predict",
+        "strength": 5,
+        "notes": "Management explicitly declined to predict the outcome.",
+    },
+    {
+        "pattern": r"\btightness in the supply\b.*\bpersist\b",
+        "matched_phrase": "tightness in the supply to persist",
+        "signal_type": "persistent_supply_constraint",
+        "strength": 2,
+        "notes": "Management explicitly warned that supply tightness may persist.",
     },
 )
 

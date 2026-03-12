@@ -46,6 +46,45 @@ def test_uncertainty_does_not_fire_on_plain_guidance_expectation() -> None:
     assert payload["uncertainty_df"].empty
 
 
+def test_uncertainty_covers_explicit_prediction_difficulty_phrases() -> None:
+    payload = compute_behavioral_outputs(
+        _chunks(
+            "It's difficult to predict when supply and demand will balance.",
+            "It's hard to estimate with precision what the demand will be.",
+            "I wouldn't want\nto predict how the market reacts in the future.",
+        )
+    )
+    phrases = set(payload["uncertainty_df"]["matched_phrase"])
+    assert "difficult to predict" in phrases
+    assert "hard to estimate with precision" in phrases
+    assert "wouldn't want to predict" in phrases
+    assert payload["summary"]["uncertainty_score_overall"]["level"] == "high"
+
+
+def test_uncertainty_covers_strong_condition_and_uncertainty_nouns() -> None:
+    payload = compute_behavioral_outputs(
+        _chunks(
+            "This portion of the contract is subject to final resolution.",
+            "Balanced against economic uncertainties and project timing movement, we are maintaining guidance.",
+        )
+    )
+    phrases = set(payload["uncertainty_df"]["matched_phrase"])
+    assert "subject to final resolution" in phrases
+    assert "macro uncertainty" in phrases
+    assert payload["summary"]["uncertainty_score_overall"]["level"] == "high"
+
+
+def test_uncertainty_covers_persistent_supply_tightness_caution() -> None:
+    payload = compute_behavioral_outputs(
+        _chunks(
+            "While we expect tightness in the supply for our advanced architectures to persist, we remain confident in execution."
+        )
+    )
+    row = payload["uncertainty_df"].iloc[0]
+    assert row["matched_phrase"] == "tightness in the supply to persist"
+    assert payload["summary"]["uncertainty_score_overall"]["level"] == "medium"
+
+
 def test_reassurance_positive_matches_management_language() -> None:
     payload = compute_behavioral_outputs(
         _chunks("We remain confident, demand remains strong, and we are well positioned for the year.")
