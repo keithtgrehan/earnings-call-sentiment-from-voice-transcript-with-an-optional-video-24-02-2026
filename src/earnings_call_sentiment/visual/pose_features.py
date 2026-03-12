@@ -6,28 +6,22 @@ from typing import Any
 
 import numpy as np
 
+from .runtime import load_cv2, mediapipe_solutions
+
 
 _EPS = 1e-6
-
-
-def _mp() -> Any:
-    try:
-        import mediapipe as mp  # type: ignore
-    except Exception as exc:  # pragma: no cover - runtime dependency
-        raise RuntimeError(
-            "MediaPipe is required for visual behavior analysis. Install mediapipe."
-        ) from exc
-    return getattr(mp, "solutions", None)
 
 
 @dataclass
 class PoseState:
     shoulder_center: tuple[float, float] | None = None
+    shoulder_line_angle: float | None = None
+    wrist_center: tuple[float, float] | None = None
 
 
 class PoseFeatureExtractor:
     def __init__(self, *, min_detection_confidence: float = 0.5) -> None:
-        solutions = _mp()
+        solutions = mediapipe_solutions()
         self._pose = None
         if solutions is not None:
             self._pose = solutions.pose.Pose(
@@ -55,9 +49,12 @@ class PoseFeatureExtractor:
                 "pose_visible": False,
                 "hand_visible": False,
                 "shoulder_shift_score": 0.0,
+                "shoulder_asymmetry": 0.0,
+                "shoulder_motion_energy": 0.0,
+                "hand_motion_proxy": 0.0,
+                "pose_confidence": 0.0,
             }
-        import cv2  # type: ignore
-
+        cv2 = load_cv2()
         rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
         result = self._pose.process(rgb)
         landmarks = getattr(result, "pose_landmarks", None)
@@ -67,6 +64,10 @@ class PoseFeatureExtractor:
                 "pose_visible": False,
                 "hand_visible": False,
                 "shoulder_shift_score": 0.0,
+                "shoulder_asymmetry": 0.0,
+                "shoulder_motion_energy": 0.0,
+                "hand_motion_proxy": 0.0,
+                "pose_confidence": 0.0,
             }
 
         lmk = landmarks.landmark
@@ -80,6 +81,10 @@ class PoseFeatureExtractor:
                 "pose_visible": False,
                 "hand_visible": False,
                 "shoulder_shift_score": 0.0,
+                "shoulder_asymmetry": 0.0,
+                "shoulder_motion_energy": 0.0,
+                "hand_motion_proxy": 0.0,
+                "pose_confidence": round(shoulder_visibility, 4),
             }
 
         shoulder_center = (
@@ -94,7 +99,31 @@ class PoseFeatureExtractor:
                 math.hypot(shoulder_center[0] - previous_center[0], shoulder_center[1] - previous_center[1])
                 / shoulder_width
             )
-        self._state = PoseState(shoulder_center=shoulder_center)
+        shoulder_line_angle = math.atan2(
+            (right_shoulder.y - left_shoulder.y),
+            max(abs(right_shoulder.x - left_shoulder.x), _EPS),
+        )
+        previous_shoulder_line_angle = self._state.shoulder_line_angle
+        shoulder_asymmetry = abs(shoulder_line_angle)
+        wrist_center = (
+            (float(lmk[15].x) + float(lmk[16].x)) / 2.0,
+            (float(lmk[15].y) + float(lmk[16].y)) / 2.0,
+        )
+        previous_wrist_center = self._state.wrist_center
+        hand_motion_proxy = 0.0
+        if previous_wrist_center is not None:
+            hand_motion_proxy = float(
+                math.hypot(wrist_center[0] - previous_wrist_center[0], wrist_center[1] - previous_wrist_center[1])
+                / shoulder_width
+            )
+        shoulder_motion_energy = shoulder_shift
+        if previous_shoulder_line_angle is not None:
+            shoulder_motion_energy += abs(shoulder_line_angle - previous_shoulder_line_angle) * 0.5
+        self._state = PoseState(
+            shoulder_center=shoulder_center,
+            shoulder_line_angle=float(shoulder_line_angle),
+            wrist_center=wrist_center,
+        )
 
         left_wrist = lmk[15]
         right_wrist = lmk[16]
@@ -103,4 +132,8 @@ class PoseFeatureExtractor:
             "pose_visible": True,
             "hand_visible": hand_visible,
             "shoulder_shift_score": round(float(shoulder_shift), 4),
+            "shoulder_asymmetry": round(float(shoulder_asymmetry), 4),
+            "shoulder_motion_energy": round(float(shoulder_motion_energy), 4),
+            "hand_motion_proxy": round(float(hand_motion_proxy), 4),
+            "pose_confidence": round(float(shoulder_visibility), 4),
         }

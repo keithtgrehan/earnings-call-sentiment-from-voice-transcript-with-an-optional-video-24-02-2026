@@ -7,6 +7,8 @@ import shutil
 import subprocess
 from typing import Iterator
 
+from .runtime import load_cv2
+
 VIDEO_SUFFIXES = {".mp4", ".mov", ".mkv", ".webm", ".avi", ".m4v"}
 
 
@@ -24,16 +26,6 @@ def is_video_path(path: Path | str | None) -> bool:
     if path is None:
         return False
     return Path(path).suffix.lower() in VIDEO_SUFFIXES
-
-
-def _cv2() -> object:
-    try:
-        import cv2  # type: ignore
-    except Exception as exc:  # pragma: no cover - dependency checked in runtime integration
-        raise RuntimeError(
-            "OpenCV is required for visual behavior analysis. Install opencv-python-headless."
-        ) from exc
-    return cv2
 
 
 def _probe_with_ffprobe(video_path: Path) -> VideoMetadata | None:
@@ -92,7 +84,7 @@ def probe_video_metadata(video_path: Path) -> VideoMetadata:
     if ffprobe_meta is not None:
         return ffprobe_meta
 
-    cv2 = _cv2()
+    cv2 = load_cv2()
     capture = cv2.VideoCapture(str(resolved))
     if not capture.isOpened():
         raise RuntimeError(f"Unable to open video file: {resolved}")
@@ -123,7 +115,7 @@ def iter_sampled_frames(
     if sample_fps <= 0:
         raise ValueError("sample_fps must be positive")
 
-    cv2 = _cv2()
+    cv2 = load_cv2()
     metadata = probe_video_metadata(video_path)
     capture = cv2.VideoCapture(str(metadata.path))
     if not capture.isOpened():

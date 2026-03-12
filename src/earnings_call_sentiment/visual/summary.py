@@ -6,12 +6,15 @@ from typing import Any
 
 import pandas as pd
 
+from earnings_call_sentiment.media_support_models import score_visual_support
+
 from .face_features import FaceFeatureExtractor
 from .frame_extract import VideoMetadata, iter_sampled_frames, probe_video_metadata
 from .pose_features import PoseFeatureExtractor
+from .runtime import load_cv2
 from .segment_aggregate import aggregate_visual_segments
 
-VISUAL_SCHEMA_VERSION = "1.1.0"
+VISUAL_SCHEMA_VERSION = "1.2.0"
 FRAME_COLUMNS = [
     "timestamp_s",
     "frame_index",
@@ -25,13 +28,22 @@ FRAME_COLUMNS = [
     "head_yaw",
     "head_pitch",
     "head_roll",
+    "head_pose_drift",
     "gaze_shift_proxy",
+    "gaze_stability_proxy",
     "blink_proxy",
+    "blink_onset_proxy",
+    "eye_aspect_ratio",
     "mouth_open_ratio",
+    "mouth_open_delta",
     "lower_face_tension_proxy",
     "pose_visible",
+    "pose_confidence",
     "hand_visible",
     "shoulder_shift_score",
+    "shoulder_asymmetry",
+    "shoulder_motion_energy",
+    "hand_motion_proxy",
     "feature_note",
 ]
 SEGMENT_COLUMNS = [
@@ -41,6 +53,7 @@ SEGMENT_COLUMNS = [
     "start_time_s",
     "end_time_s",
     "face_visible_pct",
+    "stable_face_pct",
     "face_size_ratio_mean",
     "avg_motion_score",
     "max_motion_score",
@@ -49,15 +62,27 @@ SEGMENT_COLUMNS = [
     "avg_head_pitch_abs",
     "avg_head_roll_abs",
     "head_motion_energy",
+    "head_pose_drift_mean",
     "avg_gaze_shift",
+    "gaze_stability_mean",
     "blink_rate_proxy",
+    "blink_rate_per_10s",
     "blink_burstiness_proxy",
+    "eye_aspect_ratio_mean",
     "mouth_open_variance",
+    "mouth_open_delta_mean",
     "avg_lower_face_tension",
     "pose_visible_pct",
+    "pose_confidence_mean",
+    "shoulder_asymmetry_mean",
     "avg_shoulder_shift",
+    "shoulder_motion_energy",
+    "hand_visibility_pct",
+    "hand_motion_presence_pct",
     "visual_stability_label",
     "confidence_note",
+    "support_direction",
+    "support_note",
     "avg_landmark_confidence",
     "visual_change_score",
     "frame_count",
@@ -121,10 +146,14 @@ def _summary_unavailable(reason: str, *, metadata: VideoMetadata | None = None) 
         "suppression_recommended": True,
         "stable_face_frame_pct": 0.0,
         "stable_face_frame_pct_ok": False,
+        "stable_face_tracking_pct": 0.0,
+        "stable_face_tracking_ok": False,
         "mean_landmark_confidence": 0.0,
         "landmark_confidence_ok": False,
         "face_size_ratio_mean": 0.0,
         "face_size_ratio_ok": False,
+        "pose_frame_pct": 0.0,
+        "pose_frame_pct_ok": False,
         "frame_resolution_ok": False,
         "sampled_frame_count": 0,
         "min_face_frame_count_ok": False,
@@ -141,9 +170,18 @@ def _summary_unavailable(reason: str, *, metadata: VideoMetadata | None = None) 
         "facial_tension_level": {"score": 0.0, "level": "low"},
         "head_motion_pressure": {"score": 0.0, "level": "low"},
         "visual_stability": {"score": 0.0, "level": "low"},
+        "visual_support_direction": "unavailable",
         "visual_confidence_support": {
             "level": "low",
             "suppressed": True,
+            "reason": reason,
+        },
+        "support_mode": "heuristic_fallback",
+        "model_support": {
+            "available": False,
+            "mode": "heuristic_fallback",
+            "support_direction": "unavailable",
+            "calibrated_support_score": 0.0,
             "reason": reason,
         },
         "strongest_visual_evidence": [],
@@ -170,8 +208,11 @@ def _segment_items(frame: pd.DataFrame) -> list[dict[str, Any]]:
                 "end_time_s": float(row["end_time_s"]),
                 "visual_change_score": round(float(row["visual_change_score"]), 4),
                 "head_motion_energy": round(float(row.get("head_motion_energy", 0.0)), 4),
+                "head_pose_drift_mean": round(float(row.get("head_pose_drift_mean", 0.0)), 4),
+                "blink_rate_per_10s": round(float(row.get("blink_rate_per_10s", 0.0)), 4),
                 "face_visible_pct": round(float(row["face_visible_pct"]), 4),
                 "confidence_note": str(row["confidence_note"]),
+                "support_direction": str(row.get("support_direction", "unavailable")),
                 "text": _truncate(str(row["text"])),
             }
         )
@@ -180,13 +221,26 @@ def _segment_items(frame: pd.DataFrame) -> list[dict[str, Any]]:
 
 def _quality_gate(frames_df: pd.DataFrame, segments_df: pd.DataFrame, metadata: VideoMetadata) -> dict[str, Any]:
     stable_face_pct = float(frames_df["face_visible"].mean()) if not frames_df.empty else 0.0
+    stable_tracking_pct = (
+        float(
+            (
+                frames_df["face_visible"]
+                & (frames_df["landmark_confidence"].fillna(0.0) >= 0.5)
+                & (frames_df["face_size_ratio"].fillna(0.0) >= 0.06)
+            ).mean()
+        )
+        if not frames_df.empty
+        else 0.0
+    )
     landmark_mean = float(frames_df["landmark_confidence"].fillna(0.0).mean()) if not frames_df.empty else 0.0
     face_size_mean = float(frames_df["face_size_ratio"].fillna(0.0).mean()) if "face_size_ratio" in frames_df.columns else 0.0
+    pose_frame_pct = float(frames_df["pose_visible"].mean()) if "pose_visible" in frames_df.columns and not frames_df.empty else 0.0
     frame_resolution_ok = bool(metadata.width >= 320 and metadata.height >= 240)
     sampled_frame_count = int(len(frames_df))
     min_face_frame_count = int((frames_df["face_visible"] == True).sum()) if not frames_df.empty else 0
     quality_ok = (
         stable_face_pct >= 0.45
+        and stable_tracking_pct >= 0.35
         and landmark_mean >= 0.5
         and face_size_mean >= 0.06
         and frame_resolution_ok
@@ -197,10 +251,14 @@ def _quality_gate(frames_df: pd.DataFrame, segments_df: pd.DataFrame, metadata: 
         "suppression_recommended": not bool(quality_ok),
         "stable_face_frame_pct": round(stable_face_pct, 4),
         "stable_face_frame_pct_ok": bool(stable_face_pct >= 0.45),
+        "stable_face_tracking_pct": round(stable_tracking_pct, 4),
+        "stable_face_tracking_ok": bool(stable_tracking_pct >= 0.35),
         "mean_landmark_confidence": round(landmark_mean, 4),
         "landmark_confidence_ok": bool(landmark_mean >= 0.5),
         "face_size_ratio_mean": round(face_size_mean, 4),
         "face_size_ratio_ok": bool(face_size_mean >= 0.06),
+        "pose_frame_pct": round(pose_frame_pct, 4),
+        "pose_frame_pct_ok": bool(pose_frame_pct >= 0.2),
         "frame_resolution_ok": frame_resolution_ok,
         "sampled_frame_count": sampled_frame_count,
         "min_face_frame_count_ok": bool(min_face_frame_count >= 6),
@@ -213,13 +271,17 @@ def _confidence_support_level(quality_gate: dict[str, Any], qa_segments: pd.Data
         score += 2
     if bool(quality_gate.get("stable_face_frame_pct_ok")):
         score += 1
+    if bool(quality_gate.get("stable_face_tracking_ok")):
+        score += 1
     if bool(quality_gate.get("face_size_ratio_ok")):
+        score += 1
+    if bool(quality_gate.get("pose_frame_pct_ok")):
         score += 1
     if len(qa_segments) >= 2:
         score += 1
-    if score >= 4:
+    if score >= 5:
         return "high"
-    if score >= 2:
+    if score >= 3:
         return "medium"
     return "low"
 
@@ -252,6 +314,18 @@ def _build_summary(frames_df: pd.DataFrame, segments_df: pd.DataFrame, metadata:
         float(qa_segments["head_motion_energy"].mean()) if not qa_segments.empty else float(segments_df["head_motion_energy"].mean())
     )
     visual_stability_score = max(0.0, 1.0 - min(float(segments_df["visual_change_score"].mean()), 1.0))
+    if not qa_segments.empty and "support_direction" in qa_segments.columns:
+        direction_counts = qa_segments["support_direction"].value_counts()
+    else:
+        direction_counts = pd.Series(dtype="int64")
+    if int(direction_counts.get("cautionary", 0)) >= 1:
+        support_direction = "cautionary"
+    elif int(direction_counts.get("supportive", 0)) >= 1 and int(direction_counts.get("unavailable", 0)) == 0:
+        support_direction = "supportive"
+    elif int(direction_counts.get("unavailable", 0)) == len(qa_segments) and len(qa_segments) > 0:
+        support_direction = "unavailable"
+    else:
+        support_direction = "neutral"
 
     changed_segments = segments_df.sort_values(["visual_change_score", "face_visible_pct"], ascending=[False, False])
     confident_segments = segments_df.sort_values(["face_visible_pct", "avg_landmark_confidence"], ascending=[False, False])
@@ -263,10 +337,14 @@ def _build_summary(frames_df: pd.DataFrame, segments_df: pd.DataFrame, metadata:
         limitations.append("Low stable face visibility reduces confidence in visual interpretation.")
     if not bool(quality_gate["face_size_ratio_ok"]):
         limitations.append("On-screen face size is small, so visual pressure cues are less reliable.")
+    if not bool(quality_gate["pose_frame_pct_ok"]):
+        limitations.append("Upper-body coverage is limited, so shoulder and hand signals remain secondary.")
     if any(str(note).startswith("low face visibility") or str(note).startswith("small on-screen face") for note in segments_df["confidence_note"]):
         limitations.append("Some segments have weak face visibility, small face crops, or sparse usable frames.")
     if not qa_segments.empty and len(qa_segments) < 3:
         limitations.append("Q&A visual shift is based on few Q&A segments and should be treated cautiously.")
+
+    model_support = score_visual_support(segments_df)
 
     return {
         "schema_version": VISUAL_SCHEMA_VERSION,
@@ -309,6 +387,7 @@ def _build_summary(frames_df: pd.DataFrame, segments_df: pd.DataFrame, metadata:
             "score": round(visual_stability_score, 4),
             "level": _visibility_level(visual_stability_score),
         },
+        "visual_support_direction": support_direction if bool(quality_gate["quality_ok"]) else "unavailable",
         "visual_confidence_support": {
             "level": _confidence_support_level(quality_gate, qa_segments),
             "suppressed": not bool(quality_gate["quality_ok"]),
@@ -318,6 +397,8 @@ def _build_summary(frames_df: pd.DataFrame, segments_df: pd.DataFrame, metadata:
                 else "usable face visibility and landmark support"
             ),
         },
+        "support_mode": str(model_support.get("mode", "heuristic_fallback")),
+        "model_support": model_support,
         "strongest_visual_evidence": _strongest_visual_evidence(changed_segments),
         "most_visually_changed_segments": _segment_items(changed_segments),
         "most_confident_visual_segments": _segment_items(confident_segments),
@@ -356,7 +437,7 @@ def compute_visual_behavior_outputs(
 
     frames: list[dict[str, Any]] = []
     try:
-        import cv2  # type: ignore
+        cv2 = load_cv2()
     except Exception as exc:  # pragma: no cover - runtime dependency
         return {
             "frames_df": _empty_frames_df(),
@@ -398,13 +479,22 @@ def compute_visual_behavior_outputs(
                         "head_yaw": float(face_features["head_yaw"]),
                         "head_pitch": float(face_features["head_pitch"]),
                         "head_roll": float(face_features.get("head_roll", 0.0)),
+                        "head_pose_drift": float(face_features.get("head_pose_drift", 0.0)),
                         "gaze_shift_proxy": float(face_features["gaze_shift_proxy"]),
+                        "gaze_stability_proxy": float(face_features.get("gaze_stability_proxy", 0.0)),
                         "blink_proxy": float(face_features["blink_proxy"]),
+                        "blink_onset_proxy": float(face_features.get("blink_onset_proxy", 0.0)),
+                        "eye_aspect_ratio": float(face_features.get("eye_aspect_ratio", 0.0)),
                         "mouth_open_ratio": float(face_features.get("mouth_open_ratio", 0.0)),
+                        "mouth_open_delta": float(face_features.get("mouth_open_delta", 0.0)),
                         "lower_face_tension_proxy": float(face_features.get("lower_face_tension_proxy", 0.0)),
                         "pose_visible": bool(pose_features["pose_visible"]),
+                        "pose_confidence": float(pose_features.get("pose_confidence", 0.0)),
                         "hand_visible": bool(pose_features["hand_visible"]),
                         "shoulder_shift_score": float(pose_features["shoulder_shift_score"]),
+                        "shoulder_asymmetry": float(pose_features.get("shoulder_asymmetry", 0.0)),
+                        "shoulder_motion_energy": float(pose_features.get("shoulder_motion_energy", 0.0)),
+                        "hand_motion_proxy": float(pose_features.get("hand_motion_proxy", 0.0)),
                         "feature_note": feature_note or "ok",
                     }
                 )

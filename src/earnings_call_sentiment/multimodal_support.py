@@ -10,6 +10,15 @@ def _audio_direction(audio_summary: dict[str, Any] | None, media_quality: dict[s
     if not isinstance(audio_summary, dict) or not bool(media_quality.get("audio_quality_ok")):
         return "unavailable", ["Audio support was suppressed because quality gates were not met."]
 
+    model_support = audio_summary.get("model_support", {})
+    if isinstance(model_support, dict) and bool(model_support.get("available")):
+        direction = str(model_support.get("support_direction", "neutral"))
+        score = float(model_support.get("calibrated_support_score", 0.0))
+        notes.append(
+            f"Audio support used model-backed scoring ({direction}, calibrated score {score:+.2f})."
+        )
+        return direction, notes
+
     hesitation = str(audio_summary.get("hesitation_level", {}).get("level", "low"))
     pause_delta = str(audio_summary.get("pause_pressure_delta", {}).get("label", "mixed"))
     latency = str(audio_summary.get("answer_latency_pressure", {}).get("level", "low"))
@@ -29,6 +38,15 @@ def _video_direction(visual_summary: dict[str, Any] | None, media_quality: dict[
     if not isinstance(visual_summary, dict) or not bool(media_quality.get("video_quality_ok")):
         return "unavailable", ["Video support was suppressed because quality gates were not met."]
 
+    model_support = visual_summary.get("model_support", {})
+    if isinstance(model_support, dict) and bool(model_support.get("available")):
+        direction = str(model_support.get("support_direction", "neutral"))
+        score = float(model_support.get("calibrated_support_score", 0.0))
+        notes.append(
+            f"Visual support used model-backed scoring ({direction}, calibrated score {score:+.2f})."
+        )
+        return direction, notes
+
     facial_tension = str(visual_summary.get("facial_tension_level", {}).get("level", "low"))
     head_motion = str(visual_summary.get("head_motion_pressure", {}).get("level", "low"))
     qa_shift = str(visual_summary.get("qa_visual_shift_score", {}).get("level", "low"))
@@ -47,18 +65,21 @@ def _alignment(
     transcript_signal: str,
     audio_direction: str,
     video_direction: str,
+    audio_support_score: float,
+    video_support_score: float,
 ) -> tuple[str, int]:
     cautionary_count = sum(direction == "cautionary" for direction in (audio_direction, video_direction))
     supportive_count = sum(direction == "supportive" for direction in (audio_direction, video_direction))
+    combined_score = float(audio_support_score + video_support_score)
 
     if transcript_signal == "red" and cautionary_count >= 1:
-        return "high", min(6, 2 + (2 * cautionary_count))
+        return "high", min(6, max(2, round(combined_score * 6)))
     if transcript_signal == "green" and cautionary_count >= 1:
-        return "low", max(-6, -2 * cautionary_count)
+        return "low", max(-6, min(-1, round(combined_score * 6)))
     if transcript_signal == "green" and supportive_count >= 1:
-        return "high", min(4, 1 + supportive_count)
+        return "high", min(4, max(1, round(abs(combined_score) * 4)))
     if transcript_signal == "amber" and (cautionary_count + supportive_count) >= 1:
-        return "medium", 0
+        return "medium", max(-2, min(2, round(combined_score * 3)))
     if audio_direction == "unavailable" and video_direction == "unavailable":
         return "low", 0
     return "medium", 0
@@ -73,9 +94,24 @@ def build_multimodal_support_summary(
     media_quality: dict[str, Any],
 ) -> dict[str, Any]:
     transcript_signal = str(metrics_payload.get("overall_review_signal", "amber"))
+    audio_model = audio_summary.get("model_support", {}) if isinstance(audio_summary, dict) else {}
+    video_model = visual_summary.get("model_support", {}) if isinstance(visual_summary, dict) else {}
+    audio_support_score = float(audio_model.get("calibrated_support_score", 0.0)) if isinstance(audio_model, dict) else 0.0
+    video_support_score = float(video_model.get("calibrated_support_score", 0.0)) if isinstance(video_model, dict) else 0.0
     audio_direction, audio_notes = _audio_direction(audio_summary, media_quality)
     video_direction, video_notes = _video_direction(visual_summary, media_quality)
-    alignment, adjustment = _alignment(transcript_signal, audio_direction, video_direction)
+    alignment, adjustment = _alignment(
+        transcript_signal,
+        audio_direction,
+        video_direction,
+        audio_support_score,
+        video_support_score,
+    )
+    fusion_mode = "heuristic_fallback"
+    if bool(audio_model.get("available")) and bool(video_model.get("available")):
+        fusion_mode = "model_backed"
+    elif bool(audio_model.get("available")) or bool(video_model.get("available")):
+        fusion_mode = "hybrid"
 
     notes = [
         f"Transcript-first signal remains {transcript_signal}.",
@@ -89,6 +125,8 @@ def build_multimodal_support_summary(
         "transcript_primary_assessment": transcript_signal,
         "audio_support_direction": audio_direction,
         "video_support_direction": video_direction,
+        "fusion_mode": fusion_mode,
+        "calibrated_support_score": round(audio_support_score + video_support_score, 4),
         "multimodal_alignment": alignment,
         "multimodal_confidence_adjustment": int(adjustment),
         "notes": notes,

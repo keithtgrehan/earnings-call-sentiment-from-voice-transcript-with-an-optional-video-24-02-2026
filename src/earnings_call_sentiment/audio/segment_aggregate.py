@@ -134,6 +134,8 @@ def _confidence_note(duration_s: float, frame_count: int, word_count: int) -> st
 def aggregate_audio_segments(
     envelope: AudioEnvelope,
     qa_segments_df: pd.DataFrame,
+    *,
+    use_opensmile: bool = True,
 ) -> pd.DataFrame:
     if qa_segments_df.empty:
         return pd.DataFrame(columns=SEGMENT_COLUMNS)
@@ -141,7 +143,7 @@ def aggregate_audio_segments(
     rows: list[dict[str, Any]] = []
     question_end_by_pair: dict[int, float] = {}
     seen_answer_pair_ids: set[int] = set()
-    egemaps_enabled = opensmile_available()
+    egemaps_enabled = bool(use_opensmile and opensmile_available())
 
     for _, row in qa_segments_df.sort_values("start").iterrows():
         start_time_s = float(row.get("start", 0.0))

@@ -6,27 +6,23 @@ from typing import Any
 
 import numpy as np
 
+from .runtime import load_cv2, mediapipe_solutions
 
 _EPS = 1e-6
-
-
-def _mp_solutions() -> Any | None:
-    try:
-        import mediapipe as mp  # type: ignore
-    except Exception as exc:  # pragma: no cover - runtime dependency
-        raise RuntimeError("MediaPipe is required for visual behavior analysis. Install mediapipe.") from exc
-    return getattr(mp, "solutions", None)
 
 
 @dataclass
 class FaceState:
     center_xy: tuple[float, float] | None = None
     gaze_offset: float | None = None
+    blink_active: bool = False
+    head_pose: tuple[float, float, float] | None = None
+    mouth_open_ratio: float | None = None
 
 
 class FaceFeatureExtractor:
     def __init__(self, *, min_detection_confidence: float = 0.5) -> None:
-        solutions = _mp_solutions()
+        solutions = mediapipe_solutions()
         self._backend = "mediapipe" if solutions is not None else "opencv"
         self._face_detection = None
         self._face_mesh = None
@@ -43,8 +39,7 @@ class FaceFeatureExtractor:
                 min_detection_confidence=min_detection_confidence,
             )
         else:
-            import cv2  # type: ignore
-
+            cv2 = load_cv2()
             cascade_path = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
             cascade = cv2.CascadeClassifier(cascade_path)
             if cascade.empty():
@@ -70,8 +65,7 @@ class FaceFeatureExtractor:
         return self._process_mediapipe(frame_bgr)
 
     def _process_mediapipe(self, frame_bgr: np.ndarray) -> dict[str, Any]:
-        import cv2  # type: ignore
-
+        cv2 = load_cv2()
         rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
         detection_result = self._face_detection.process(rgb)
         mesh_result = self._face_mesh.process(rgb)
@@ -103,9 +97,14 @@ class FaceFeatureExtractor:
                 "head_yaw": 0.0,
                 "head_pitch": 0.0,
                 "head_roll": 0.0,
+                "head_pose_drift": 0.0,
                 "gaze_shift_proxy": 0.0,
+                "gaze_stability_proxy": 0.0,
                 "blink_proxy": 0.0,
+                "blink_onset_proxy": 0.0,
+                "eye_aspect_ratio": 0.0,
                 "mouth_open_ratio": 0.0,
+                "mouth_open_delta": 0.0,
                 "lower_face_tension_proxy": 0.0,
                 "feature_note": feature_note or "low_face_visibility",
             }
@@ -150,11 +149,36 @@ class FaceFeatureExtractor:
         previous_gaze = self._state.gaze_offset
         gaze_shift = 0.0 if previous_gaze is None else abs(gaze_offset - previous_gaze)
 
-        blink_proxy = self._blink_proxy(lmk)
+        eye_aspect_ratio = self._eye_aspect_ratio(lmk, 33, 133, 159, 145, 158, 153)
+        right_eye_aspect_ratio = self._eye_aspect_ratio(lmk, 362, 263, 386, 374, 387, 373)
+        eye_aspect_ratio = float((eye_aspect_ratio + right_eye_aspect_ratio) / 2.0)
+        blink_proxy = 1.0 if eye_aspect_ratio < 0.18 else 0.0
+        blink_active = blink_proxy > 0.5
+        blink_onset = 1.0 if blink_active and not self._state.blink_active else 0.0
         mouth_open_ratio = abs(mouth_bottom.y - mouth_top.y) / face_width
+        mouth_open_delta = (
+            0.0
+            if self._state.mouth_open_ratio is None
+            else abs(mouth_open_ratio - self._state.mouth_open_ratio)
+        )
         mouth_width = max(abs(mouth_right.x - mouth_left.x), _EPS)
         lower_face_tension_proxy = max(0.0, min(1.0, (mouth_width - mouth_open_ratio) / max(mouth_width, _EPS)))
-        self._state = FaceState(center_xy=face_center, gaze_offset=gaze_offset)
+        previous_head_pose = self._state.head_pose
+        head_pose_drift = 0.0
+        if previous_head_pose is not None:
+            head_pose_drift = (
+                abs(yaw - previous_head_pose[0])
+                + abs(pitch - previous_head_pose[1])
+                + abs(roll - previous_head_pose[2])
+            ) / 3.0
+        gaze_stability_proxy = max(0.0, 1.0 - min(gaze_shift * 4.0, 1.0))
+        self._state = FaceState(
+            center_xy=face_center,
+            gaze_offset=gaze_offset,
+            blink_active=blink_active,
+            head_pose=(float(yaw), float(pitch), float(roll)),
+            mouth_open_ratio=float(mouth_open_ratio),
+        )
 
         return {
             "face_detected": True,
@@ -166,16 +190,20 @@ class FaceFeatureExtractor:
             "head_yaw": round(float(yaw), 4),
             "head_pitch": round(float(pitch), 4),
             "head_roll": round(float(roll), 4),
+            "head_pose_drift": round(float(head_pose_drift), 4),
             "gaze_shift_proxy": round(float(gaze_shift), 4),
+            "gaze_stability_proxy": round(float(gaze_stability_proxy), 4),
             "blink_proxy": round(float(blink_proxy), 4),
+            "blink_onset_proxy": round(float(blink_onset), 4),
+            "eye_aspect_ratio": round(float(eye_aspect_ratio), 4),
             "mouth_open_ratio": round(float(mouth_open_ratio), 4),
+            "mouth_open_delta": round(float(mouth_open_delta), 4),
             "lower_face_tension_proxy": round(float(lower_face_tension_proxy), 4),
             "feature_note": feature_note or "ok",
         }
 
     def _process_opencv(self, frame_bgr: np.ndarray) -> dict[str, Any]:
-        import cv2  # type: ignore
-
+        cv2 = load_cv2()
         gray = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2GRAY)
         faces = self._cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=4, minSize=(40, 40))
         face_detected = len(faces) > 0
@@ -191,9 +219,14 @@ class FaceFeatureExtractor:
                 "head_yaw": 0.0,
                 "head_pitch": 0.0,
                 "head_roll": 0.0,
+                "head_pose_drift": 0.0,
                 "gaze_shift_proxy": 0.0,
+                "gaze_stability_proxy": 0.0,
                 "blink_proxy": 0.0,
+                "blink_onset_proxy": 0.0,
+                "eye_aspect_ratio": 0.0,
                 "mouth_open_ratio": 0.0,
+                "mouth_open_delta": 0.0,
                 "lower_face_tension_proxy": 0.0,
                 "feature_note": "no_face_detected",
             }
@@ -221,9 +254,14 @@ class FaceFeatureExtractor:
             "head_yaw": 0.0,
             "head_pitch": 0.0,
             "head_roll": 0.0,
+            "head_pose_drift": 0.0,
             "gaze_shift_proxy": 0.0,
+            "gaze_stability_proxy": 0.0,
             "blink_proxy": 0.0,
+            "blink_onset_proxy": 0.0,
+            "eye_aspect_ratio": 0.0,
             "mouth_open_ratio": 0.0,
+            "mouth_open_delta": 0.0,
             "lower_face_tension_proxy": 0.0,
             "feature_note": "opencv_face_detection_only",
         }
@@ -244,12 +282,6 @@ class FaceFeatureExtractor:
         high = max(a_x, b_x)
         width = max(high - low, _EPS)
         return ((iris_x - low) / width) - 0.5
-
-    def _blink_proxy(self, lmk: list[Any]) -> float:
-        left_ear = self._eye_aspect_ratio(lmk, 33, 133, 159, 145, 158, 153)
-        right_ear = self._eye_aspect_ratio(lmk, 362, 263, 386, 374, 387, 373)
-        ear = (left_ear + right_ear) / 2.0
-        return 1.0 if ear < 0.18 else 0.0
 
     @staticmethod
     def _eye_aspect_ratio(

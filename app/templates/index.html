@@ -346,6 +346,10 @@
                     <li>Hesitation: {{ audio_behavior.get('hesitation_level', {}).get('level', 'low') }}</li>
                     <li>Answer latency pressure: {{ audio_behavior.get('answer_latency_pressure', {}).get('level', 'low') }}</li>
                     <li>Audio confidence support: {{ audio_behavior.get('audio_confidence_support', {}).get('level', 'low') }}</li>
+                    <li>Support mode: {{ audio_behavior.get('support_mode', 'heuristic_fallback') }}</li>
+                    {% if audio_behavior.get('model_support', {}).get('available') %}
+                    <li>Model direction: {{ audio_behavior.get('model_support', {}).get('support_direction', 'neutral') }} ({{ '%+.2f'|format(audio_behavior.get('model_support', {}).get('calibrated_support_score', 0.0)) }})</li>
+                    {% endif %}
                     {% if audio_behavior.get('strongest_audio_evidence') %}
                     <li>Evidence: {{ audio_behavior.get('strongest_audio_evidence')[0].get('text', '') }}</li>
                     {% endif %}
@@ -363,6 +367,10 @@
                     <li>Facial tension: {{ visual_behavior.get('facial_tension_level', {}).get('level', 'low') }}</li>
                     <li>Head motion pressure: {{ visual_behavior.get('head_motion_pressure', {}).get('level', 'low') }}</li>
                     <li>Visual confidence support: {{ visual_behavior.get('visual_confidence_support', {}).get('level', 'low') }}</li>
+                    <li>Support mode: {{ visual_behavior.get('support_mode', 'heuristic_fallback') }}</li>
+                    {% if visual_behavior.get('model_support', {}).get('available') %}
+                    <li>Model direction: {{ visual_behavior.get('model_support', {}).get('support_direction', 'neutral') }} ({{ '%+.2f'|format(visual_behavior.get('model_support', {}).get('calibrated_support_score', 0.0)) }})</li>
+                    {% endif %}
                     {% if visual_behavior.get('strongest_visual_evidence') %}
                     <li>Evidence: {{ visual_behavior.get('strongest_visual_evidence')[0].get('text', '') }}</li>
                     {% endif %}
@@ -380,6 +388,8 @@
                     <li>Transcript primary assessment: {{ multimodal_support.get('transcript_primary_assessment', 'amber') }}</li>
                     <li>Audio direction: {{ multimodal_support.get('audio_support_direction', 'unavailable') }}</li>
                     <li>Video direction: {{ multimodal_support.get('video_support_direction', 'unavailable') }}</li>
+                    <li>Fusion mode: {{ multimodal_support.get('fusion_mode', 'heuristic_fallback') }}</li>
+                    <li>Calibrated support score: {{ '%+.2f'|format(multimodal_support.get('calibrated_support_score', 0.0)) }}</li>
                     <li>Alignment: {{ multimodal_support.get('multimodal_alignment', 'low') }}</li>
                     <li>Confidence adjustment: {{ multimodal_support.get('multimodal_confidence_adjustment', 0) }}</li>
                     {% if media_quality.get('quality_notes') %}

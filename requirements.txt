@@ -2,7 +2,7 @@ faster-whisper
 transformers
 torch
 pandas
-numpy
+numpy<2
 scipy
 soundfile
 librosa
@@ -11,3 +11,6 @@ opensmile
 
 yt-dlp
 matplotlib
+opencv-python-headless<4.13
+mediapipe>=0.10.32,<0.11
+scikit-learn

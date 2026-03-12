@@ -6,10 +6,12 @@ from typing import Any
 
 import pandas as pd
 
+from earnings_call_sentiment.media_support_models import score_audio_support
+
 from .pause_features import AudioEnvelope, AudioMetadata, load_audio_envelope, snr_proxy_db
 from .segment_aggregate import SEGMENT_COLUMNS, aggregate_audio_segments
 
-AUDIO_SCHEMA_VERSION = "1.1.0"
+AUDIO_SCHEMA_VERSION = "1.2.0"
 
 
 def _empty_segments_df() -> pd.DataFrame:
@@ -117,6 +119,14 @@ def _summary_unavailable(reason: str, *, metadata: AudioMetadata | None = None) 
         "audio_confidence_support": {
             "level": "low",
             "suppressed": True,
+            "reason": reason,
+        },
+        "support_mode": "heuristic_fallback",
+        "model_support": {
+            "available": False,
+            "mode": "heuristic_fallback",
+            "support_direction": "unavailable",
+            "calibrated_support_score": 0.0,
             "reason": reason,
         },
         "egemaps_v02_summary": {"available": False},
@@ -347,6 +357,8 @@ def _build_summary(segments_df: pd.DataFrame, envelope: AudioEnvelope) -> dict[s
     if pause_series.empty:
         limitations.append("Pause-before-answer metrics were unavailable because answer/question pairing was sparse.")
 
+    model_support = score_audio_support(segments_df)
+
     return {
         "schema_version": AUDIO_SCHEMA_VERSION,
         "audio_available": True,
@@ -404,6 +416,8 @@ def _build_summary(segments_df: pd.DataFrame, envelope: AudioEnvelope) -> dict[s
                 else "usable answer-level audio support"
             ),
         },
+        "support_mode": str(model_support.get("mode", "heuristic_fallback")),
+        "model_support": model_support,
         "egemaps_v02_summary": egemaps_summary,
         "strongest_audio_evidence": _strongest_audio_evidence(
             usable_answers if not usable_answers.empty else changed_answers
@@ -425,6 +439,8 @@ def _build_summary(segments_df: pd.DataFrame, envelope: AudioEnvelope) -> dict[s
 def compute_audio_behavior_outputs(
     audio_path: Path | None,
     qa_segments_df: pd.DataFrame,
+    *,
+    use_opensmile: bool = True,
 ) -> dict[str, Any]:
     if audio_path is None:
         return {
@@ -440,7 +456,7 @@ def compute_audio_behavior_outputs(
             "summary": _summary_unavailable(f"Audio analysis unavailable: {exc}"),
         }
 
-    segments_df = aggregate_audio_segments(envelope, qa_segments_df)
+    segments_df = aggregate_audio_segments(envelope, qa_segments_df, use_opensmile=use_opensmile)
     summary = _build_summary(segments_df, envelope)
     return {
         "segments_df": segments_df,
@@ -452,8 +468,10 @@ def write_audio_behavior_outputs(
     audio_path: Path | None,
     qa_segments_df: pd.DataFrame,
     out_dir: Path,
+    *,
+    use_opensmile: bool = True,
 ) -> dict[str, Any]:
-    payload = compute_audio_behavior_outputs(audio_path, qa_segments_df)
+    payload = compute_audio_behavior_outputs(audio_path, qa_segments_df, use_opensmile=use_opensmile)
     out_dir.mkdir(parents=True, exist_ok=True)
     segments_path = out_dir / "audio_behavior_segments.csv"
     summary_path = out_dir / "audio_behavior_summary.json"

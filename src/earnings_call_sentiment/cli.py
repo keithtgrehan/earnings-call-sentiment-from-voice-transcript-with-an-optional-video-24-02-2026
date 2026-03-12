@@ -1150,6 +1150,11 @@ def _write_report_markdown(
             if isinstance(audio_summary, dict)
             else {}
         )
+        audio_model_support = (
+            audio_summary.get("model_support", {})
+            if isinstance(audio_summary, dict)
+            else {}
+        )
         lines.extend(
             [
                 "## Audio Behavior Signals",
@@ -1159,10 +1164,17 @@ def _write_report_markdown(
                 f"- Q&A hesitation shift: {qa_audio_shift.get('level', 'low')}",
                 f"- answer latency pressure: {latency_pressure.get('level', 'low')}",
                 f"- audio confidence support: {confidence_support.get('level', 'low')}",
+                f"- support mode: {audio_summary.get('support_mode', 'heuristic_fallback')}",
                 "",
             ]
         )
         if audio_summary.get("audio_features_available"):
+            if isinstance(audio_model_support, dict) and audio_model_support.get("available"):
+                lines.append(
+                    "- model-backed support: "
+                    f"{audio_model_support.get('support_direction', 'neutral')} | "
+                    f"calibrated_score={float(audio_model_support.get('calibrated_support_score', 0.0)):+.2f}"
+                )
             strongest_audio = audio_summary.get("strongest_audio_evidence", [])
             if isinstance(strongest_audio, list) and strongest_audio:
                 top_item = strongest_audio[0]
@@ -1200,6 +1212,11 @@ def _write_report_markdown(
         facial_tension = visual_summary.get("facial_tension_level", {}) if isinstance(visual_summary, dict) else {}
         head_motion = visual_summary.get("head_motion_pressure", {}) if isinstance(visual_summary, dict) else {}
         visual_confidence = visual_summary.get("visual_confidence_support", {}) if isinstance(visual_summary, dict) else {}
+        visual_model_support = (
+            visual_summary.get("model_support", {})
+            if isinstance(visual_summary, dict)
+            else {}
+        )
         lines.extend(
             [
                 "## Visual Behavior Signals",
@@ -1209,10 +1226,17 @@ def _write_report_markdown(
                 f"- facial tension: {facial_tension.get('level', 'low')}",
                 f"- head motion pressure: {head_motion.get('level', 'low')}",
                 f"- visual confidence support: {visual_confidence.get('level', 'low')}",
+                f"- support mode: {visual_summary.get('support_mode', 'heuristic_fallback')}",
                 "",
             ]
         )
         if visual_summary.get("visual_features_available"):
+            if isinstance(visual_model_support, dict) and visual_model_support.get("available"):
+                lines.append(
+                    "- model-backed support: "
+                    f"{visual_model_support.get('support_direction', 'neutral')} | "
+                    f"calibrated_score={float(visual_model_support.get('calibrated_support_score', 0.0)):+.2f}"
+                )
             notable = visual_summary.get("strongest_visual_evidence", [])
             if isinstance(notable, list) and notable:
                 top_item = notable[0]
@@ -1258,6 +1282,8 @@ def _write_report_markdown(
                 f"- transcript primary assessment: {multimodal_summary.get('transcript_primary_assessment', 'amber')}",
                 f"- audio support direction: {multimodal_summary.get('audio_support_direction', 'unavailable')}",
                 f"- video support direction: {multimodal_summary.get('video_support_direction', 'unavailable')}",
+                f"- fusion mode: {multimodal_summary.get('fusion_mode', 'heuristic_fallback')}",
+                f"- calibrated support score: {float(multimodal_summary.get('calibrated_support_score', 0.0)):+.2f}",
                 f"- multimodal alignment: {multimodal_summary.get('multimodal_alignment', 'low')}",
                 f"- multimodal confidence adjustment: {multimodal_summary.get('multimodal_confidence_adjustment', 0)}",
                 "",
