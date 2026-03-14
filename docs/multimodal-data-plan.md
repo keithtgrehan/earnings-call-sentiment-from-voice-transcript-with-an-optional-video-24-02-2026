@@ -31,10 +31,11 @@ Audio and video should help reviewers inspect delivery under questioning. They s
 - Training a finance-specific support model: active for narrow support tasks using repo-native engineered features
 
 ## Current Repo-Native Media Support Set
-- Source calls currently represented: 2
-- Total labeled segments: 28
-- Audio-labeled segments: 20
-- Video-labeled segments: 8
+- Source call groups currently represented in the committed labels: 6
+- Total labeled segments: 70
+- Audio-labeled segments: 52
+- Video-labeled segments: 18
+- Visual-tension-labeled video rows: 12 across 2 source groups
 - Current support tasks:
   - hesitation pressure
   - delivery confidence support
@@ -46,6 +47,8 @@ This seed set is intentionally small and conservative. It is used for:
 - calibrating multimodal confidence adjustments without changing transcript-first benchmark labels
 
 It is not large enough to justify broad product claims, and weak media should still suppress or downweight support outputs.
+The current visual set is enough for a basic two-group grouped check, but it is
+still one independent group short of a more defensible visual evaluation target.
 
 ## Priority Dataset Table
 
@@ -117,7 +120,7 @@ Current repo stance:
 - any model that turns weak media into a forced decision
 
 ## Practical Next Steps
-1. Expand the repo-native media set from 2 calls to a more balanced multi-call audio and video sample with stronger Q&A coverage.
-2. Add enough labeled visual groups to train and validate `visual_tension` instead of falling back to heuristics.
+1. Add at least one more independently labeled visual source group before treating grouped visual evaluation as defensible.
+2. Increase the number of downstream cases that have real source-level media-support targets instead of transcript-first packaging only.
 3. Use RAVDESS and RAF/AffectNet-style resources only to sanity-check feature extraction and gating thresholds.
-4. Improve calibration only after the repo-native eval set supports more than two independent call groups.
+4. Improve calibration only after the repo-native visual eval set clears the three-group minimum and the downstream comparison pack has broader support-target coverage.
