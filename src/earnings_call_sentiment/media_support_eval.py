@@ -317,6 +317,64 @@ def load_labeled_feature_frame(
     return pd.DataFrame(rows)
 
 
+def build_visual_trainability_report() -> dict[str, Any]:
+    labels = load_segment_labels()
+    video_rows = labels[labels["feature_modality"] == "video"].copy()
+    labeled_rows = video_rows[video_rows["visual_tension_label"].astype(str).str.strip() != ""].copy()
+    class_counts = {
+        str(key): int(value)
+        for key, value in labeled_rows["visual_tension_label"].value_counts().to_dict().items()
+    }
+    rows_by_group = {
+        str(key): int(value)
+        for key, value in labeled_rows["source_call_id"].value_counts().to_dict().items()
+    }
+    group_count = int(labeled_rows["source_call_id"].nunique()) if not labeled_rows.empty else 0
+    class_count = int(len(class_counts))
+    min_class_examples = min(class_counts.values()) if class_counts else 0
+
+    basic_grouped_eval_ready = group_count >= 2 and class_count >= 2
+    defensible_grouped_eval_ready = group_count >= 3 and class_count >= 2
+    calibration_ready = group_count >= 3 and class_count >= 2 and min_class_examples >= 3
+
+    blockers: list[str] = []
+    if group_count < 2:
+        blockers.append(
+            f"Only {group_count} source group has nonblank visual_tension labels; grouped train/validation needs at least 2."
+        )
+    if group_count < 3:
+        blockers.append(
+            f"Only {group_count} source group has nonblank visual_tension labels; a more defensible grouped evaluation target is at least 3."
+        )
+    if class_count < 2:
+        blockers.append("Visual labels do not span enough classes to train even a binary support scorer.")
+    if min_class_examples < 3:
+        blockers.append(
+            "At least one visual_tension class has fewer than 3 labeled examples, so calibrated probability estimates are not supportable."
+        )
+
+    return {
+        "video_label_rows_total": int(len(video_rows)),
+        "video_label_rows_with_visual_tension": int(len(labeled_rows)),
+        "source_groups_with_any_video_rows": int(video_rows["source_call_id"].nunique()) if not video_rows.empty else 0,
+        "source_groups_with_visual_tension_labels": group_count,
+        "class_counts": class_counts,
+        "rows_by_group": rows_by_group,
+        "basic_grouped_eval_ready": basic_grouped_eval_ready,
+        "defensible_grouped_eval_ready": defensible_grouped_eval_ready,
+        "calibration_ready": calibration_ready,
+        "blockers": blockers,
+        "minimum_next_data": {
+            "additional_groups_for_basic_grouped_eval": max(0, 2 - group_count),
+            "additional_groups_for_defensible_grouped_eval": max(0, 3 - group_count),
+            "additional_examples_per_class_for_calibration": {
+                label: max(0, 3 - int(count))
+                for label, count in class_counts.items()
+            },
+        },
+    }
+
+
 def write_template_files() -> None:
     root = repo_root()
     manifest_path = root / MANIFEST_FILE

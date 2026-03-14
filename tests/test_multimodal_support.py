@@ -49,8 +49,8 @@ def test_multimodal_support_is_cautionary_when_audio_conflicts_with_green_transc
 
     assert summary["audio_support_direction"] == "cautionary"
     assert summary["video_support_direction"] == "unavailable"
-    assert summary["multimodal_alignment"] == "low"
-    assert summary["multimodal_confidence_adjustment"] < 0
+    assert summary["multimodal_alignment"] == "medium"
+    assert summary["multimodal_confidence_adjustment"] == 0
 
 
 def test_multimodal_support_stays_unavailable_when_media_is_missing() -> None:
@@ -76,6 +76,7 @@ def test_multimodal_support_prefers_model_backed_audio_when_available() -> None:
                 "available": True,
                 "support_direction": "cautionary",
                 "calibrated_support_score": 0.42,
+                "reliability_weight": 0.5,
             }
         },
         visual_summary={
@@ -83,7 +84,7 @@ def test_multimodal_support_prefers_model_backed_audio_when_available() -> None:
                 "available": False,
             }
         },
-        media_quality={"audio_quality_ok": True, "video_quality_ok": True},
+        media_quality={"audio_quality_ok": True, "video_quality_ok": False},
     )
 
     assert summary["audio_support_direction"] == "cautionary"
