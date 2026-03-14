@@ -330,8 +330,8 @@
         "rms_range_db",
         "hesitation_score"
       ],
-      "model_path": "/Users/keith/GitHub/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/models/media_support/hesitation_pressure.joblib",
-      "metadata_path": "/Users/keith/GitHub/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/models/media_support/hesitation_pressure_metadata.json"
+      "model_path": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/models/media_support/hesitation_pressure.joblib",
+      "metadata_path": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/models/media_support/hesitation_pressure_metadata.json"
     },
     "delivery_confidence": {
       "status": "ok",
@@ -663,19 +663,113 @@
         "rms_range_db",
         "hesitation_score"
       ],
-      "model_path": "/Users/keith/GitHub/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/models/media_support/delivery_confidence.joblib",
-      "metadata_path": "/Users/keith/GitHub/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/models/media_support/delivery_confidence_metadata.json"
+      "model_path": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/models/media_support/delivery_confidence.joblib",
+      "metadata_path": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/models/media_support/delivery_confidence_metadata.json"
     },
     "visual_tension": {
-      "status": "skipped",
-      "reason": "insufficient_unique_groups_or_classes",
-      "row_count": 6,
-      "group_count": 1,
+      "status": "ok",
+      "row_count": 12,
+      "group_count": 2,
       "class_counts": {
-        "high": 2,
-        "medium": 2,
-        "low": 2
+        "high": 4,
+        "medium": 4,
+        "low": 4
       },
+      "unique_groups": [
+        "NFLX_2025_Q4_ui01",
+        "PLTR_2025_Q4_call01"
+      ],
+      "metrics": {
+        "accuracy": 0.3333,
+        "macro_f1": 0.2667,
+        "macro_precision": 0.2222,
+        "macro_recall": 0.3333
+      },
+      "holdout_row_counts": {
+        "NFLX_2025_Q4_ui01": 6,
+        "PLTR_2025_Q4_call01": 6
+      },
+      "confusion_matrix": {
+        "high": {
+          "high": 2,
+          "low": 0,
+          "medium": 2
+        },
+        "low": {
+          "high": 2,
+          "low": 0,
+          "medium": 2
+        },
+        "medium": {
+          "high": 2,
+          "low": 0,
+          "medium": 2
+        }
+      },
+      "calibration_mode": "not_available",
+      "reliability_weight": 0.05,
+      "evaluation_rows": [
+        {
+          "y_true": "high",
+          "y_pred": "medium",
+          "source_call_id": "NFLX_2025_Q4_ui01"
+        },
+        {
+          "y_true": "high",
+          "y_pred": "medium",
+          "source_call_id": "NFLX_2025_Q4_ui01"
+        },
+        {
+          "y_true": "medium",
+          "y_pred": "medium",
+          "source_call_id": "NFLX_2025_Q4_ui01"
+        },
+        {
+          "y_true": "medium",
+          "y_pred": "medium",
+          "source_call_id": "NFLX_2025_Q4_ui01"
+        },
+        {
+          "y_true": "low",
+          "y_pred": "medium",
+          "source_call_id": "NFLX_2025_Q4_ui01"
+        },
+        {
+          "y_true": "low",
+          "y_pred": "medium",
+          "source_call_id": "NFLX_2025_Q4_ui01"
+        },
+        {
+          "y_true": "low",
+          "y_pred": "high",
+          "source_call_id": "PLTR_2025_Q4_call01"
+        },
+        {
+          "y_true": "low",
+          "y_pred": "high",
+          "source_call_id": "PLTR_2025_Q4_call01"
+        },
+        {
+          "y_true": "medium",
+          "y_pred": "high",
+          "source_call_id": "PLTR_2025_Q4_call01"
+        },
+        {
+          "y_true": "medium",
+          "y_pred": "high",
+          "source_call_id": "PLTR_2025_Q4_call01"
+        },
+        {
+          "y_true": "high",
+          "y_pred": "high",
+          "source_call_id": "PLTR_2025_Q4_call01"
+        },
+        {
+          "y_true": "high",
+          "y_pred": "high",
+          "source_call_id": "PLTR_2025_Q4_call01"
+        }
+      ],
       "feature_columns": [
         "face_visible_pct",
         "stable_face_pct",
@@ -692,7 +786,9 @@
         "pose_visible_pct",
         "shoulder_motion_energy",
         "hand_visibility_pct"
-      ]
+      ],
+      "model_path": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/models/media_support/visual_tension.joblib",
+      "metadata_path": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/models/media_support/visual_tension_metadata.json"
     }
   }
 }
