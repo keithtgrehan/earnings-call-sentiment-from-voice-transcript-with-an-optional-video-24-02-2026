@@ -1,0 +1,331 @@
+{
+  "status": "ok",
+  "row_count": 52,
+  "group_count": 6,
+  "class_counts": {
+    "high": 25,
+    "low": 19,
+    "medium": 8
+  },
+  "unique_groups": [
+    "AAPL_2026_Q1_call06",
+    "GOOGL_2025_Q4_call03",
+    "IBM_2025_Q4_call04",
+    "LLY_2025_Q2_call08",
+    "NFLX_2025_Q4_ui01",
+    "PLTR_2025_Q4_call01"
+  ],
+  "metrics": {
+    "accuracy": 0.7692,
+    "macro_f1": 0.553,
+    "macro_precision": 0.5159,
+    "macro_recall": 0.5965
+  },
+  "holdout_row_counts": {
+    "NFLX_2025_Q4_ui01": 10,
+    "PLTR_2025_Q4_call01": 10,
+    "AAPL_2026_Q1_call06": 8,
+    "GOOGL_2025_Q4_call03": 8,
+    "IBM_2025_Q4_call04": 8,
+    "LLY_2025_Q2_call08": 8
+  },
+  "confusion_matrix": {
+    "high": {
+      "high": 25,
+      "low": 0,
+      "medium": 0
+    },
+    "low": {
+      "high": 3,
+      "low": 15,
+      "medium": 1
+    },
+    "medium": {
+      "high": 2,
+      "low": 6,
+      "medium": 0
+    }
+  },
+  "calibration_mode": "sigmoid_cv3",
+  "reliability_weight": 0.4991,
+  "evaluation_rows": [
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "AAPL_2026_Q1_call06"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "low",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "low",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "medium",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "GOOGL_2025_Q4_call03"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "low",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "IBM_2025_Q4_call04"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "LLY_2025_Q2_call08"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "low",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "low",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "low",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "low",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    }
+  ],
+  "feature_columns": [
+    "pause_before_answer_ms",
+    "answer_onset_delay_ms",
+    "silence_ratio",
+    "speech_duration_s",
+    "pause_count",
+    "pause_density_per_10s",
+    "pause_burst_count",
+    "mean_pause_ms",
+    "max_pause_ms",
+    "filler_density",
+    "speech_rate_wpm",
+    "articulation_rate_wpm",
+    "mean_rms_db",
+    "rms_std_db",
+    "rms_range_db",
+    "hesitation_score"
+  ]
+}

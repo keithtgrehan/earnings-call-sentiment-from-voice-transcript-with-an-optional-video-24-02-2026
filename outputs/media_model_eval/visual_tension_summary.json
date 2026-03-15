@@ -1,0 +1,122 @@
+{
+  "status": "ok",
+  "row_count": 12,
+  "group_count": 2,
+  "class_counts": {
+    "high": 4,
+    "medium": 4,
+    "low": 4
+  },
+  "unique_groups": [
+    "NFLX_2025_Q4_ui01",
+    "PLTR_2025_Q4_call01"
+  ],
+  "metrics": {
+    "accuracy": 0.3333,
+    "macro_f1": 0.2667,
+    "macro_precision": 0.2222,
+    "macro_recall": 0.3333
+  },
+  "holdout_row_counts": {
+    "NFLX_2025_Q4_ui01": 6,
+    "PLTR_2025_Q4_call01": 6
+  },
+  "confusion_matrix": {
+    "high": {
+      "high": 2,
+      "low": 0,
+      "medium": 2
+    },
+    "low": {
+      "high": 2,
+      "low": 0,
+      "medium": 2
+    },
+    "medium": {
+      "high": 2,
+      "low": 0,
+      "medium": 2
+    }
+  },
+  "calibration_mode": "not_available",
+  "reliability_weight": 0.05,
+  "evaluation_rows": [
+    {
+      "y_true": "high",
+      "y_pred": "medium",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "medium",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "medium",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "medium",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "medium",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "medium",
+      "source_call_id": "NFLX_2025_Q4_ui01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "low",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "medium",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    },
+    {
+      "y_true": "high",
+      "y_pred": "high",
+      "source_call_id": "PLTR_2025_Q4_call01"
+    }
+  ],
+  "feature_columns": [
+    "face_visible_pct",
+    "stable_face_pct",
+    "face_size_ratio_mean",
+    "visual_change_score",
+    "head_motion_energy",
+    "head_pose_drift_mean",
+    "gaze_stability_mean",
+    "blink_rate_per_10s",
+    "blink_burstiness_proxy",
+    "mouth_open_variance",
+    "mouth_open_delta_mean",
+    "avg_lower_face_tension",
+    "pose_visible_pct",
+    "shoulder_motion_energy",
+    "hand_visibility_pct"
+  ]
+}

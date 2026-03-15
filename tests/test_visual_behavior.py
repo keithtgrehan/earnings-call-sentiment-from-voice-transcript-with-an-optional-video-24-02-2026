@@ -1,0 +1,242 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import pandas as pd
+
+from earnings_call_sentiment import cli
+from earnings_call_sentiment.visual.segment_aggregate import aggregate_visual_segments
+from earnings_call_sentiment.visual.frame_extract import VideoMetadata
+from earnings_call_sentiment.visual.summary import (
+    compute_visual_behavior_outputs,
+    summarize_visual_behavior_frames,
+)
+
+
+def test_visual_behavior_summary_handles_missing_video() -> None:
+    payload = compute_visual_behavior_outputs(None, pd.DataFrame())
+    assert payload["frames_df"].empty
+    assert payload["segments_df"].empty
+    assert payload["summary"]["video_available"] is False
+    assert payload["summary"]["visual_features_available"] is False
+
+
+def test_visual_segment_aggregation_builds_labels_and_notes() -> None:
+    frames_df = pd.DataFrame(
+        [
+            {
+                "timestamp_s": 0.0,
+                "frame_index": 0,
+                "face_visible": True,
+                "landmark_confidence": 0.9,
+                "face_size_ratio": 0.12,
+                "motion_score": 0.02,
+                "head_shift_score": 0.01,
+                "head_yaw": 0.02,
+                "head_pitch": 0.01,
+                "head_roll": 0.01,
+                "gaze_shift_proxy": 0.01,
+                "blink_proxy": 0.0,
+                "mouth_open_ratio": 0.03,
+                "lower_face_tension_proxy": 0.02,
+                "pose_visible": True,
+                "shoulder_shift_score": 0.01,
+            },
+            {
+                "timestamp_s": 1.0,
+                "frame_index": 30,
+                "face_visible": True,
+                "landmark_confidence": 0.92,
+                "face_size_ratio": 0.13,
+                "motion_score": 0.2,
+                "head_shift_score": 0.18,
+                "head_yaw": 0.2,
+                "head_pitch": 0.1,
+                "head_roll": 0.08,
+                "gaze_shift_proxy": 0.14,
+                "blink_proxy": 1.0,
+                "mouth_open_ratio": 0.08,
+                "lower_face_tension_proxy": 0.15,
+                "pose_visible": True,
+                "shoulder_shift_score": 0.15,
+            },
+            {
+                "timestamp_s": 2.0,
+                "frame_index": 60,
+                "face_visible": False,
+                "landmark_confidence": 0.0,
+                "face_size_ratio": 0.0,
+                "motion_score": 0.0,
+                "head_shift_score": 0.0,
+                "head_yaw": 0.0,
+                "head_pitch": 0.0,
+                "head_roll": 0.0,
+                "gaze_shift_proxy": 0.0,
+                "blink_proxy": 0.0,
+                "mouth_open_ratio": 0.0,
+                "lower_face_tension_proxy": 0.0,
+                "pose_visible": False,
+                "shoulder_shift_score": 0.0,
+            },
+        ]
+    )
+    qa_segments_df = pd.DataFrame(
+        [
+            {"segment_id": 0, "start": 0.0, "end": 0.9, "phase": "prepared_remarks", "speaker_role": "management", "text": "Prepared."},
+            {"segment_id": 1, "start": 1.0, "end": 2.1, "phase": "q_and_a", "speaker_role": "management", "text": "Answer."},
+        ]
+    )
+    segments_df = aggregate_visual_segments(frames_df, qa_segments_df)
+    assert list(segments_df["visual_stability_label"]) == ["stable", "somewhat_changed"]
+    assert segments_df.iloc[0]["confidence_note"] == "usable visual segment"
+    assert segments_df.iloc[1]["confidence_note"] == "usable visual segment"
+
+
+def test_visual_summary_quality_gate_suppresses_weak_face_visibility() -> None:
+    frames_df = pd.DataFrame(
+        [
+            {
+                "timestamp_s": 0.0,
+                "frame_index": 0,
+                "face_detected": False,
+                "face_count": 0,
+                "face_visible": False,
+                "landmark_confidence": 0.1,
+                "face_size_ratio": 0.01,
+                "motion_score": 0.01,
+                "head_shift_score": 0.0,
+                "head_yaw": 0.0,
+                "head_pitch": 0.0,
+                "head_roll": 0.0,
+                "gaze_shift_proxy": 0.0,
+                "blink_proxy": 0.0,
+                "mouth_open_ratio": 0.0,
+                "lower_face_tension_proxy": 0.0,
+                "pose_visible": False,
+                "hand_visible": False,
+                "shoulder_shift_score": 0.0,
+                "feature_note": "no_face_detected",
+            },
+            {
+                "timestamp_s": 1.0,
+                "frame_index": 30,
+                "face_detected": True,
+                "face_count": 1,
+                "face_visible": False,
+                "landmark_confidence": 0.2,
+                "face_size_ratio": 0.02,
+                "motion_score": 0.03,
+                "head_shift_score": 0.0,
+                "head_yaw": 0.0,
+                "head_pitch": 0.0,
+                "head_roll": 0.0,
+                "gaze_shift_proxy": 0.0,
+                "blink_proxy": 0.0,
+                "mouth_open_ratio": 0.0,
+                "lower_face_tension_proxy": 0.0,
+                "pose_visible": False,
+                "hand_visible": False,
+                "shoulder_shift_score": 0.0,
+                "feature_note": "low_face_visibility",
+            },
+        ]
+    )
+    qa_segments_df = pd.DataFrame(
+        [
+            {"segment_id": 0, "start": 0.0, "end": 1.2, "phase": "q_and_a", "speaker_role": "management", "text": "Answer."},
+        ]
+    )
+    payload = summarize_visual_behavior_frames(
+        frames_df,
+        qa_segments_df,
+        VideoMetadata(
+            path=Path("/tmp/demo.mp4"),
+            duration_s=2.0,
+            fps=30.0,
+            frame_count=60,
+            width=640,
+            height=360,
+        ),
+        sample_fps=1.0,
+    )
+
+    assert payload["summary"]["video_quality_ok"] is False
+    assert payload["summary"]["visual_confidence_support"]["suppressed"] is True
+    assert payload["summary"]["quality_gate"]["stable_face_frame_pct_ok"] is False
+
+
+def test_report_markdown_includes_visual_section_when_summary_present(tmp_path: Path) -> None:
+    output_path = tmp_path / "report.md"
+    cli._write_report_markdown(
+        output_path=output_path,
+        metrics_payload={
+            "num_chunks_scored": 2,
+            "sentiment_mean": 0.1,
+            "sentiment_std": 0.2,
+            "guidance": {"row_count": 1, "mean_strength": 0.4},
+            "review_scorecard": {
+                "overall_review_signal": "green",
+                "review_confidence_pct": 82,
+                "confidence_note": "Confidence reflects deterministic evidence coverage, not investment conviction.",
+                "ranked_categories": [
+                    {
+                        "rank": 1,
+                        "name": "Guidance Strength",
+                        "score": 9,
+                        "color_band": "green",
+                        "explanation": "Guidance reads stronger versus prior guidance.",
+                        "strongest_evidence": ["raised: We raised revenue guidance for the year."],
+                    },
+                    {
+                        "rank": 2,
+                        "name": "Uncertainty / Hedging",
+                        "score": 2,
+                        "color_band": "green",
+                        "explanation": "Management language shows limited hedging, so uncertainty stays low.",
+                        "strongest_evidence": [],
+                    },
+                ],
+            },
+        },
+        guidance_df=pd.DataFrame(),
+        guidance_revision_df=pd.DataFrame(),
+        behavioral_summary={
+            "uncertainty_score_overall": {"level": "low"},
+            "reassurance_score_management": {"level": "medium"},
+            "analyst_skepticism_score": {"level": "high"},
+            "strongest_evidence": {},
+        },
+        qa_shift_summary={
+            "prepared_remarks_vs_q_and_a": {"label": "mixed"},
+            "analyst_skepticism": {"level": "high"},
+            "management_answers_vs_prepared_uncertainty": {"label": "mixed"},
+            "early_vs_late_q_and_a": {"label": "low"},
+            "strongest_evidence": {},
+        },
+        visual_summary={
+            "visual_features_available": True,
+            "face_visibility_overall": {"level": "high"},
+            "prepared_baseline_visual_stability": {"level": "medium"},
+            "qa_visual_shift_score": {"level": "high"},
+            "most_visually_changed_segments": [
+                {
+                    "section": "q_and_a",
+                    "start_time_s": 10.0,
+                    "end_time_s": 20.0,
+                    "visual_change_score": 0.2,
+                }
+            ],
+            "notable_low_confidence_segments": [
+                {"confidence_note": "low face visibility reduces confidence"}
+            ],
+        },
+    )
+    report = output_path.read_text(encoding="utf-8")
+    assert "## Reviewer Scorecard" in report
+    assert "| Rank | Category | Score | Band | Explanation |" in report
+    assert "Guidance Strength" in report
+    assert "raised: We raised revenue guidance for the year." in report
+    assert "## Visual Behavior Signals" in report
+    assert "- face visibility: high" in report
+    assert "- Q&A visual shift: high" in report
