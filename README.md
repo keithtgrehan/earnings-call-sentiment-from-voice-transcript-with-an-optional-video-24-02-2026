@@ -108,6 +108,13 @@ Review confidence means confidence in the tool's interpretation of the available
 
 Audio and visual layers are supporting, confidence-tagged review aids. They are not truth detectors and should not be presented as hidden-state inference.
 
+## Repo-Native Media Support Set
+- committed media-support labels now cover 102 segments:
+  - 84 audio
+  - 18 video
+- 9 of the 23 downstream comparison cases now carry source-level media-support targets
+- visual tension still covers 12 labeled rows across 2 independent source groups, so the visual layer remains calibration-only and underpowered relative to the transcript/audio path
+
 ## Current Review Outputs
 Artifacts currently produced by the core pipeline include:
 - `transcript.json`, `transcript.txt`

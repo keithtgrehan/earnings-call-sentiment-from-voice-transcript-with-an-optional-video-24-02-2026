@@ -25,16 +25,20 @@ It is intentionally conservative:
 ## Scope Notes
 - Sources are real repo-local earnings-call runs only.
 - No gated external datasets were downloaded for this package.
-- The current committed media labels now cover 70 rows total:
-  - 52 audio rows
+- The current committed media labels now cover 102 rows total:
+  - 84 audio rows
   - 18 video rows
   - 12 nonblank visual-tension rows across 2 source groups
+- Source-level labels now span 10 source-call groups in total.
 - Visual labeling is now strong enough for a basic grouped check across two
   source groups, but it is still short of a more defensible three-group
   evaluation target.
+- Rechecking the repo-linked official-source pool did not yield an additional
+  repo-local visual replay in this pass, so the independent visual group count
+  remains 2.
 - The downstream/task-impact package now covers 23 independent labeled calls
   from the repo's frozen, holdout, and watchlist-derived benchmark assets.
-- Of those 23 downstream cases, only 5 currently carry source-level
+- Of those 23 downstream cases, 9 currently carry source-level
   media-support targets from `segment_labels.csv`; the rest remain transcript-
   first packaged cases until more media-support labels are added.
 - Missing treatment bundles in the task-impact package are explicit transcript-

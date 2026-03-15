@@ -106,6 +106,20 @@ def _root(root: Path | None = None) -> Path:
     return repo_root() if root is None else Path(root).expanduser().resolve()
 
 
+def _repo_relative_path(value: str | Path, *, root: Path | None = None) -> str:
+    resolved_root = _root(root)
+    path = Path(value)
+    if not path.is_absolute():
+        return path.as_posix()
+    try:
+        return path.relative_to(resolved_root).as_posix()
+    except ValueError:
+        try:
+            return path.resolve().relative_to(resolved_root.resolve()).as_posix()
+        except ValueError:
+            return str(path)
+
+
 def derive_source_call_id(source_path: str) -> str:
     return Path(str(source_path)).stem
 
@@ -205,12 +219,16 @@ def build_downstream_case_frame(root: Path | None = None) -> pd.DataFrame:
                 "quarter": str(case["quarter"]),
                 "event_date": str(case["event_date"]),
                 "gold_guidance_label": str(case["guidance_change_label"]),
-                "source_path": str(case["source_path"]),
-                "metrics_path": str(output_paths.metrics_path),
-                "qa_shift_path": str(output_paths.qa_shift_path),
-                "audio_summary_path": str(output_paths.audio_summary_path) if output_paths.audio_summary_path.exists() else "",
-                "visual_summary_path": str(output_paths.visual_summary_path) if output_paths.visual_summary_path.exists() else "",
-                "saved_multimodal_summary_path": str(output_paths.multimodal_summary_path)
+                "source_path": _repo_relative_path(str(case["source_path"]), root=root),
+                "metrics_path": _repo_relative_path(output_paths.metrics_path, root=root),
+                "qa_shift_path": _repo_relative_path(output_paths.qa_shift_path, root=root),
+                "audio_summary_path": _repo_relative_path(output_paths.audio_summary_path, root=root)
+                if output_paths.audio_summary_path.exists()
+                else "",
+                "visual_summary_path": _repo_relative_path(output_paths.visual_summary_path, root=root)
+                if output_paths.visual_summary_path.exists()
+                else "",
+                "saved_multimodal_summary_path": _repo_relative_path(output_paths.multimodal_summary_path, root=root)
                 if output_paths.multimodal_summary_path.exists()
                 else "",
                 "target_support_direction": support_target.get("target_support_direction", ""),
@@ -244,10 +262,10 @@ def build_task_impact_case_frame(root: Path | None = None) -> pd.DataFrame:
                 "ticker": str(case["ticker"]),
                 "company": str(case["company"]),
                 "gold_guidance_label": str(case["guidance_change_label"]),
-                "baseline_transcript_path": str(case["source_path"]),
-                "treatment_report_path": str(output_paths.report_path),
-                "treatment_metrics_path": str(output_paths.metrics_path),
-                "treatment_transcript_path": str(output_paths.transcript_path),
+                "baseline_transcript_path": _repo_relative_path(str(case["source_path"]), root=root),
+                "treatment_report_path": _repo_relative_path(output_paths.report_path, root=root),
+                "treatment_metrics_path": _repo_relative_path(output_paths.metrics_path, root=root),
+                "treatment_transcript_path": _repo_relative_path(output_paths.transcript_path, root=root),
                 "notes": notes,
             }
         )

@@ -7,6 +7,7 @@ from typing import Any
 import pandas as pd
 
 from earnings_call_sentiment.media_quality import build_media_quality_summary
+from earnings_call_sentiment.media_support_eval import repo_root
 from earnings_call_sentiment.multimodal_support import build_multimodal_support_summary
 
 
@@ -52,7 +53,10 @@ def _load_json(path_value: str | float | None) -> dict[str, Any] | None:
     text = str(path_value).strip()
     if not text:
         return None
-    return json.loads(Path(text).read_text(encoding="utf-8"))
+    path = Path(text)
+    if not path.is_absolute():
+        path = repo_root() / path
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def _coerce_optional_float(value: Any) -> float | None:

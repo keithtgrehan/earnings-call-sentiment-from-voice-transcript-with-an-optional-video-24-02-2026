@@ -11,8 +11,8 @@ This protocol defines a lightweight comparison test to evaluate whether the MVP 
 
 Package status in this checkout:
 - 23 independent labeled cases are packaged for the pilot.
-- Cases that already had repo-local deterministic outputs point to their real treatment bundles.
-- Cases that did not have a rerunnable treatment bundle now point to explicit transcript-only placeholder bundles under `outputs/downstream_decision_eval/`.
+- 9 cases now point to real repo-local deterministic treatment bundles.
+- 14 cases still point to explicit transcript-only placeholder bundles under `outputs/downstream_decision_eval/`.
 - Those placeholders are suitable for logistics/setup verification, but they are not equivalent to a fresh full deterministic review run.
 
 ## Evaluation Conditions

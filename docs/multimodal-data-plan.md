@@ -31,11 +31,12 @@ Audio and video should help reviewers inspect delivery under questioning. They s
 - Training a finance-specific support model: active for narrow support tasks using repo-native engineered features
 
 ## Current Repo-Native Media Support Set
-- Source call groups currently represented in the committed labels: 6
-- Total labeled segments: 70
-- Audio-labeled segments: 52
+- Source call groups currently represented in the committed labels: 10
+- Total labeled segments: 102
+- Audio-labeled segments: 84
 - Video-labeled segments: 18
 - Visual-tension-labeled video rows: 12 across 2 source groups
+- Downstream cases with source-level media-support targets: 9 of 23
 - Current support tasks:
   - hesitation pressure
   - delivery confidence support
@@ -49,6 +50,9 @@ This seed set is intentionally small and conservative. It is used for:
 It is not large enough to justify broad product claims, and weak media should still suppress or downweight support outputs.
 The current visual set is enough for a basic two-group grouped check, but it is
 still one independent group short of a more defensible visual evaluation target.
+The official-source acquisition pass in this checkout expanded audio coverage,
+but it did not materialize an additional independent repo-local visual replay,
+so the visual group count remains 2.
 
 ## Priority Dataset Table
 
@@ -121,6 +125,6 @@ Current repo stance:
 
 ## Practical Next Steps
 1. Add at least one more independently labeled visual source group before treating grouped visual evaluation as defensible.
-2. Increase the number of downstream cases that have real source-level media-support targets instead of transcript-first packaging only.
+2. Continue increasing the number of downstream cases that have real source-level media-support targets beyond the current 9-case coverage.
 3. Use RAVDESS and RAF/AffectNet-style resources only to sanity-check feature extraction and gating thresholds.
 4. Improve calibration only after the repo-native visual eval set clears the three-group minimum and the downstream comparison pack has broader support-target coverage.
