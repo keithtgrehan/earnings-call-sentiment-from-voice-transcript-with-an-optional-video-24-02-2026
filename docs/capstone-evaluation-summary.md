@@ -31,8 +31,6 @@
   - analyst skepticism level
   - management answer uncertainty vs prepared remarks
   - early vs late Q&A drift
-- A deterministic audio behavior support layer is now present for answer-level pause and hesitation review support.
-- A deterministic reviewer scorecard is now present as a presentation-only layer over guidance, behavior, and Q&A artifacts.
 
 ## Practical judgment
 - The deterministic baseline is strong enough to justify the current transcript-first capstone framing.
@@ -42,7 +40,6 @@
   - watchlist-derived unseen holdout: `7/7`
 - This is still a benchmark-agreement result, not proof that the mapper is finished for broader unseen coverage.
 - The Phase 1 behavior layer is now measured well enough to demo, but it is still a lightweight deterministic layer rather than a complete behavioral model.
-- The scorecard is useful for reviewer triage and demo flow, but it is derived from existing deterministic artifacts rather than a separate model layer.
 
 ## Limits
 - The sample sizes are still small.
@@ -51,13 +48,9 @@
 - There is still no unseen `lowered` holdout row in the current package.
 - The behavior eval set is also small and manually curated for auditable rule QA.
 - The new Q&A shift output is useful for review and demo flow, but it is not a validated trading or forecasting signal.
-- The new audio behavior outputs are supporting observational layers, not truth detectors or hidden-state inference.
-- The new scorecard `review_confidence_pct` is confidence in the review interpretation, not investment confidence.
-- Optional visual behavior outputs remain supporting observational context only.
 - These results support decision-support positioning only. They do not support any predictive, alpha, or statistical-significance claim.
 
 ## Final positioning
 - This project is a transcript-first deterministic review tool for structured earnings-call guidance analysis.
-- The current review stack includes guidance, behavioral text signals, Q&A shift, deterministic audio behavior support, optional visual behavior support, and a deterministic scorecard presentation layer.
 - The current evidence supports local benchmark agreement on a small frozen set and a small unseen holdout.
 - It does not support live trading, alpha, or statistical-significance claims.

@@ -42,16 +42,6 @@
 - This eval set is separate from the guidance benchmark packages and is used only for deterministic behavior-signal QA.
 - The current result reflects narrow measured refinements over explicit caution and probing phrase families; it is not evidence that the full Q&A behavior layer is complete.
 
-## Current review stack
-- Transcript-first guidance extraction and revision comparison remain the benchmark backbone.
-- Deterministic behavioral text signals remain measured by the current `58/58` behavior mini eval.
-- Deterministic `Q&A Shift` outputs are part of the current review product and support reviewer interpretation.
-- Deterministic audio behavior outputs are also part of the current review product, but they are support layers rather than benchmark labels.
-- Optional visual behavior outputs remain observational support for video-capable runs.
-- The reviewer scorecard is a deterministic presentation layer built from existing artifacts; it does not change benchmark labels or replace raw evidence.
-- `review_confidence_pct` means confidence in the tool's interpretation of the deterministic evidence, not investment confidence.
-- Audio and visual outputs should be presented as supporting review aids, not truth detection, deception detection, or alpha claims.
-
 ## Evaluator
 - Script: `scripts/evaluate_gold_benchmark.py`
 - Benchmark sanity utility: `scripts/summarize_gold_benchmark.py`

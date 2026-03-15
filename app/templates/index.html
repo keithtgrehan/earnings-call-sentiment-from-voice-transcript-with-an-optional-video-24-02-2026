@@ -21,8 +21,7 @@
           <p class="hero-lede">{{ ui_meta.lede }}</p>
           <div class="hero-facts">
             <span>Deterministic artifacts stay canonical</span>
-            <span>Scorecard stays presentation-only</span>
-            <span>Review confidence means interpretation confidence</span>
+            <span>Optional summary stays additive</span>
             <span>Generated {{ generated_at }}</span>
           </div>
         </div>
@@ -33,8 +32,8 @@
           </div>
           <ul class="bullet-list compact-list">
             <li>YouTube, local media, document upload, or pasted transcript.</li>
-            <li>Guidance, text behavior, Q&amp;A shift, audio support, optional visual support, scorecard, report, and metrics in one bundle.</li>
-            <li>Audio and visual layers are observational review aids, not truth detectors or trading claims.</li>
+            <li>Guidance, revisions, tone shifts, plots, report, and metrics in one bundle.</li>
+            <li>Background jobs keep the browser responsive during long transcriptions.</li>
           </ul>
         </div>
       </section>
@@ -142,7 +141,7 @@
                 <label class="segment-card {% if form_state.analysis_mode == 'deterministic' %}active{% endif %}">
                   <input type="radio" name="analysis_mode" value="deterministic" {% if form_state.analysis_mode == 'deterministic' %}checked{% endif %}>
                   <span>Deterministic only</span>
-                  <small>Transcript, guidance, Q&amp;A shift, audio/visual support, scorecard, report.</small>
+                  <small>Transcript, scoring, guidance, revisions, report.</small>
                 </label>
                 <label class="segment-card {% if form_state.analysis_mode == 'summary' %}active{% endif %}">
                   <input type="radio" name="analysis_mode" value="summary" {% if form_state.analysis_mode == 'summary' %}checked{% endif %}>
@@ -287,124 +286,6 @@
               </div>
 
               <div class="dossier-column dossier-column-side">
-                {% set metrics_payload = result.json.get('metrics.json', {}) %}
-                {% set review_scorecard = metrics_payload.get('review_scorecard', {}) %}
-                {% set audio_behavior = result.json.get('audio_behavior_summary.json', {}) %}
-                {% set visual_behavior = result.json.get('visual_behavior_summary.json', {}) %}
-                {% set media_quality = result.json.get('media_quality.json', {}) %}
-                {% set multimodal_support = result.json.get('multimodal_support_summary.json', {}) %}
-
-                {% if review_scorecard %}
-                <section class="content-card scorecard-card">
-                  <div class="scorecard-topline">
-                    <div class="section-head compact no-margin">
-                      <p class="eyebrow">Reviewer scorecard</p>
-                      <h3>At-a-glance review</h3>
-                    </div>
-                    <span class="band-pill {{ review_scorecard.get('overall_review_signal', 'amber') }}">
-                      {{ review_scorecard.get('overall_review_signal', 'amber') }}
-                    </span>
-                  </div>
-                  <div class="scorecard-summary">
-                    <div class="score-highlight">
-                      <span>Confidence</span>
-                      <strong>{{ review_scorecard.get('review_confidence_pct', 'n/a') }}%</strong>
-                    </div>
-                    <div class="score-highlight">
-                      <span>Overall score</span>
-                      <strong>{{ review_scorecard.get('overall_score', 'n/a') }}/10</strong>
-                    </div>
-                  </div>
-                  <p class="muted-copy">{{ review_scorecard.get('confidence_note') }}</p>
-                  <div class="scorecard-list">
-                    {% for row in review_scorecard.get('ranked_categories', []) %}
-                    <article class="score-row">
-                      <div class="score-row-main">
-                        <div class="score-row-title">
-                          <span class="score-rank">#{{ row.get('rank', loop.index) }}</span>
-                          <strong>{{ row.get('name', 'Category') }}</strong>
-                          <span class="band-pill {{ row.get('color_band', 'amber') }}">{{ row.get('color_band', 'amber') }}</span>
-                        </div>
-                        <p class="score-explanation">{{ row.get('explanation', '') }}</p>
-                        {% if row.get('strongest_evidence') %}
-                        <p class="evidence-snippet">{{ row.get('strongest_evidence')[0] }}</p>
-                        {% else %}
-                        <p class="evidence-snippet empty">No strong excerpt was available for this category.</p>
-                        {% endif %}
-                      </div>
-                      <div class="score-chip">{{ row.get('score', 5) }}/10</div>
-                    </article>
-                    {% endfor %}
-                  </div>
-                </section>
-                {% endif %}
-
-                {% if audio_behavior %}
-                <section class="content-card">
-                  <h3>Audio behavior signals</h3>
-                  <ul class="bullet-list compact-list">
-                    <li>Hesitation: {{ audio_behavior.get('hesitation_level', {}).get('level', 'low') }}</li>
-                    <li>Answer latency pressure: {{ audio_behavior.get('answer_latency_pressure', {}).get('level', 'low') }}</li>
-                    <li>Audio confidence support: {{ audio_behavior.get('audio_confidence_support', {}).get('level', 'low') }}</li>
-                    <li>Support mode: {{ audio_behavior.get('support_mode', 'heuristic_fallback') }}</li>
-                    {% if audio_behavior.get('model_support', {}).get('available') %}
-                    <li>Model direction: {{ audio_behavior.get('model_support', {}).get('support_direction', 'neutral') }} ({{ '%+.2f'|format(audio_behavior.get('model_support', {}).get('calibrated_support_score', 0.0)) }})</li>
-                    {% else %}
-                    <li>Model-backed audio support unavailable; deterministic fallback active.</li>
-                    {% endif %}
-                    {% if audio_behavior.get('strongest_audio_evidence') %}
-                    <li>Evidence: {{ audio_behavior.get('strongest_audio_evidence')[0].get('text', '') }}</li>
-                    {% endif %}
-                    {% if audio_behavior.get('audio_confidence_support', {}).get('suppressed') %}
-                    <li>Suppression: {{ audio_behavior.get('audio_confidence_support', {}).get('reason', 'audio quality gate suppressed support') }}</li>
-                    {% endif %}
-                  </ul>
-                </section>
-                {% endif %}
-
-                {% if visual_behavior %}
-                <section class="content-card">
-                  <h3>Visual behavior signals</h3>
-                  <ul class="bullet-list compact-list">
-                    <li>Facial tension: {{ visual_behavior.get('facial_tension_level', {}).get('level', 'low') }}</li>
-                    <li>Head motion pressure: {{ visual_behavior.get('head_motion_pressure', {}).get('level', 'low') }}</li>
-                    <li>Visual confidence support: {{ visual_behavior.get('visual_confidence_support', {}).get('level', 'low') }}</li>
-                    <li>Support mode: {{ visual_behavior.get('support_mode', 'heuristic_fallback') }}</li>
-                    {% if visual_behavior.get('model_support', {}).get('available') %}
-                    <li>Model direction: {{ visual_behavior.get('model_support', {}).get('support_direction', 'neutral') }} ({{ '%+.2f'|format(visual_behavior.get('model_support', {}).get('calibrated_support_score', 0.0)) }})</li>
-                    {% else %}
-                    <li>Visual model-backed support unavailable; heuristic fallback active.</li>
-                    {% endif %}
-                    {% if visual_behavior.get('strongest_visual_evidence') %}
-                    <li>Evidence: {{ visual_behavior.get('strongest_visual_evidence')[0].get('text', '') }}</li>
-                    {% endif %}
-                    {% if visual_behavior.get('visual_confidence_support', {}).get('suppressed') %}
-                    <li>Suppression: {{ visual_behavior.get('visual_confidence_support', {}).get('reason', 'visual quality gate suppressed support') }}</li>
-                    {% endif %}
-                  </ul>
-                </section>
-                {% endif %}
-
-                {% if multimodal_support %}
-                <section class="content-card">
-                  <h3>Multimodal support</h3>
-                  <ul class="bullet-list compact-list">
-                    <li>Transcript primary assessment: {{ multimodal_support.get('transcript_primary_assessment', 'amber') }}</li>
-                    <li>Audio direction: {{ multimodal_support.get('audio_support_direction', 'unavailable') }}</li>
-                    <li>Video direction: {{ multimodal_support.get('video_support_direction', 'unavailable') }}</li>
-                    <li>Fusion mode: {{ multimodal_support.get('fusion_mode', 'heuristic_fallback') }}</li>
-                    <li>Calibrated support score: {{ '%+.2f'|format(multimodal_support.get('calibrated_support_score', 0.0)) }}</li>
-                    <li>Alignment: {{ multimodal_support.get('multimodal_alignment', 'low') }}</li>
-                    <li>Confidence adjustment: {{ multimodal_support.get('multimodal_confidence_adjustment', 0) }}</li>
-                    <li>Modality weights: audio={{ '%.2f'|format(multimodal_support.get('modality_weights', {}).get('audio', 0.0)) }}, video={{ '%.2f'|format(multimodal_support.get('modality_weights', {}).get('video', 0.0)) }}</li>
-                    {% if media_quality.get('quality_notes') %}
-                    <li>Quality note: {{ media_quality.get('quality_notes')[0] }}</li>
-                    {% endif %}
-                  </ul>
-                  <p class="muted-copy">Transcript evidence remains primary. Audio and video only add support or caution when quality gates allow it.</p>
-                </section>
-                {% endif %}
-
                 {% if result.json.get('metrics.json') %}
                 <section class="content-card accent-card">
                   <h3>Metrics snapshot</h3>

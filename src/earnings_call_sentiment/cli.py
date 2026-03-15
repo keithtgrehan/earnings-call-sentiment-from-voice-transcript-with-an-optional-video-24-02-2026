@@ -18,10 +18,7 @@ from rich.console import Console
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
 from . import __version__
-from earnings_call_sentiment.audio import write_audio_behavior_outputs
-from earnings_call_sentiment.downloaders.youtube import download_audio, download_video
-from earnings_call_sentiment.media_quality import write_media_quality_summary
-from earnings_call_sentiment.multimodal_support import write_multimodal_support_summary
+from earnings_call_sentiment.downloaders.youtube import download_audio
 from earnings_call_sentiment.post_summary import generate_optional_summary
 from earnings_call_sentiment.pipeline.run import (
     load_transcript_segments,
@@ -32,14 +29,12 @@ from earnings_call_sentiment.pipeline.run import (
     write_transcript_artifacts,
 )
 import earnings_call_sentiment.question_shifts as qs
-from earnings_call_sentiment.review_scorecard import build_review_scorecard
 from earnings_call_sentiment.signals import write_behavioral_outputs, write_qa_shift_outputs
 from earnings_call_sentiment.summary_config import (
     SummaryConfig,
     load_summary_config,
     run_summary_preflight,
 )
-from earnings_call_sentiment.visual import is_video_path, write_visual_behavior_outputs
 
 
 _GUIDANCE_CUES = (
@@ -761,7 +756,6 @@ def _build_metrics_payload(
     guidance_revision_df: pd.DataFrame,
     tone_changes_df: pd.DataFrame,
     behavioral_summary: dict[str, Any] | None = None,
-    qa_shift_summary: dict[str, Any] | None = None,
     prior_guidance_path: str | None,
     sentiment_model: str,
     sentiment_revision: str,
@@ -782,21 +776,6 @@ def _build_metrics_payload(
             "uncertainty_score_overall": {"score": 0, "level": "low"},
             "reassurance_score_management": {"score": 0, "level": "low"},
             "analyst_skepticism_score": {"score": 0, "level": "low"},
-            "strongest_evidence": {},
-        }
-    if qa_shift_summary is None:
-        qa_shift_summary = {
-            "prepared_remarks_vs_q_and_a": {"label": "mixed", "delta": 0.0},
-            "analyst_skepticism": {"level": "low", "score": 0},
-            "management_answers_vs_prepared_uncertainty": {"label": "mixed", "delta": 0},
-            "early_vs_late_q_and_a": {"label": "mixed", "delta": 0.0},
-            "strongest_evidence": {},
-            "counts": {
-                "prepared_segments": 0,
-                "q_and_a_segments": 0,
-                "analyst_questions": 0,
-                "management_answers": 0,
-            },
         }
     tone_change_count = (
         int(tone_changes_df["is_change"].astype(bool).sum())
@@ -883,56 +862,7 @@ def _build_metrics_payload(
             "mixed_count": int((labels == "mixed").sum()),
             "top_revisions": top_revisions,
         }
-    review_scorecard = build_review_scorecard(
-        guidance_df=guidance_df,
-        guidance_revision=_as_dict(payload.get("guidance_revision")),
-        behavioral_summary=behavioral_summary,
-        qa_shift_summary=qa_shift_summary,
-    )
-    payload.update(
-        {
-            "overall_review_signal": review_scorecard["overall_review_signal"],
-            "review_confidence_pct": review_scorecard["review_confidence_pct"],
-            "guidance_strength_score": review_scorecard["guidance_strength_score"],
-            "management_confidence_score": review_scorecard["management_confidence_score"],
-            "uncertainty_score": review_scorecard["uncertainty_score"],
-            "analyst_skepticism_score": review_scorecard["analyst_skepticism_score"],
-            "qa_pressure_shift_score": review_scorecard["qa_pressure_shift_score"],
-            "answer_directness_score": review_scorecard["answer_directness_score"],
-            "review_scorecard": review_scorecard,
-        }
-    )
     return payload
-
-
-def _as_dict(value: Any) -> dict[str, Any]:
-    return value if isinstance(value, dict) else {}
-
-
-def _as_list(value: Any) -> list[Any]:
-    return value if isinstance(value, list) else []
-
-
-def _resolve_visual_source_path(
-    *,
-    youtube_url: str | None,
-    audio_path: str | Path | None,
-    cache_dir: Path,
-    verbose: bool = False,
-) -> tuple[Path | None, str | None]:
-    if audio_path is not None:
-        candidate = Path(audio_path).expanduser().resolve()
-        if is_video_path(candidate):
-            return candidate, None
-        return None, None
-    if youtube_url:
-        try:
-            video_path = Path(download_video(youtube_url, cache_dir))
-            return video_path, None
-        except Exception as exc:
-            _log(verbose, f"visual video download unavailable: {exc}")
-            return None, f"Video download unavailable: {exc}"
-    return None, None
 
 
 def _write_report_markdown(
@@ -943,68 +873,20 @@ def _write_report_markdown(
     guidance_revision_df: pd.DataFrame,
     behavioral_summary: dict[str, Any],
     qa_shift_summary: dict[str, Any],
-    audio_summary: dict[str, Any] | None = None,
-    visual_summary: dict[str, Any] | None = None,
-    media_quality: dict[str, Any] | None = None,
-    multimodal_summary: dict[str, Any] | None = None,
 ) -> None:
-    review_scorecard = _as_dict(metrics_payload.get("review_scorecard"))
     lines = [
         "# Earnings Call Sentiment Report",
         "",
         "## Summary",
-        f"- Overall review signal: {str(review_scorecard.get('overall_review_signal', 'amber')).title()}",
-        f"- Review confidence: {review_scorecard.get('review_confidence_pct', 'n/a')}%",
         f"- Chunks scored: {metrics_payload.get('num_chunks_scored')}",
         f"- Sentiment mean: {metrics_payload.get('sentiment_mean')}",
         f"- Sentiment std: {metrics_payload.get('sentiment_std')}",
         "",
-    ]
-
-    if review_scorecard:
-        lines.extend(
-            [
-                "## Reviewer Scorecard",
-                _clip_report_line(
-                    f"- Confidence note: {review_scorecard.get('confidence_note', 'Confidence reflects deterministic evidence coverage, not investment conviction.')}"
-                ),
-                "",
-                "| Rank | Category | Score | Band | Explanation |",
-                "| --- | --- | --- | --- | --- |",
-            ]
-        )
-        for item in _as_list(review_scorecard.get("ranked_categories")):
-            row = _as_dict(item)
-            lines.append(
-                f"| {int(row.get('rank', 0))} | {str(row.get('name', 'Category'))} | "
-                f"{int(row.get('score', 5))}/10 | {str(row.get('color_band', 'amber'))} | "
-                f"{_clip_report_line(str(row.get('explanation', '')), limit=130)} |"
-            )
-        lines.extend(
-            [
-                "",
-                "### Strongest evidence snippets",
-            ]
-        )
-        for item in _as_list(review_scorecard.get("ranked_categories")):
-            row = _as_dict(item)
-            lines.append(f"#### {str(row.get('name', 'Category'))}")
-            evidence = _as_list(row.get("strongest_evidence"))
-            if evidence:
-                for snippet in evidence[:2]:
-                    lines.append(f"- {_clip_report_line(str(snippet), limit=180)}")
-            else:
-                lines.append("- _none_")
-            lines.append("")
-
-    lines.extend(
-        [
         "## Guidance",
         f"- Guidance rows: {metrics_payload.get('guidance', {}).get('row_count')}",
         f"- Mean guidance strength: {metrics_payload.get('guidance', {}).get('mean_strength')}",
         "",
-        ]
-    )
+    ]
 
     if not guidance_df.empty:
         lines.extend(
@@ -1054,7 +936,7 @@ def _write_report_markdown(
                     f"| {float(row.get('start', 0.0)):.2f} | "
                     f"{float(row.get('end', 0.0)):.2f} | "
                     f"{str(row.get('label', 'unclear'))} | "
-                    f"{float(row.get('diff', 0.0)):.4f} | {_clip_report_line(snippet, limit=120)} |"
+                    f"{float(row.get('diff', 0.0)):.4f} | {snippet} |"
                 )
         else:
             lines.append("_none_")
@@ -1084,7 +966,7 @@ def _write_report_markdown(
                     if len(snippet) > 140:
                         snippet = f"{snippet[:137]}..."
                     lines.append(
-                        f"- [{item.get('matched_phrase')}] strength={item.get('strength')}: {_clip_report_line(snippet, limit=160)}"
+                        f"- [{item.get('matched_phrase')}] strength={item.get('strength')}: {snippet}"
                     )
             else:
                 lines.append("- _none_")
@@ -1125,178 +1007,11 @@ def _write_report_markdown(
                 answer = f"{answer[:117]}..."
             lines.append(
                 f"- delta={float(item.get('answer_minus_question', 0.0)):+.4f} | "
-                f"Q: {_clip_report_line(question, limit=100)} | A: {_clip_report_line(answer, limit=100)}"
+                f"Q: {question} | A: {answer}"
             )
     else:
         lines.append("- _none_")
     lines.append("")
-
-    if audio_summary is not None:
-        hesitation = audio_summary.get("hesitation_overall", {}) if isinstance(audio_summary, dict) else {}
-        pause_summary = audio_summary.get("pauses_before_answers", {}) if isinstance(audio_summary, dict) else {}
-        prepared_audio = (
-            audio_summary.get("prepared_baseline_audio_stability", {})
-            if isinstance(audio_summary, dict)
-            else {}
-        )
-        qa_audio_shift = audio_summary.get("qa_hesitation_shift", {}) if isinstance(audio_summary, dict) else {}
-        latency_pressure = (
-            audio_summary.get("answer_latency_pressure", {})
-            if isinstance(audio_summary, dict)
-            else {}
-        )
-        confidence_support = (
-            audio_summary.get("audio_confidence_support", {})
-            if isinstance(audio_summary, dict)
-            else {}
-        )
-        audio_model_support = (
-            audio_summary.get("model_support", {})
-            if isinstance(audio_summary, dict)
-            else {}
-        )
-        lines.extend(
-            [
-                "## Audio Behavior Signals",
-                f"- hesitation: {hesitation.get('level', 'low')}",
-                f"- pauses before answers: {pause_summary.get('level', 'low')}",
-                f"- prepared remarks audio stability: {prepared_audio.get('level', 'high')}",
-                f"- Q&A hesitation shift: {qa_audio_shift.get('level', 'low')}",
-                f"- answer latency pressure: {latency_pressure.get('level', 'low')}",
-                f"- audio confidence support: {confidence_support.get('level', 'low')}",
-                f"- support mode: {audio_summary.get('support_mode', 'heuristic_fallback')}",
-                "",
-            ]
-        )
-        if audio_summary.get("audio_features_available"):
-            if isinstance(audio_model_support, dict) and audio_model_support.get("available"):
-                lines.append(
-                    "- model-backed support: "
-                    f"{audio_model_support.get('support_direction', 'neutral')} | "
-                    f"calibrated_score={float(audio_model_support.get('calibrated_support_score', 0.0)):+.2f}"
-                )
-            else:
-                lines.append("- model-backed support: unavailable | deterministic audio fallback remains active")
-            strongest_audio = audio_summary.get("strongest_audio_evidence", [])
-            if isinstance(strongest_audio, list) and strongest_audio:
-                top_item = strongest_audio[0]
-                lines.append(
-                    "- notable segment: "
-                    f"{top_item.get('segment_id', 'segment')} "
-                    f"{float(top_item.get('start_time_s', 0.0)):.1f}s-"
-                    f"{float(top_item.get('end_time_s', 0.0)):.1f}s | "
-                    f"hesitation={top_item.get('hesitation_label', 'low')} | "
-                    f"pause_ms={top_item.get('pause_before_answer_ms', 'n/a')} | "
-                    f"latency_ms={top_item.get('answer_onset_delay_ms', 'n/a')}"
-                )
-            low_conf = audio_summary.get("low_confidence_segments", [])
-            if isinstance(low_conf, list) and low_conf:
-                lines.append(
-                    "- caution: "
-                    f"{str(low_conf[0].get('confidence_note', 'short segment limits audio confidence'))}"
-                )
-            if confidence_support.get("suppressed"):
-                lines.append(f"- suppression: {confidence_support.get('reason', 'audio quality gate suppressed support')}")
-        else:
-            limitations = audio_summary.get("limitations", [])
-            note = limitations[0] if isinstance(limitations, list) and limitations else "audio data unavailable"
-            lines.append(f"- caution: {note}")
-        lines.append("")
-
-    if visual_summary is not None:
-        face_visibility = visual_summary.get("face_visibility_overall", {}) if isinstance(visual_summary, dict) else {}
-        prepared_stability = (
-            visual_summary.get("prepared_baseline_visual_stability", {})
-            if isinstance(visual_summary, dict)
-            else {}
-        )
-        qa_visual_shift = visual_summary.get("qa_visual_shift_score", {}) if isinstance(visual_summary, dict) else {}
-        facial_tension = visual_summary.get("facial_tension_level", {}) if isinstance(visual_summary, dict) else {}
-        head_motion = visual_summary.get("head_motion_pressure", {}) if isinstance(visual_summary, dict) else {}
-        visual_confidence = visual_summary.get("visual_confidence_support", {}) if isinstance(visual_summary, dict) else {}
-        visual_model_support = (
-            visual_summary.get("model_support", {})
-            if isinstance(visual_summary, dict)
-            else {}
-        )
-        lines.extend(
-            [
-                "## Visual Behavior Signals",
-                f"- face visibility: {face_visibility.get('level', 'low')}",
-                f"- prepared remarks visual stability: {prepared_stability.get('level', 'low')}",
-                f"- Q&A visual shift: {qa_visual_shift.get('level', 'low')}",
-                f"- facial tension: {facial_tension.get('level', 'low')}",
-                f"- head motion pressure: {head_motion.get('level', 'low')}",
-                f"- visual confidence support: {visual_confidence.get('level', 'low')}",
-                f"- support mode: {visual_summary.get('support_mode', 'heuristic_fallback')}",
-                "",
-            ]
-        )
-        if visual_summary.get("visual_features_available"):
-            if isinstance(visual_model_support, dict) and visual_model_support.get("available"):
-                lines.append(
-                    "- model-backed support: "
-                    f"{visual_model_support.get('support_direction', 'neutral')} | "
-                    f"calibrated_score={float(visual_model_support.get('calibrated_support_score', 0.0)):+.2f}"
-                )
-            else:
-                lines.append("- model-backed support: unavailable | visual heuristic fallback remains active")
-            notable = visual_summary.get("strongest_visual_evidence", [])
-            if isinstance(notable, list) and notable:
-                top_item = notable[0]
-                lines.append(
-                    "- notable segment: "
-                    f"{top_item.get('segment_id', 'segment')} "
-                    f"{float(top_item.get('start_time_s', 0.0)):.1f}s-"
-                    f"{float(top_item.get('end_time_s', 0.0)):.1f}s | "
-                    f"change={float(top_item.get('visual_change_score', 0.0)):.4f} | "
-                    f"head_motion={float(top_item.get('head_motion_energy', 0.0)):.4f}"
-                )
-            low_conf = visual_summary.get("notable_low_confidence_segments", [])
-            if isinstance(low_conf, list) and low_conf:
-                lines.append(
-                    "- caution: "
-                    f"{str(low_conf[0].get('confidence_note', 'low face visibility reduces confidence'))}"
-                )
-            if visual_confidence.get("suppressed"):
-                lines.append(f"- suppression: {visual_confidence.get('reason', 'visual quality gate suppressed support')}")
-        else:
-            limitations = visual_summary.get("limitations", [])
-            note = limitations[0] if isinstance(limitations, list) and limitations else "visual data unavailable"
-            lines.append(f"- caution: {note}")
-        lines.append("")
-
-    if media_quality is not None:
-        lines.extend(
-            [
-                "## Media Quality",
-                f"- audio quality ok: {media_quality.get('audio_quality_ok', False)}",
-                f"- video quality ok: {media_quality.get('video_quality_ok', False)}",
-                "",
-            ]
-        )
-        for note in media_quality.get("quality_notes", [])[:3]:
-            lines.append(f"- {note}")
-        lines.append("")
-
-    if multimodal_summary is not None:
-        lines.extend(
-            [
-                "## Multimodal Support",
-                f"- transcript primary assessment: {multimodal_summary.get('transcript_primary_assessment', 'amber')}",
-                f"- audio support direction: {multimodal_summary.get('audio_support_direction', 'unavailable')}",
-                f"- video support direction: {multimodal_summary.get('video_support_direction', 'unavailable')}",
-                f"- fusion mode: {multimodal_summary.get('fusion_mode', 'heuristic_fallback')}",
-                f"- calibrated support score: {float(multimodal_summary.get('calibrated_support_score', 0.0)):+.2f}",
-                f"- multimodal alignment: {multimodal_summary.get('multimodal_alignment', 'low')}",
-                f"- multimodal confidence adjustment: {multimodal_summary.get('multimodal_confidence_adjustment', 0)}",
-                f"- modality weights: audio={float(multimodal_summary.get('modality_weights', {}).get('audio', 0.0)):.2f} | video={float(multimodal_summary.get('modality_weights', {}).get('video', 0.0)):.2f}",
-                "",
-            ]
-        )
-        for note in multimodal_summary.get("notes", [])[:4]:
-            lines.append(f"- {note}")
-        lines.append("")
 
     lines.extend(
         [
@@ -1309,30 +1024,7 @@ def _write_report_markdown(
             "- behavioral_summary.json",
             "- qa_shift_segments.csv",
             "- qa_shift_summary.json",
-            "- metrics.json (includes review_scorecard)",
-        ]
-    )
-    if audio_summary is not None:
-        lines.extend(
-            [
-                "- audio_behavior_segments.csv",
-                "- audio_behavior_summary.json",
-            ]
-        )
-    if visual_summary is not None:
-        lines.extend(
-            [
-                "- visual_behavior_frames.csv",
-                "- visual_behavior_segments.csv",
-                "- visual_behavior_summary.json",
-            ]
-        )
-    if media_quality is not None:
-        lines.append("- media_quality.json")
-    if multimodal_summary is not None:
-        lines.append("- multimodal_support_summary.json")
-    lines.extend(
-        [
+            "- metrics.json",
             "- report.md",
             "",
         ]
@@ -1340,22 +1032,11 @@ def _write_report_markdown(
     output_path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def _clip_report_line(text: str, limit: int = 140) -> str:
-    compact = " ".join(str(text).replace("|", "/").split())
-    if len(compact) <= limit:
-        return compact
-    return f"{compact[: limit - 3]}..."
-
-
 def _run_postscore_stages(
     *,
     chunks_scored_df: pd.DataFrame,
     out_dir: Path,
     args: argparse.Namespace,
-    audio_path: Path | None = None,
-    video_path: Path | None = None,
-    enable_visual: bool = False,
-    visual_note: str | None = None,
 ) -> dict[str, Path]:
     resume = bool(args.resume)
     force = bool(args.force)
@@ -1368,13 +1049,6 @@ def _run_postscore_stages(
     behavioral_summary_path = out_dir / "behavioral_summary.json"
     qa_shift_segments_path = out_dir / "qa_shift_segments.csv"
     qa_shift_summary_path = out_dir / "qa_shift_summary.json"
-    audio_segments_path = out_dir / "audio_behavior_segments.csv"
-    audio_summary_path = out_dir / "audio_behavior_summary.json"
-    visual_frames_path = out_dir / "visual_behavior_frames.csv"
-    visual_segments_path = out_dir / "visual_behavior_segments.csv"
-    visual_summary_path = out_dir / "visual_behavior_summary.json"
-    media_quality_path = out_dir / "media_quality.json"
-    multimodal_support_path = out_dir / "multimodal_support_summary.json"
     metrics_path = out_dir / "metrics.json"
     report_path = out_dir / "report.md"
 
@@ -1432,57 +1106,6 @@ def _run_postscore_stages(
         qa_shift_summary = qa_shift_outputs["summary"]
     else:
         qa_shift_summary = json.loads(qa_shift_summary_path.read_text(encoding="utf-8"))
-    qa_shift_segments_df = _read_csv_or_empty(qa_shift_segments_path)
-
-    audio_summary: dict[str, Any] | None = None
-    if audio_path is not None:
-        if _stage_should_run(
-            "audio_behavior",
-            [audio_segments_path, audio_summary_path],
-            resume=resume,
-            force=force,
-        ):
-            audio_outputs = write_audio_behavior_outputs(audio_path, qa_shift_segments_df, out_dir)
-            audio_summary = audio_outputs["summary"]
-        else:
-            audio_summary = json.loads(audio_summary_path.read_text(encoding="utf-8"))
-
-    visual_summary: dict[str, Any] | None = None
-    if enable_visual:
-        if _stage_should_run(
-            "visual_behavior",
-            [visual_frames_path, visual_segments_path, visual_summary_path],
-            resume=resume,
-            force=force,
-        ):
-            visual_outputs = write_visual_behavior_outputs(
-                video_path,
-                qa_shift_segments_df,
-                out_dir,
-                sample_fps=1.0,
-            )
-            visual_summary = visual_outputs["summary"]
-            if visual_note:
-                limits = visual_summary.setdefault("limitations", [])
-                if visual_note not in limits:
-                    limits.append(visual_note)
-                visual_summary_path.write_text(json.dumps(visual_summary, indent=2), encoding="utf-8")
-        else:
-            visual_summary = json.loads(visual_summary_path.read_text(encoding="utf-8"))
-
-    if _stage_should_run(
-        "media_quality",
-        [media_quality_path],
-        resume=resume,
-        force=force,
-    ):
-        media_quality = write_media_quality_summary(
-            audio_summary=audio_summary,
-            visual_summary=visual_summary,
-            out_dir=out_dir,
-        )["summary"]
-    else:
-        media_quality = json.loads(media_quality_path.read_text(encoding="utf-8"))
 
     if _stage_should_run("metrics", [metrics_path], resume=resume, force=force):
         metrics_payload = _build_metrics_payload(
@@ -1499,23 +1122,6 @@ def _run_postscore_stages(
     else:
         metrics_payload = json.loads(metrics_path.read_text(encoding="utf-8"))
 
-    if _stage_should_run(
-        "multimodal_support",
-        [multimodal_support_path],
-        resume=resume,
-        force=force,
-    ):
-        multimodal_summary = write_multimodal_support_summary(
-            metrics_payload=metrics_payload,
-            qa_shift_summary=qa_shift_summary,
-            audio_summary=audio_summary,
-            visual_summary=visual_summary,
-            media_quality=media_quality,
-            out_dir=out_dir,
-        )["summary"]
-    else:
-        multimodal_summary = json.loads(multimodal_support_path.read_text(encoding="utf-8"))
-
     if _stage_should_run("report", [report_path], resume=resume, force=force):
         _write_report_markdown(
             output_path=report_path,
@@ -1524,10 +1130,6 @@ def _run_postscore_stages(
             guidance_revision_df=guidance_revision_df,
             behavioral_summary=behavioral_summary,
             qa_shift_summary=qa_shift_summary,
-            audio_summary=audio_summary,
-            visual_summary=visual_summary,
-            media_quality=media_quality,
-            multimodal_summary=multimodal_summary,
         )
 
     return {
@@ -1540,27 +1142,8 @@ def _run_postscore_stages(
         "behavioral_summary_json": behavioral_summary_path,
         "qa_shift_segments_csv": qa_shift_segments_path,
         "qa_shift_summary_json": qa_shift_summary_path,
-        "media_quality_json": media_quality_path,
-        "multimodal_support_summary_json": multimodal_support_path,
         "metrics_json": metrics_path,
         "report_md": report_path,
-        **(
-            {
-                "audio_behavior_segments_csv": audio_segments_path,
-                "audio_behavior_summary_json": audio_summary_path,
-            }
-            if audio_path is not None
-            else {}
-        ),
-        **(
-            {
-                "visual_behavior_frames_csv": visual_frames_path,
-                "visual_behavior_segments_csv": visual_segments_path,
-                "visual_behavior_summary_json": visual_summary_path,
-            }
-            if enable_visual
-            else {}
-        ),
     }
 
 
@@ -1932,16 +1515,6 @@ def main(argv: list[str] | None = None) -> int:
 
     cache_dir.mkdir(parents=True, exist_ok=True)
     out_dir.mkdir(parents=True, exist_ok=True)
-    visual_enabled = bool(args.youtube_url or (args.audio_path and is_video_path(args.audio_path)))
-    visual_source_path: Path | None = None
-    visual_note: str | None = None
-    if visual_enabled:
-        visual_source_path, visual_note = _resolve_visual_source_path(
-            youtube_url=args.youtube_url,
-            audio_path=args.audio_path,
-            cache_dir=cache_dir,
-            verbose=bool(args.verbose),
-        )
     if defaulted_event_dt:
         console.print(
             "[yellow]Warning:[/yellow] --event-dt not provided; defaulting to current "
@@ -2031,55 +1604,29 @@ def main(argv: list[str] | None = None) -> int:
         chunks_scored_df.to_csv(chunks_scored_csv, index=False)
         chunks_scored_jsonl = _write_chunks_scored_jsonl(chunks_scored_df, out_dir)
 
-        normalized_audio_for_postscore = cache_dir / "audio_normalized.wav"
-        if not normalized_audio_for_postscore.exists():
-            normalized_audio_for_postscore = None
-        elif not normalized_audio_for_postscore.is_file():
-            normalized_audio_for_postscore = None
-
         post_paths = _run_postscore_stages(
             chunks_scored_df=chunks_scored_df,
             out_dir=out_dir,
             args=args,
-            audio_path=normalized_audio_for_postscore,
-            video_path=visual_source_path,
-            enable_visual=visual_enabled,
-            visual_note=visual_note,
         )
-        output_rows = [
-            ("Transcript JSON", str(transcript_json)),
-            ("Sentiment Segments", str(artifacts["sentiment_segments_csv"])),
-            ("Sentiment Timeline", str(artifacts["sentiment_timeline_png"])),
-            ("Risk Metrics", str(artifacts["risk_metrics_json"])),
-            ("Guidance", str(post_paths["guidance_csv"])),
-            ("Guidance Revision", str(post_paths["guidance_revision_csv"])),
-            ("Uncertainty Signals", str(post_paths["uncertainty_signals_csv"])),
-            ("Reassurance Signals", str(post_paths["reassurance_signals_csv"])),
-            ("Analyst Skepticism", str(post_paths["analyst_skepticism_csv"])),
-            ("Behavior Summary", str(post_paths["behavioral_summary_json"])),
-        ]
-        if "audio_behavior_summary_json" in post_paths:
-            output_rows.extend(
-                [
-                    ("Audio Behavior Segments", str(post_paths["audio_behavior_segments_csv"])),
-                    ("Audio Behavior Summary", str(post_paths["audio_behavior_summary_json"])),
-                ]
-            )
-        if "visual_behavior_summary_json" in post_paths:
-            output_rows.extend(
-                [
-                    ("Visual Frames", str(post_paths["visual_behavior_frames_csv"])),
-                    ("Visual Segments", str(post_paths["visual_behavior_segments_csv"])),
-                    ("Visual Summary", str(post_paths["visual_behavior_summary_json"])),
-                ]
-            )
-        output_rows.extend(
+        _print_outputs(
+            console,
+            "Scoring Complete",
             [
+                ("Transcript JSON", str(transcript_json)),
+                ("Sentiment Segments", str(artifacts["sentiment_segments_csv"])),
+                ("Sentiment Timeline", str(artifacts["sentiment_timeline_png"])),
+                ("Risk Metrics", str(artifacts["risk_metrics_json"])),
+                ("Guidance", str(post_paths["guidance_csv"])),
+                ("Guidance Revision", str(post_paths["guidance_revision_csv"])),
+                ("Uncertainty Signals", str(post_paths["uncertainty_signals_csv"])),
+                ("Reassurance Signals", str(post_paths["reassurance_signals_csv"])),
+                ("Analyst Skepticism", str(post_paths["analyst_skepticism_csv"])),
+                ("Behavior Summary", str(post_paths["behavioral_summary_json"])),
                 ("Metrics", str(post_paths["metrics_json"])),
                 ("Report", str(post_paths["report_md"])),
-            ]
+            ],
         )
-        _print_outputs(console, "Scoring Complete", output_rows)
         if args.question_shifts:
             _run_question_shift_analysis(
                 segments=segments,
@@ -2151,48 +1698,28 @@ def main(argv: list[str] | None = None) -> int:
         chunks_scored_df=chunks_scored_df,
         out_dir=out_dir,
         args=args,
-        audio_path=Path(str(result["audio"])),
-        video_path=visual_source_path,
-        enable_visual=visual_enabled,
-        visual_note=visual_note,
     )
 
-    output_rows = [
-        ("Audio", str(result["audio"])),
-        ("Transcript JSON", str(result["transcript_json"])),
-        ("Transcript Text", str(result["transcript_txt"])),
-        ("Sentiment Segments", str(result["sentiment_segments_csv"])),
-        ("Sentiment Timeline", str(result["sentiment_timeline_png"])),
-        ("Risk Metrics", str(result["risk_metrics_json"])),
-        ("Guidance", str(post_paths["guidance_csv"])),
-        ("Guidance Revision", str(post_paths["guidance_revision_csv"])),
-        ("Uncertainty Signals", str(post_paths["uncertainty_signals_csv"])),
-        ("Reassurance Signals", str(post_paths["reassurance_signals_csv"])),
-        ("Analyst Skepticism", str(post_paths["analyst_skepticism_csv"])),
-        ("Behavior Summary", str(post_paths["behavioral_summary_json"])),
-    ]
-    if "audio_behavior_summary_json" in post_paths:
-        output_rows.extend(
-            [
-                ("Audio Behavior Segments", str(post_paths["audio_behavior_segments_csv"])),
-                ("Audio Behavior Summary", str(post_paths["audio_behavior_summary_json"])),
-            ]
-        )
-    if "visual_behavior_summary_json" in post_paths:
-        output_rows.extend(
-            [
-                ("Visual Frames", str(post_paths["visual_behavior_frames_csv"])),
-                ("Visual Segments", str(post_paths["visual_behavior_segments_csv"])),
-                ("Visual Summary", str(post_paths["visual_behavior_summary_json"])),
-            ]
-        )
-    output_rows.extend(
+    _print_outputs(
+        console,
+        "Earnings Call Analysis Complete",
         [
+            ("Audio", str(result["audio"])),
+            ("Transcript JSON", str(result["transcript_json"])),
+            ("Transcript Text", str(result["transcript_txt"])),
+            ("Sentiment Segments", str(result["sentiment_segments_csv"])),
+            ("Sentiment Timeline", str(result["sentiment_timeline_png"])),
+            ("Risk Metrics", str(result["risk_metrics_json"])),
+            ("Guidance", str(post_paths["guidance_csv"])),
+            ("Guidance Revision", str(post_paths["guidance_revision_csv"])),
+            ("Uncertainty Signals", str(post_paths["uncertainty_signals_csv"])),
+            ("Reassurance Signals", str(post_paths["reassurance_signals_csv"])),
+            ("Analyst Skepticism", str(post_paths["analyst_skepticism_csv"])),
+            ("Behavior Summary", str(post_paths["behavioral_summary_json"])),
             ("Metrics", str(post_paths["metrics_json"])),
             ("Report", str(post_paths["report_md"])),
-        ]
+        ],
     )
-    _print_outputs(console, "Earnings Call Analysis Complete", output_rows)
 
     if args.question_shifts:
         segments = load_transcript_segments(Path(str(result["transcript_json"])))

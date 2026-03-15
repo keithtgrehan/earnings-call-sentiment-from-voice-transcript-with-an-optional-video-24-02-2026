@@ -291,140 +291,6 @@ textarea {
   line-height: 1.55;
 }
 
-.scorecard-card {
-  display: grid;
-  gap: 14px;
-}
-
-.scorecard-topline,
-.score-row-title {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.score-row-title {
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.band-pill,
-.score-chip,
-.score-rank {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  font-size: 0.74rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.band-pill {
-  padding: 7px 10px;
-  border: 1px solid var(--line);
-}
-
-.band-pill.green {
-  color: var(--accent);
-  background: rgba(47, 92, 79, 0.12);
-}
-
-.band-pill.amber {
-  color: #8f5a1f;
-  background: rgba(170, 109, 50, 0.14);
-}
-
-.band-pill.red {
-  color: var(--error);
-  background: rgba(138, 59, 46, 0.12);
-}
-
-.scorecard-summary {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.scorecard-summary div,
-.score-row {
-  background: rgba(255, 255, 255, 0.68);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-}
-
-.scorecard-summary div {
-  padding: 12px 14px;
-}
-
-.scorecard-summary span {
-  display: block;
-  font-size: 0.76rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-
-.scorecard-summary strong {
-  font-size: 1.18rem;
-}
-
-.scorecard-note {
-  margin: 0;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: rgba(47, 92, 79, 0.08);
-  color: var(--muted);
-}
-
-.scorecard-list {
-  display: grid;
-  gap: 12px;
-}
-
-.score-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px;
-  padding: 14px;
-}
-
-.score-rank {
-  padding: 5px 9px;
-  background: rgba(47, 92, 79, 0.1);
-  color: var(--accent);
-}
-
-.score-explanation,
-.score-evidence {
-  margin: 8px 0 0;
-  line-height: 1.5;
-}
-
-.score-evidence {
-  padding: 9px 10px;
-  border-radius: 14px;
-  background: rgba(47, 92, 79, 0.08);
-  color: var(--muted);
-  font-size: 0.84rem;
-}
-
-.score-evidence.empty {
-  font-style: italic;
-}
-
-.score-chip {
-  min-width: 68px;
-  padding: 8px 12px;
-  background: rgba(47, 92, 79, 0.1);
-  color: var(--accent);
-  align-self: start;
-}
-
 .results-panel {
   display: flex;
   flex-direction: column;
@@ -520,9 +386,7 @@ img {
   .mode-grid.two-up,
   .field-grid,
   .compact-grid,
-  .summary-strip,
-  .scorecard-summary,
-  .score-row {
+  .summary-strip {
     grid-template-columns: 1fr;
   }
 
@@ -538,10 +402,5 @@ img {
 
   .job-meta {
     align-items: start;
-  }
-
-  .scorecard-topline,
-  .score-row {
-    align-items: flex-start;
   }
 }

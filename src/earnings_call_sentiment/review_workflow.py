@@ -276,13 +276,6 @@ def run_document_review(
         tone_change_threshold=tone_change_threshold,
         sentiment_model=sentiment_model,
         sentiment_revision=sentiment_revision,
-        audio_path=None,
-        video_path=None,
-        enable_visual=False,
-        visual_note=None,
-        youtube_url=None,
-        cache_dir=review_run.cache_dir,
-        verbose=verbose,
     )
     if question_shift_enabled:
         write_question_shift_artifacts(
@@ -388,17 +381,6 @@ def run_media_review(
         tone_change_threshold=tone_change_threshold,
         sentiment_model=sentiment_model,
         sentiment_revision=sentiment_revision,
-        audio_path=Path(str(result["audio"])),
-        video_path=(
-            audio_path.expanduser().resolve()
-            if audio_path is not None and cli_module.is_video_path(audio_path)
-            else None
-        ),
-        enable_visual=bool(youtube_url or (audio_path is not None and cli_module.is_video_path(audio_path))),
-        visual_note=None if audio_path is not None and cli_module.is_video_path(audio_path) else None,
-        youtube_url=youtube_url,
-        cache_dir=review_run.cache_dir,
-        verbose=verbose,
     )
     if question_shift_enabled:
         segments = json.loads(Path(str(result["transcript_json"])).read_text(encoding="utf-8"))
@@ -481,23 +463,7 @@ def _run_postscore(
     tone_change_threshold: float,
     sentiment_model: str,
     sentiment_revision: str,
-    audio_path: Path | None,
-    video_path: Path | None,
-    enable_visual: bool,
-    visual_note: str | None,
-    youtube_url: str | None,
-    cache_dir: Path,
-    verbose: bool,
 ) -> dict[str, Path]:
-    resolved_video_path = video_path
-    resolved_visual_note = visual_note
-    if enable_visual and resolved_video_path is None and youtube_url:
-        resolved_video_path, resolved_visual_note = cli_module._resolve_visual_source_path(
-            youtube_url=youtube_url,
-            audio_path=None,
-            cache_dir=cache_dir,
-            verbose=verbose,
-        )
     args = SimpleNamespace(
         resume=False,
         force=True,
@@ -510,10 +476,6 @@ def _run_postscore(
         chunks_scored_df=chunks_scored_df,
         out_dir=out_dir,
         args=args,
-        audio_path=audio_path,
-        video_path=resolved_video_path,
-        enable_visual=enable_visual,
-        visual_note=resolved_visual_note,
     )
 
 
@@ -555,16 +517,9 @@ def load_artifact_bundle_for_dir(
         "guidance_revision.csv",
         "tone_changes.csv",
         "qa_shift_segments.csv",
-        "audio_behavior_segments.csv",
-        "visual_behavior_frames.csv",
-        "visual_behavior_segments.csv",
         "question_sentiment_shifts.csv",
         "question_shifts.png",
         "qa_shift_summary.json",
-        "audio_behavior_summary.json",
-        "visual_behavior_summary.json",
-        "media_quality.json",
-        "multimodal_support_summary.json",
         "metrics.json",
         "report.md",
         "run_meta.json",
@@ -580,8 +535,6 @@ def load_artifact_bundle_for_dir(
         "guidance_revision.csv",
         "tone_changes.csv",
         "qa_shift_segments.csv",
-        "audio_behavior_segments.csv",
-        "visual_behavior_segments.csv",
         "question_sentiment_shifts.csv",
         "sentiment_segments.csv",
     ]:
@@ -590,17 +543,7 @@ def load_artifact_bundle_for_dir(
             frame = pd.read_csv(path)
             bundle["tables"][name] = frame.head(12).fillna("").to_dict(orient="records")
 
-    for name in [
-        "metrics.json",
-        "risk_metrics.json",
-        "run_meta.json",
-        "llm_summary.json",
-        "qa_shift_summary.json",
-        "audio_behavior_summary.json",
-        "visual_behavior_summary.json",
-        "media_quality.json",
-        "multimodal_support_summary.json",
-    ]:
+    for name in ["metrics.json", "risk_metrics.json", "run_meta.json", "llm_summary.json", "qa_shift_summary.json"]:
         path = out_dir / name
         if path.exists() and path.stat().st_size > 0:
             bundle["json"][name] = json.loads(path.read_text(encoding="utf-8"))
