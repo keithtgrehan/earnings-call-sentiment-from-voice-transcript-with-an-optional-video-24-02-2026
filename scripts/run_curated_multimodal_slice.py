@@ -24,11 +24,13 @@ DEFAULT_SEGMENT_MANIFEST = Path("data/source_manifests/earnings_call_segments.cs
 DEFAULT_INPUTS_ROOT = Path("cache/curated_multimodal_slice")
 DEFAULT_STATUS_DIR = Path("data/processed/multimodal/eval")
 DEFAULT_STATUS_BASENAME = "curated_slice_run_status"
+DEFAULT_VISUAL_OUTPUT_ROOT = Path("data/processed/multimodal/visual")
 DEFAULT_SOURCE_IDS = [
+    "goog_q1_2025_example",
     "msft_fy26_q2_example",
     "bac_q4_2025_example",
     "dis_q1_fy26_example",
-    "goog_q1_2025_example",
+    "sbux_prepared_remarks_example",
 ]
 
 AUDIO_EXTENSIONS = [".wav", ".mp3", ".m4a", ".flac", ".ogg", ".webm"]
@@ -96,6 +98,11 @@ def parse_args() -> argparse.Namespace:
         "--enable-diarization",
         action="store_true",
         help="Pass through experimental pyannote diarization to the alignment sidecar.",
+    )
+    parser.add_argument(
+        "--skip-alignment",
+        action="store_true",
+        help="Skip WhisperX alignment attempts and only refresh other sidecar statuses.",
     )
     parser.add_argument(
         "--run-secondary-emotion",
@@ -210,6 +217,10 @@ def _openface_is_configured(explicit_bin: str | None) -> bool:
     return bool(config.openface_bin)
 
 
+def _existing_visual_outputs_path(repo_dir: Path, source_id: str) -> Path:
+    return (repo_dir / DEFAULT_VISUAL_OUTPUT_ROOT / source_id / "segment_visual_features.csv").resolve()
+
+
 def _status_row_base(source_id: str, *, audio_found: bool, video_found: bool, transcript_found: bool, chunks_found: bool) -> dict[str, str]:
     return {
         "source_id": source_id,
@@ -279,7 +290,9 @@ def main() -> int:
             chunks_found=chunks_path is not None,
         )
 
-        if audio_path is None:
+        if args.skip_alignment:
+            row["alignment_status"] = "skipped_by_flag"
+        elif audio_path is None:
             row["alignment_status"] = "skipped_missing_audio"
         else:
             alignment_cmd = [
@@ -303,7 +316,11 @@ def main() -> int:
                 row["alignment_status"] = f"error_exit_{alignment_proc.returncode}"
 
         visual_ready = _has_visual_ready_segments(segment_rows)
-        if video_path is None:
+        existing_visual_outputs = _existing_visual_outputs_path(repo_dir, source_id)
+        if existing_visual_outputs.exists():
+            row["visual_ran"] = "true"
+            row["visual_status"] = "existing_outputs"
+        elif video_path is None:
             row["visual_status"] = "skipped_missing_video"
         elif not _openface_is_configured(args.openface_bin):
             row["visual_status"] = "skipped_openface_unconfigured"

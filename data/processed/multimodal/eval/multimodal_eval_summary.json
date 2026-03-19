@@ -11,28 +11,30 @@
     "source_calls": 12,
     "independent_source_layout_groups": 5,
     "segments": 28,
-    "visually_usable_segments": 0,
+    "visually_usable_segments": 1,
     "audio_aligned_segments": 0,
     "segments_with_nlp_support": 561
   },
   "evidence_existence": {
     "sources_with_alignment": 0,
     "sources_without_alignment": 12,
-    "sources_with_visual": 0,
-    "sources_without_visual": 12,
+    "sources_with_visual": 4,
+    "sources_without_visual": 8,
     "sources_with_nlp": 1,
     "sources_without_nlp": 11,
-    "sources_with_any_multimodal_sidecar": 1,
-    "sources_with_no_multimodal_sidecar": 11
+    "sources_with_any_multimodal_sidecar": 5,
+    "sources_with_no_multimodal_sidecar": 7
   },
   "extraction_failure_counts": {
     "visual_failed_segments": 0,
     "visual_missing_tool_segments": 0,
-    "visual_sources_without_artifacts": 12,
+    "visual_sources_without_artifacts": 8,
     "alignment_sources_without_artifacts": 12,
     "nlp_sources_without_artifacts": 11
   },
-  "visual_unusable_reason_counts": {},
+  "visual_unusable_reason_counts": {
+    "face_too_small_or_intermittent": 3
+  },
   "source_layout_group_counts": {
     "official_investor_relations|audio_only": 8,
     "official_investor_relations|single_speaker_with_slides": 1,
@@ -46,10 +48,10 @@
       "layout_type": "audio_only",
       "source_call_count": 1,
       "sources_with_alignment": 0,
-      "sources_with_visual": 0,
+      "sources_with_visual": 1,
       "sources_with_nlp": 0,
       "manifest_segment_count": 3,
-      "visually_usable_segments": 0,
+      "visually_usable_segments": 1,
       "audio_aligned_segments": 0,
       "segments_with_nlp_support": 0
     },
@@ -106,7 +108,7 @@
       "layout_type": "audio_only",
       "source_call_count": 1,
       "sources_with_alignment": 0,
-      "sources_with_visual": 0,
+      "sources_with_visual": 1,
       "sources_with_nlp": 0,
       "manifest_segment_count": 3,
       "visually_usable_segments": 0,
@@ -154,7 +156,7 @@
       "layout_type": "audio_only",
       "source_call_count": 1,
       "sources_with_alignment": 0,
-      "sources_with_visual": 0,
+      "sources_with_visual": 1,
       "sources_with_nlp": 0,
       "manifest_segment_count": 2,
       "visually_usable_segments": 0,
@@ -166,7 +168,7 @@
       "layout_type": "audio_only",
       "source_call_count": 2,
       "sources_with_alignment": 0,
-      "sources_with_visual": 0,
+      "sources_with_visual": 1,
       "sources_with_nlp": 0,
       "manifest_segment_count": 5,
       "visually_usable_segments": 0,
