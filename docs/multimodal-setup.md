@@ -294,6 +294,84 @@ This summarizes:
 - extraction success rate
 - source-group coverage
 
+## NLP Assist Sidecars
+
+The repo now includes an optional transcript-side NLP assist layer for segment
+comparison only. It does not replace `sentiment_segments.csv`, deterministic
+behavior outputs, or any final review labels.
+
+Default sidecar output root:
+
+```text
+data/processed/multimodal/nlp/<source_id>/
+```
+
+Artifacts written there include:
+
+- `nlp_segment_scores.csv`
+- `nlp_segment_scores.json`
+- `nlp_scoring_summary.json`
+- `nlp_disagreement_summary.json` if you run the comparison helper
+
+### Guardrails
+
+- deterministic outputs remain the source of truth
+- FinBERT is the default primary sidecar scorer
+- the generic emotion model is optional and supporting only
+- no black-box final decision layer is added here
+- no benchmark or gold-label assets are modified
+
+### Run FinBERT over transcript chunks
+
+```bash
+PYTHONPATH=src python scripts/run_nlp_segment_scoring.py \
+  --source-id MSFT_2026_Q2_call05 \
+  --chunks-csv outputs/MSFT_2026_Q2_call05/chunks_scored.csv
+```
+
+### Add the optional generic emotion pass
+
+```bash
+PYTHONPATH=src python scripts/run_nlp_segment_scoring.py \
+  --source-id MSFT_2026_Q2_call05 \
+  --chunks-csv outputs/MSFT_2026_Q2_call05/chunks_scored.csv \
+  --run-secondary-emotion
+```
+
+### Score prepared remarks or Q&A answers only
+
+```bash
+PYTHONPATH=src python scripts/run_nlp_segment_scoring.py \
+  --source-id MSFT_2026_Q2_call05 \
+  --chunks-csv outputs/MSFT_2026_Q2_call05/chunks_scored.csv \
+  --chunk-types prepared_remarks q_and_a_answer
+```
+
+### Score segment-manifest rows using a timed transcript JSON
+
+```bash
+PYTHONPATH=src python scripts/run_nlp_segment_scoring.py \
+  --source-id EXAMPLE_CALL \
+  --segment-manifest data/source_manifests/earnings_call_segments.csv \
+  --transcript-path outputs/EXAMPLE_CALL/transcript.json
+```
+
+For manifest-driven scoring, the safest path is a JSON transcript with segment
+timings. Placeholder `transcript_ref` notes are skipped rather than scored as
+fake text.
+
+### Summarize disagreement against deterministic artifacts
+
+```bash
+PYTHONPATH=src python scripts/summarize_nlp_disagreement.py \
+  --source-id MSFT_2026_Q2_call05 \
+  --deterministic-out-dir outputs/MSFT_2026_Q2_call05
+```
+
+This comparison summary is intended for inspection only. It reports side-by-side
+label counts and disagreement examples without changing the existing
+deterministic outputs.
+
 ## Suggested Minimal Setup
 
 If you want conservative scaffolding only:
