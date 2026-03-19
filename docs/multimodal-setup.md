@@ -142,6 +142,103 @@ available locally and are intentionally wiring a future ingestion step.
 - no training code
 - no changes to transcript-first deterministic outputs
 
+## Alignment Sidecars
+
+The repo now includes optional sidecar scripts for timestamp alignment and
+experimental speaker-boundary assistance. These scripts do not replace the
+default transcription path and do not rewrite `transcript.json` or
+`transcript.txt`.
+
+Default sidecar output root:
+
+```text
+data/processed/multimodal/alignment/<source_id>/
+```
+
+Artifacts written there include:
+
+- `aligned_transcript.json`
+- `aligned_segments.csv`
+- `aligned_words.csv`
+- `alignment_summary.json`
+- `diarization_segments.csv` when diarization is explicitly enabled and applied
+- `segment_candidates.csv` if you run the candidate-conversion helper
+
+### Basic alignment using existing transcript artifacts
+
+Align against an existing `transcript.json` from the current repo pipeline:
+
+```bash
+PYTHONPATH=src python scripts/run_whisperx_alignment.py \
+  --source-id MSFT_2026_Q2_call05 \
+  --audio-path cache/MSFT_2026_Q2_call05/audio_normalized.wav \
+  --transcript-path outputs/MSFT_2026_Q2_call05/transcript.json \
+  --language en
+```
+
+Align against a plain-text transcript:
+
+```bash
+PYTHONPATH=src python scripts/run_whisperx_alignment.py \
+  --source-id EXAMPLE_CALL \
+  --audio-path path/to/audio.wav \
+  --transcript-path path/to/transcript.txt \
+  --language en
+```
+
+If no transcript is provided, the sidecar can let WhisperX produce its own
+alignment-oriented transcript output without affecting the repo's default
+pipeline:
+
+```bash
+PYTHONPATH=src python scripts/run_whisperx_alignment.py \
+  --source-id EXAMPLE_CALL \
+  --audio-path path/to/audio.wav \
+  --language en \
+  --device cpu \
+  --model small \
+  --compute-type int8
+```
+
+### Experimental diarization
+
+Diarization stays optional and is disabled unless you explicitly:
+
+1. set `EARNINGS_CALL_PYANNOTE_ENABLED=1`
+2. configure a Hugging Face token env
+3. pass `--enable-diarization`
+
+Example:
+
+```bash
+export EARNINGS_CALL_PYANNOTE_ENABLED=1
+export EARNINGS_CALL_HF_TOKEN=your_token_here
+
+PYTHONPATH=src python scripts/run_whisperx_alignment.py \
+  --source-id EXAMPLE_CALL \
+  --audio-path path/to/audio.wav \
+  --transcript-path path/to/transcript.json \
+  --language en \
+  --enable-diarization \
+  --min-speakers 2 \
+  --max-speakers 4
+```
+
+This adds supporting speaker labels where overlap is available, but it remains a
+review aid rather than a source of truth.
+
+### Candidate segment helper
+
+Convert an alignment sidecar into simple candidate rows for later manual review:
+
+```bash
+PYTHONPATH=src python scripts/alignment_to_segment_candidates.py \
+  --alignment-json data/processed/multimodal/alignment/EXAMPLE_CALL/aligned_transcript.json
+```
+
+The helper writes `segment_candidates.csv` next to the alignment JSON by
+default.
+
 ## Suggested Minimal Setup
 
 If you want conservative scaffolding only:
