@@ -1,0 +1,172 @@
+{
+  "status": "ok",
+  "paths": {
+    "sources_manifest": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/source_manifests/earnings_call_sources.csv",
+    "segments_manifest": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/source_manifests/earnings_call_segments.csv",
+    "alignment_root": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/processed/multimodal/alignment",
+    "visual_root": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/processed/multimodal/visual",
+    "nlp_root": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/processed/multimodal/nlp"
+  },
+  "headline_counts": {
+    "source_calls": 12,
+    "independent_source_layout_groups": 7,
+    "segments": 25,
+    "visually_usable_segments": 0,
+    "audio_aligned_segments": 0,
+    "segments_with_nlp_support": 0
+  },
+  "evidence_existence": {
+    "sources_with_alignment": 0,
+    "sources_without_alignment": 12,
+    "sources_with_visual": 0,
+    "sources_without_visual": 12,
+    "sources_with_nlp": 0,
+    "sources_without_nlp": 12,
+    "sources_with_any_multimodal_sidecar": 0,
+    "sources_with_no_multimodal_sidecar": 12
+  },
+  "extraction_failure_counts": {
+    "visual_failed_segments": 0,
+    "visual_missing_tool_segments": 0,
+    "visual_sources_without_artifacts": 12,
+    "alignment_sources_without_artifacts": 12,
+    "nlp_sources_without_artifacts": 12
+  },
+  "visual_unusable_reason_counts": {},
+  "source_layout_group_counts": {
+    "official_investor_relations|audio_only": 2,
+    "official_investor_relations|multi_speaker_grid": 1,
+    "official_investor_relations|single_speaker_with_slides": 4,
+    "official_results_page|single_speaker_with_slides": 1,
+    "official_results_page|slides_only": 1,
+    "official_youtube|single_speaker_with_slides": 2,
+    "official_youtube|slides_only": 1
+  },
+  "source_coverage_by_company_layout": [
+    {
+      "company": "Alphabet",
+      "layout_type": "single_speaker_with_slides",
+      "source_call_count": 2,
+      "sources_with_alignment": 0,
+      "sources_with_visual": 0,
+      "sources_with_nlp": 0,
+      "manifest_segment_count": 4,
+      "visually_usable_segments": 0,
+      "audio_aligned_segments": 0,
+      "segments_with_nlp_support": 0
+    },
+    {
+      "company": "Amazon",
+      "layout_type": "audio_only",
+      "source_call_count": 1,
+      "sources_with_alignment": 0,
+      "sources_with_visual": 0,
+      "sources_with_nlp": 0,
+      "manifest_segment_count": 2,
+      "visually_usable_segments": 0,
+      "audio_aligned_segments": 0,
+      "segments_with_nlp_support": 0
+    },
+    {
+      "company": "Apple",
+      "layout_type": "audio_only",
+      "source_call_count": 1,
+      "sources_with_alignment": 0,
+      "sources_with_visual": 0,
+      "sources_with_nlp": 0,
+      "manifest_segment_count": 2,
+      "visually_usable_segments": 0,
+      "audio_aligned_segments": 0,
+      "segments_with_nlp_support": 0
+    },
+    {
+      "company": "AstraZeneca",
+      "layout_type": "single_speaker_with_slides",
+      "source_call_count": 1,
+      "sources_with_alignment": 0,
+      "sources_with_visual": 0,
+      "sources_with_nlp": 0,
+      "manifest_segment_count": 2,
+      "visually_usable_segments": 0,
+      "audio_aligned_segments": 0,
+      "segments_with_nlp_support": 0
+    },
+    {
+      "company": "Bank of America",
+      "layout_type": "multi_speaker_grid",
+      "source_call_count": 1,
+      "sources_with_alignment": 0,
+      "sources_with_visual": 0,
+      "sources_with_nlp": 0,
+      "manifest_segment_count": 3,
+      "visually_usable_segments": 0,
+      "audio_aligned_segments": 0,
+      "segments_with_nlp_support": 0
+    },
+    {
+      "company": "HSBC Holdings",
+      "layout_type": "slides_only",
+      "source_call_count": 1,
+      "sources_with_alignment": 0,
+      "sources_with_visual": 0,
+      "sources_with_nlp": 0,
+      "manifest_segment_count": 2,
+      "visually_usable_segments": 0,
+      "audio_aligned_segments": 0,
+      "segments_with_nlp_support": 0
+    },
+    {
+      "company": "Microsoft",
+      "layout_type": "single_speaker_with_slides",
+      "source_call_count": 1,
+      "sources_with_alignment": 0,
+      "sources_with_visual": 0,
+      "sources_with_nlp": 0,
+      "manifest_segment_count": 2,
+      "visually_usable_segments": 0,
+      "audio_aligned_segments": 0,
+      "segments_with_nlp_support": 0
+    },
+    {
+      "company": "NVIDIA",
+      "layout_type": "single_speaker_with_slides",
+      "source_call_count": 1,
+      "sources_with_alignment": 0,
+      "sources_with_visual": 0,
+      "sources_with_nlp": 0,
+      "manifest_segment_count": 2,
+      "visually_usable_segments": 0,
+      "audio_aligned_segments": 0,
+      "segments_with_nlp_support": 0
+    },
+    {
+      "company": "Starbucks",
+      "layout_type": "slides_only",
+      "source_call_count": 1,
+      "sources_with_alignment": 0,
+      "sources_with_visual": 0,
+      "sources_with_nlp": 0,
+      "manifest_segment_count": 2,
+      "visually_usable_segments": 0,
+      "audio_aligned_segments": 0,
+      "segments_with_nlp_support": 0
+    },
+    {
+      "company": "The Walt Disney Company",
+      "layout_type": "single_speaker_with_slides",
+      "source_call_count": 2,
+      "sources_with_alignment": 0,
+      "sources_with_visual": 0,
+      "sources_with_nlp": 0,
+      "manifest_segment_count": 4,
+      "visually_usable_segments": 0,
+      "audio_aligned_segments": 0,
+      "segments_with_nlp_support": 0
+    }
+  ],
+  "notes": [
+    "Transcript artifacts remain primary; audio, visual, and NLP layers are supporting evidence only.",
+    "This summary reports coverage, usability, and instrumentation breadth. It does not claim model quality or predictive improvement.",
+    "Missing sidecar artifacts indicate absent support evidence in this checkout, not a fallback change to deterministic transcript outputs."
+  ]
+}
