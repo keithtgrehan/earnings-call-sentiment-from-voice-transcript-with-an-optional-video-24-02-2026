@@ -9,48 +9,58 @@
   },
   "headline_counts": {
     "source_calls": 12,
-    "independent_source_layout_groups": 7,
-    "segments": 25,
+    "independent_source_layout_groups": 5,
+    "segments": 28,
     "visually_usable_segments": 0,
     "audio_aligned_segments": 0,
-    "segments_with_nlp_support": 0
+    "segments_with_nlp_support": 561
   },
   "evidence_existence": {
     "sources_with_alignment": 0,
     "sources_without_alignment": 12,
     "sources_with_visual": 0,
     "sources_without_visual": 12,
-    "sources_with_nlp": 0,
-    "sources_without_nlp": 12,
-    "sources_with_any_multimodal_sidecar": 0,
-    "sources_with_no_multimodal_sidecar": 12
+    "sources_with_nlp": 1,
+    "sources_without_nlp": 11,
+    "sources_with_any_multimodal_sidecar": 1,
+    "sources_with_no_multimodal_sidecar": 11
   },
   "extraction_failure_counts": {
     "visual_failed_segments": 0,
     "visual_missing_tool_segments": 0,
     "visual_sources_without_artifacts": 12,
     "alignment_sources_without_artifacts": 12,
-    "nlp_sources_without_artifacts": 12
+    "nlp_sources_without_artifacts": 11
   },
   "visual_unusable_reason_counts": {},
   "source_layout_group_counts": {
-    "official_investor_relations|audio_only": 2,
-    "official_investor_relations|multi_speaker_grid": 1,
-    "official_investor_relations|single_speaker_with_slides": 4,
-    "official_results_page|single_speaker_with_slides": 1,
-    "official_results_page|slides_only": 1,
-    "official_youtube|single_speaker_with_slides": 2,
-    "official_youtube|slides_only": 1
+    "official_investor_relations|audio_only": 8,
+    "official_investor_relations|single_speaker_with_slides": 1,
+    "official_results_page|multi_speaker_grid": 1,
+    "official_results_page|unknown": 1,
+    "official_youtube|single_speaker_with_slides": 1
   },
   "source_coverage_by_company_layout": [
     {
       "company": "Alphabet",
-      "layout_type": "single_speaker_with_slides",
-      "source_call_count": 2,
+      "layout_type": "audio_only",
+      "source_call_count": 1,
       "sources_with_alignment": 0,
       "sources_with_visual": 0,
       "sources_with_nlp": 0,
-      "manifest_segment_count": 4,
+      "manifest_segment_count": 3,
+      "visually_usable_segments": 0,
+      "audio_aligned_segments": 0,
+      "segments_with_nlp_support": 0
+    },
+    {
+      "company": "Alphabet",
+      "layout_type": "single_speaker_with_slides",
+      "source_call_count": 1,
+      "sources_with_alignment": 0,
+      "sources_with_visual": 0,
+      "sources_with_nlp": 0,
+      "manifest_segment_count": 2,
       "visually_usable_segments": 0,
       "audio_aligned_segments": 0,
       "segments_with_nlp_support": 0
@@ -81,7 +91,7 @@
     },
     {
       "company": "AstraZeneca",
-      "layout_type": "single_speaker_with_slides",
+      "layout_type": "unknown",
       "source_call_count": 1,
       "sources_with_alignment": 0,
       "sources_with_visual": 0,
@@ -93,7 +103,7 @@
     },
     {
       "company": "Bank of America",
-      "layout_type": "multi_speaker_grid",
+      "layout_type": "audio_only",
       "source_call_count": 1,
       "sources_with_alignment": 0,
       "sources_with_visual": 0,
@@ -105,7 +115,7 @@
     },
     {
       "company": "HSBC Holdings",
-      "layout_type": "slides_only",
+      "layout_type": "multi_speaker_grid",
       "source_call_count": 1,
       "sources_with_alignment": 0,
       "sources_with_visual": 0,
@@ -117,15 +127,15 @@
     },
     {
       "company": "Microsoft",
-      "layout_type": "single_speaker_with_slides",
+      "layout_type": "audio_only",
       "source_call_count": 1,
       "sources_with_alignment": 0,
       "sources_with_visual": 0,
-      "sources_with_nlp": 0,
-      "manifest_segment_count": 2,
+      "sources_with_nlp": 1,
+      "manifest_segment_count": 3,
       "visually_usable_segments": 0,
       "audio_aligned_segments": 0,
-      "segments_with_nlp_support": 0
+      "segments_with_nlp_support": 561
     },
     {
       "company": "NVIDIA",
@@ -141,7 +151,7 @@
     },
     {
       "company": "Starbucks",
-      "layout_type": "slides_only",
+      "layout_type": "audio_only",
       "source_call_count": 1,
       "sources_with_alignment": 0,
       "sources_with_visual": 0,
@@ -153,12 +163,12 @@
     },
     {
       "company": "The Walt Disney Company",
-      "layout_type": "single_speaker_with_slides",
+      "layout_type": "audio_only",
       "source_call_count": 2,
       "sources_with_alignment": 0,
       "sources_with_visual": 0,
       "sources_with_nlp": 0,
-      "manifest_segment_count": 4,
+      "manifest_segment_count": 5,
       "visually_usable_segments": 0,
       "audio_aligned_segments": 0,
       "segments_with_nlp_support": 0

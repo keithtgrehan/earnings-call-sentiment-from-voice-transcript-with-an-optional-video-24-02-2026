@@ -1,13 +1,13 @@
 source_id,company,ticker,source_family,layout_type,status,manifest_segment_count,face_expected_segment_count,has_alignment,audio_aligned_segments,diarization_segment_count,has_visual,visual_rows_total,visually_usable_segments,visually_limited_segments,visually_unusable_segments,visual_failed_segments,visual_missing_tool_segments,has_nlp,segments_with_nlp_support,nlp_model_count,evidence_layers
-msft_fy26_q2_example,Microsoft,MSFT,official_investor_relations,single_speaker_with_slides,template_example,2,2,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
+msft_fy26_q2_example,Microsoft,MSFT,official_investor_relations,audio_only,ready_to_collect,3,0,False,0,0,False,0,0,0,0,0,0,True,561,1,nlp
 nvda_quarterly_results_example,NVIDIA,NVDA,official_investor_relations,single_speaker_with_slides,template_example,2,2,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
-bac_q4_2025_example,Bank of America,BAC,official_investor_relations,multi_speaker_grid,template_example,3,3,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
-dis_q1_fy26_example,The Walt Disney Company,DIS,official_investor_relations,single_speaker_with_slides,template_example,2,2,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
-dis_q4_fy25_example,The Walt Disney Company,DIS,official_investor_relations,single_speaker_with_slides,template_example,2,2,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
-hsbc_results_example,HSBC Holdings,HSBC,official_results_page,slides_only,template_example,2,0,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
-astrazeneca_results_example,AstraZeneca,AZN,official_results_page,single_speaker_with_slides,template_example,2,2,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
-sbux_prepared_remarks_example,Starbucks,SBUX,official_youtube,slides_only,template_example,2,0,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
-goog_q1_2025_example,Alphabet,GOOGL,official_youtube,single_speaker_with_slides,template_example,2,2,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
+bac_q4_2025_example,Bank of America,BAC,official_investor_relations,audio_only,ready_to_collect,3,0,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
+dis_q1_fy26_example,The Walt Disney Company,DIS,official_investor_relations,audio_only,ready_to_collect,3,0,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
+dis_q4_fy25_example,The Walt Disney Company,DIS,official_investor_relations,audio_only,ready_to_collect,2,2,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
+hsbc_results_example,HSBC Holdings,HSBC,official_results_page,multi_speaker_grid,ready_to_collect,2,0,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
+astrazeneca_results_example,AstraZeneca,AZN,official_results_page,unknown,candidate,2,2,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
+sbux_prepared_remarks_example,Starbucks,SBUX,official_investor_relations,audio_only,ready_to_collect,2,0,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
+goog_q1_2025_example,Alphabet,GOOGL,official_investor_relations,audio_only,ready_to_collect,3,0,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
 goog_q4_2025_example,Alphabet,GOOGL,official_youtube,single_speaker_with_slides,template_example,2,2,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
 apple_q1_2025_example,Apple,AAPL,official_investor_relations,audio_only,template_example,2,0,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
 amzn_q4_2024_example,Amazon,AMZN,official_investor_relations,audio_only,template_example,2,0,False,0,0,False,0,0,0,0,0,0,False,0,0,transcript_only
