@@ -35,6 +35,23 @@ are required for the existing deterministic transcript workflow.
 If you do not install any multimodal extras, the repo should continue to behave
 exactly as it does today.
 
+## Current Repo Status
+
+The repo now contains:
+
+- source and segment manifests under `data/source_manifests/`
+- manual source-pair validation for official transcript + replay/YouTube metadata
+- optional alignment, visual, and NLP sidecar scripts
+- external dataset registry/validation scaffolding for MAEC, MELD, and RAVDESS
+- multimodal coverage reporting under `data/processed/multimodal/eval/`
+
+Current framing:
+
+- transcript remains primary
+- audio, visual, and NLP layers are supporting evidence only
+- MAEC is the most domain-relevant external dataset in this scaffold
+- MELD and RAVDESS remain secondary calibration or sanity-check datasets only
+
 ## Install Options
 
 ### Base repo only
@@ -141,6 +158,14 @@ available locally and are intentionally wiring a future ingestion step.
 - no WhisperX / pyannote pipeline wiring into the current CLI path
 - no training code
 - no changes to transcript-first deterministic outputs
+
+## What This Does Not Prove
+
+- no proven predictive or trading edge
+- no proof that the sidecar layers improve benchmark performance
+- no claim of visual model training success from the current repo state
+- no claim that external datasets prove finance-specific performance
+- no replacement of transcript-first deterministic outputs
 
 ## Alignment Sidecars
 

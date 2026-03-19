@@ -108,6 +108,36 @@ Review confidence means confidence in the tool's interpretation of the available
 
 Audio and visual layers are supporting, confidence-tagged review aids. They are not truth detectors and should not be presented as hidden-state inference.
 
+## Conservative Multimodal Expansion Status
+The repo now includes optional multimodal scaffolding around the same
+transcript-first baseline. These additions are sidecar-only and do not replace
+`transcript.json`, `transcript.txt`, `sentiment_segments.csv`, or the existing
+deterministic outputs.
+
+What now exists in the repo:
+- WhisperX sidecar alignment utilities for timestamp refinement
+- optional pyannote diarization support when explicitly configured
+- OpenFace external hooks for conservative low-level visual summaries only
+- FinBERT as the primary NLP assist sidecar
+- `emotion-english-distilroberta-base` as an optional secondary/supporting NLP assist
+- source and segment manifests under `data/source_manifests/`
+- manual official transcript + replay/YouTube pairing validation via `scripts/validate_source_pairs.py`
+- external dataset scaffolding:
+  - MAEC as the most domain-relevant external reference in this scaffold
+  - MELD and RAVDESS as secondary calibration or sanity-check datasets only
+- multimodal coverage reporting via `scripts/build_multimodal_eval_summary.py`
+
+The generated multimodal evaluation summary currently reports:
+- `12` source calls
+- `7` source/layout groups
+- `25` manifest segments
+- `0` current sources with alignment sidecar artifacts
+- `0` current sources with visual sidecar artifacts
+- `0` current sources with NLP sidecar artifacts
+
+That is breadth and instrumentation status only. It is not a claim that the
+multimodal layers have already been validated as helpful in production use.
+
 ## Repo-Native Media Support Set
 - committed media-support labels now cover 102 segments:
   - 84 audio
@@ -135,6 +165,13 @@ Optional heuristic outputs still exist, but they are not the current benchmark f
 - question-shift artifacts
 - optional summary/eval utilities
 - offline backtest scripts
+
+Optional multimodal sidecar/reporting artifacts now also exist when those
+scripts are run:
+- alignment sidecars under `data/processed/multimodal/alignment/`
+- visual sidecars under `data/processed/multimodal/visual/`
+- NLP assist sidecars under `data/processed/multimodal/nlp/`
+- multimodal coverage reporting under `data/processed/multimodal/eval/`
 
 ## UI / Local Review Shell
 The active local review shell is the primary interface served by:
@@ -280,12 +317,15 @@ python scripts/summarize_behavior_eval_set.py
 python scripts/evaluate_behavior_signal_set.py
 ```
 
-## What Remains Unproven
+## What This Does Not Prove
 - No proven predictive edge
 - No statistical significance claim
 - No live trading claim
 - No claim that the current deterministic rule set is validated beyond the current frozen benchmark and local review workflow
 - No emotion-truth, intent, or deception claim from the behavior layer
+- No proof that WhisperX, pyannote, OpenFace, FinBERT, or the generic emotion sidecar improves benchmark performance
+- No claim of visual model training success from the current repo state
+- No claim that MAEC, MELD, or RAVDESS establishes finance-specific performance
 
 The current baseline is useful for structured review, but it still needs broader unseen evaluation before stronger claims are justified.
 

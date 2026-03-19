@@ -9,6 +9,21 @@ Core framing:
 - current multimodal expansion is about breadth, coverage, and instrumentation
 - this reporting layer does not claim model quality or predictive improvement
 
+## Current Repo Status
+
+The generated summary currently reports:
+
+- `12` source calls
+- `7` source/layout groups
+- `25` manifest segments
+- `0` visually usable segments in the current generated report
+- `0` audio-aligned segments in the current generated report
+- `0` segments with NLP support in the current generated report
+
+That should be read as current coverage status in this checkout, not as evidence
+that the multimodal layers have been disproven or that the transcript baseline
+has changed.
+
 ## What The Summary Reports
 
 The multimodal evaluation summary focuses on:
@@ -24,6 +39,14 @@ The multimodal evaluation summary focuses on:
 
 It is intentionally not a benchmark-quality statement about whether the
 multimodal layers improve outcomes.
+
+## What This Does Not Prove
+
+- no proven predictive improvement
+- no proof that alignment, visual, or NLP sidecars improve benchmark results
+- no claim of visual model training success
+- no proof that external datasets establish finance-specific performance
+- no replacement of transcript-first deterministic artifacts
 
 ## Output Artifacts
 
