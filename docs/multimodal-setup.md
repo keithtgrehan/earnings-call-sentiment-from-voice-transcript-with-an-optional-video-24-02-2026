@@ -239,6 +239,61 @@ PYTHONPATH=src python scripts/alignment_to_segment_candidates.py \
 The helper writes `segment_candidates.csv` next to the alignment JSON by
 default.
 
+## OpenFace Visual Sidecars
+
+OpenFace support remains optional and external. These hooks generate only
+conservative low-level visual summaries and do not produce psychological,
+confidence, stress, deception, or truthfulness labels.
+
+Default sidecar output root:
+
+```text
+data/processed/multimodal/visual/<source_id>/
+```
+
+Artifacts written there include:
+
+- `segment_visual_features.csv`
+- `segment_visual_features.json`
+- `visual_coverage_summary.json`
+- `openface_raw/<video_basename>.csv` when extraction succeeds
+
+### Run OpenFace feature extraction
+
+```bash
+PYTHONPATH=src python scripts/run_openface_features.py \
+  --source-id EXAMPLE_CALL \
+  --video-path path/to/local_video.mp4 \
+  --openface-bin /path/to/FeatureExtraction
+```
+
+The script reads source and segment manifests, processes only rows where
+`face_expected=true`, and writes conservative per-segment features such as:
+
+- `face_detection_rate`
+- `frames_with_face`
+- `mean_head_pose_change`
+- `gaze_variability_proxy`
+- `blink_or_eye_closure_proxy` when supported
+- `au_intensity_mean` when supported
+- `segment_visual_usability`
+- `extraction_errors`
+
+If OpenFace is missing, the script fails clearly and writes no fake outputs.
+
+### Summarize visual coverage
+
+```bash
+PYTHONPATH=src python scripts/summarize_visual_coverage.py
+```
+
+This summarizes:
+
+- attempted segments
+- usable vs unusable
+- extraction success rate
+- source-group coverage
+
 ## Suggested Minimal Setup
 
 If you want conservative scaffolding only:
