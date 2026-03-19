@@ -397,6 +397,77 @@ This comparison summary is intended for inspection only. It reports side-by-side
 label counts and disagreement examples without changing the existing
 deterministic outputs.
 
+## Curated Slice Helper
+
+The repo now includes one narrow helper for the curated real-source slice:
+
+```bash
+PYTHONPATH=src python scripts/run_curated_multimodal_slice.py
+```
+
+This helper does not download anything. It only:
+
+- reads the prioritized source ids from the source and segment manifests
+- looks for manually placed local files under `cache/curated_multimodal_slice/`
+- runs alignment only when local audio exists
+- runs OpenFace only when local video exists and OpenFace is configured
+- runs NLP sidecars only when local chunks or transcript inputs exist
+- skips missing modalities safely per source
+- refreshes `data/processed/multimodal/eval/` at the end
+
+### Local file placement convention
+
+Place local files under:
+
+```text
+cache/curated_multimodal_slice/<source_id>/
+```
+
+Supported filenames are intentionally narrow:
+
+- audio:
+  `audio.wav`, `audio.mp3`, `audio.m4a`, `audio.flac`, `audio.ogg`, or `audio.webm`
+- video:
+  `video.mp4`, `video.mov`, `video.mkv`, `video.webm`, or `video.m4v`
+- transcript:
+  `transcript.json` or `transcript.txt`
+- transcript chunks for NLP:
+  `chunks_scored.csv` or `chunks_scored.jsonl`
+
+Priority source directories:
+
+```text
+cache/curated_multimodal_slice/msft_fy26_q2_example/
+cache/curated_multimodal_slice/bac_q4_2025_example/
+cache/curated_multimodal_slice/dis_q1_fy26_example/
+cache/curated_multimodal_slice/goog_q1_2025_example/
+```
+
+You only need to place the modalities you actually have. A source can still
+produce sidecar coverage if only one modality is present.
+
+### Skip behavior
+
+- missing audio:
+  alignment is skipped for that source
+- missing video:
+  OpenFace is skipped for that source
+- missing transcript or chunks:
+  NLP is skipped for that source
+- missing OpenFace configuration:
+  visual extraction is skipped, not treated as success
+- segment rows without timed visual windows:
+  visual extraction is skipped even if a local video exists
+
+The helper writes:
+
+- `data/processed/multimodal/eval/curated_slice_run_status.csv`
+- `data/processed/multimodal/eval/curated_slice_run_status.json`
+
+These status files record whether each prioritized source had local audio,
+video, transcript, and chunk inputs, plus whether alignment, visual, and NLP
+sidecars actually ran.
+
 ## Suggested Minimal Setup
 
 If you want conservative scaffolding only:
