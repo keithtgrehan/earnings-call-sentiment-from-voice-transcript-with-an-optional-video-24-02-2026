@@ -30,7 +30,6 @@ DEFAULT_SOURCE_IDS = [
     "dis_q1_fy26_example",
     "goog_q1_2025_example",
     "sbux_prepared_remarks_example",
-    "nvda_q4_fy26_example",
 ]
 
 DIRECT_MEDIA_EXTENSIONS = {
@@ -60,19 +59,29 @@ STATUS_COLUMNS = [
     "reason",
 ]
 
-# Only keep overrides that were verified from the company's own IR page.
+# Keep this override list narrow and explicit. The values below are either the
+# approved official IR page or the exact approved YouTube fallback supplied for
+# this curated acquisition step.
 VERIFIED_MEDIA_OVERRIDES = {
+    "msft_fy26_q2_example": {
+        "media_url": "https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q2",
+        "url_label": "official_ir_page",
+    },
+    "bac_q4_2025_example": {
+        "media_url": "https://www.youtube.com/watch?v=-4ztL9Bkb18",
+        "url_label": "approved_youtube_fallback",
+    },
     "dis_q1_fy26_example": {
-        "media_url": "https://events.q4inc.com/attendee/598588483",
-        "url_label": "official_q4_event_linked_from_ir_page",
+        "media_url": "https://www.youtube.com/watch?v=kHplSjEUI4w",
+        "url_label": "approved_youtube_fallback",
     },
     "goog_q1_2025_example": {
         "media_url": "https://www.youtube.com/watch?v=SySgINoaI9A",
-        "url_label": "official_youtube_linked_from_ir_page",
+        "url_label": "official_ir_linked_youtube",
     },
-    "msft_fy26_q2_example": {
-        "media_url": "https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q2",
-        "url_label": "official_event_page_linked_from_ir_page",
+    "sbux_prepared_remarks_example": {
+        "media_url": "https://www.youtube.com/watch?v=U8HT0PaymAA",
+        "url_label": "approved_youtube_fallback",
     },
 }
 
@@ -326,6 +335,8 @@ def _acquire_source(
     source_dir = inputs_root / source_id
     source_dir.mkdir(parents=True, exist_ok=True)
 
+    media_url, url_label = _resolve_media_url(row, source_id)
+
     existing_video = _existing_media_path(source_dir, "video")
     existing_audio = _existing_media_path(source_dir, "audio")
     if existing_video and existing_audio:
@@ -334,8 +345,8 @@ def _acquire_source(
             manifest_row_found="true",
             company=company,
             event_title=event_title,
-            attempted_media_url="",
-            attempted_url_label="existing_local_media",
+            attempted_media_url=media_url,
+            attempted_url_label=url_label,
             status="already_present",
             video_path=str(existing_video or ""),
             audio_path=str(existing_audio or ""),
@@ -343,7 +354,6 @@ def _acquire_source(
             reason="",
         )
 
-    media_url, url_label = _resolve_media_url(row, source_id)
     if not media_url:
         return _status_row(
             source_id=source_id,
