@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 from typing import Any
+from urllib import error, request
 
 import pandas as pd
 
@@ -132,18 +133,38 @@ ALLOWED_SEGMENT_VALUES = {
     },
 }
 
+REQUIRED_SOURCE_PAIR_FIELDS = [
+    "source_id",
+    "company",
+    "event_title",
+    "event_date",
+    "source_family",
+    "layout_type",
+    "transcript_source_type",
+    "video_source_type",
+    "status",
+]
+
+OFFICIAL_TRANSCRIPT_TYPES = {"official_transcript", "prepared_remarks_only"}
+THIRD_PARTY_TRANSCRIPT_TYPES = {"vendor_transcript", "auto_transcript"}
+MISSING_TRANSCRIPT_TYPES = {"no_transcript_yet"}
+
+OFFICIAL_VIDEO_TYPES = {"official_webcast", "official_youtube"}
+THIRD_PARTY_VIDEO_TYPES = {"third_party_video"}
+MISSING_VIDEO_TYPES = {"no_video_yet", "audio_only"}
+
 
 def repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
 
-def load_sources_manifest() -> pd.DataFrame:
-    path = repo_root() / SOURCES_FILE
+def load_sources_manifest(path: str | Path | None = None) -> pd.DataFrame:
+    path = Path(path) if path is not None else (repo_root() / SOURCES_FILE)
     return pd.read_csv(path, dtype=str, keep_default_na=False)
 
 
-def load_segments_manifest() -> pd.DataFrame:
-    path = repo_root() / SEGMENTS_FILE
+def load_segments_manifest(path: str | Path | None = None) -> pd.DataFrame:
+    path = Path(path) if path is not None else (repo_root() / SEGMENTS_FILE)
     return pd.read_csv(path, dtype=str, keep_default_na=False)
 
 
@@ -205,9 +226,13 @@ def _validate_time_value(value: str, *, field_name: str, row_id: str) -> tuple[f
     return number, []
 
 
-def validate_source_manifests() -> dict[str, Any]:
-    sources = load_sources_manifest()
-    segments = load_segments_manifest()
+def validate_source_manifests(
+    *,
+    sources_path: str | Path | None = None,
+    segments_path: str | Path | None = None,
+) -> dict[str, Any]:
+    sources = load_sources_manifest(sources_path)
+    segments = load_segments_manifest(segments_path)
     errors: list[str] = []
 
     errors.extend(_validate_columns(sources, SOURCE_COLUMNS, "earnings_call_sources"))
@@ -296,6 +321,259 @@ def validate_source_manifests() -> dict[str, Any]:
         if "labeling_status" in segments.columns
         else {},
         "errors": errors,
+    }
+
+
+def _is_template_example(row: pd.Series) -> bool:
+    return str(row.get("status", "")).strip().lower() == "template_example"
+
+
+def _required_source_pair_errors(row: pd.Series) -> list[str]:
+    row_id = str(row.get("source_id", "<missing>")).strip() or "<missing>"
+    errors: list[str] = []
+    for field_name in REQUIRED_SOURCE_PAIR_FIELDS:
+        if str(row.get(field_name, "")).strip():
+            continue
+        errors.append(f"{row_id} missing required pair field: {field_name}")
+    return errors
+
+
+def _transcript_origin(transcript_source_type: str) -> str:
+    normalized = str(transcript_source_type).strip().lower()
+    if normalized in OFFICIAL_TRANSCRIPT_TYPES:
+        return "official"
+    if normalized in THIRD_PARTY_TRANSCRIPT_TYPES:
+        return "third_party"
+    if normalized in MISSING_TRANSCRIPT_TYPES:
+        return "missing"
+    return "unknown"
+
+
+def _video_origin(video_source_type: str) -> str:
+    normalized = str(video_source_type).strip().lower()
+    if normalized in OFFICIAL_VIDEO_TYPES:
+        return "official"
+    if normalized in THIRD_PARTY_VIDEO_TYPES:
+        return "third_party"
+    if normalized in MISSING_VIDEO_TYPES:
+        return "missing"
+    return "unknown"
+
+
+def _pair_state(
+    *,
+    transcript_origin: str,
+    video_origin: str,
+) -> str:
+    if transcript_origin == "missing" and video_origin == "missing":
+        return "missing_transcript_and_video"
+    if transcript_origin == "missing":
+        return "missing_transcript"
+    if video_origin == "missing":
+        return "missing_video"
+    if transcript_origin == "third_party":
+        return "complete_pair_with_third_party_transcript"
+    return "complete_pair"
+
+
+def _source_pair_warnings(row: pd.Series) -> list[str]:
+    row_id = str(row.get("source_id", "<missing>")).strip() or "<missing>"
+    warnings: list[str] = []
+    transcript_source_type = str(row.get("transcript_source_type", "")).strip().lower()
+    video_source_type = str(row.get("video_source_type", "")).strip().lower()
+    transcript_url = str(row.get("transcript_url", "")).strip()
+    video_url = str(row.get("video_url", "")).strip()
+    source_family = str(row.get("source_family", "")).strip().lower()
+
+    if transcript_source_type in MISSING_TRANSCRIPT_TYPES and transcript_url:
+        warnings.append(
+            f"{row_id} is marked {transcript_source_type} but still has transcript_url metadata."
+        )
+    if video_source_type in MISSING_VIDEO_TYPES and video_url:
+        warnings.append(
+            f"{row_id} is marked {video_source_type} but still has video_url metadata."
+        )
+    if transcript_source_type in THIRD_PARTY_TRANSCRIPT_TYPES:
+        warnings.append(
+            f"{row_id} uses a third-party transcript type ({transcript_source_type}); keep it clearly secondary to official IR transcript sources."
+        )
+    if transcript_source_type in OFFICIAL_TRANSCRIPT_TYPES and source_family in {"transcript_vendor", "third_party_repost"}:
+        warnings.append(
+            f"{row_id} claims an official transcript but source_family={source_family}; confirm the pair metadata manually."
+        )
+    if video_source_type == "official_youtube" and source_family == "third_party_repost":
+        warnings.append(
+            f"{row_id} claims official_youtube while source_family=third_party_repost; confirm the video provenance manually."
+        )
+    return warnings
+
+
+def _source_pair_errors(row: pd.Series) -> list[str]:
+    row_id = str(row.get("source_id", "<missing>")).strip() or "<missing>"
+    errors = _required_source_pair_errors(row)
+    transcript_source_type = str(row.get("transcript_source_type", "")).strip().lower()
+    video_source_type = str(row.get("video_source_type", "")).strip().lower()
+    transcript_url = str(row.get("transcript_url", "")).strip()
+    video_url = str(row.get("video_url", "")).strip()
+
+    if transcript_source_type in OFFICIAL_TRANSCRIPT_TYPES | THIRD_PARTY_TRANSCRIPT_TYPES and not transcript_url:
+        errors.append(
+            f"{row_id} transcript_source_type={transcript_source_type} requires transcript_url."
+        )
+    if video_source_type in OFFICIAL_VIDEO_TYPES | THIRD_PARTY_VIDEO_TYPES and not video_url:
+        errors.append(f"{row_id} video_source_type={video_source_type} requires video_url.")
+    if transcript_source_type not in OFFICIAL_TRANSCRIPT_TYPES | THIRD_PARTY_TRANSCRIPT_TYPES | MISSING_TRANSCRIPT_TYPES:
+        errors.append(
+            f"{row_id} transcript_source_type is not clearly classified as official, third-party, or missing."
+        )
+    if video_source_type not in OFFICIAL_VIDEO_TYPES | THIRD_PARTY_VIDEO_TYPES | MISSING_VIDEO_TYPES:
+        errors.append(
+            f"{row_id} video_source_type is not clearly classified as official, third-party, or missing."
+        )
+    return errors
+
+
+def _pair_row_payload(row: pd.Series) -> dict[str, Any]:
+    transcript_source_type = str(row.get("transcript_source_type", "")).strip().lower()
+    video_source_type = str(row.get("video_source_type", "")).strip().lower()
+    transcript_origin = _transcript_origin(transcript_source_type)
+    video_origin = _video_origin(video_source_type)
+    return {
+        "source_id": str(row.get("source_id", "")).strip(),
+        "company": str(row.get("company", "")).strip(),
+        "ticker": str(row.get("ticker", "")).strip(),
+        "event_title": str(row.get("event_title", "")).strip(),
+        "event_date": str(row.get("event_date", "")).strip(),
+        "status": str(row.get("status", "")).strip(),
+        "source_family": str(row.get("source_family", "")).strip(),
+        "layout_type": str(row.get("layout_type", "")).strip(),
+        "transcript_source_type": transcript_source_type,
+        "transcript_origin": transcript_origin,
+        "transcript_url_present": bool(str(row.get("transcript_url", "")).strip()),
+        "video_source_type": video_source_type,
+        "video_origin": video_origin,
+        "video_url_present": bool(str(row.get("video_url", "")).strip()),
+        "pair_state": _pair_state(
+            transcript_origin=transcript_origin,
+            video_origin=video_origin,
+        ),
+        "likely_third_party_transcript_pair": transcript_origin == "third_party",
+        "template_example": _is_template_example(row),
+    }
+
+
+def _safe_url_status(url: str, *, timeout_s: int) -> dict[str, Any]:
+    if not url:
+        return {"url": "", "status": "blank", "http_status": None}
+
+    for method in ("HEAD", "GET"):
+        req = request.Request(url, method=method)
+        try:
+            with request.urlopen(req, timeout=timeout_s) as response:
+                return {
+                    "url": url,
+                    "status": "ok",
+                    "http_status": int(getattr(response, "status", 200)),
+                    "method": method,
+                }
+        except error.HTTPError as exc:
+            if method == "HEAD" and exc.code in {400, 403, 405, 429, 500, 501}:
+                continue
+            return {
+                "url": url,
+                "status": "http_error",
+                "http_status": int(exc.code),
+                "method": method,
+            }
+        except Exception as exc:  # pragma: no cover - network-dependent behavior
+            return {
+                "url": url,
+                "status": "request_error",
+                "http_status": None,
+                "method": method,
+                "error": str(exc),
+            }
+    return {"url": url, "status": "unchecked", "http_status": None}
+
+
+def validate_source_pairs(
+    *,
+    sources_path: str | Path | None = None,
+    check_urls: bool = False,
+    timeout_s: int = 10,
+) -> dict[str, Any]:
+    sources = load_sources_manifest(sources_path)
+    base_report = validate_source_manifests(sources_path=sources_path)
+
+    pair_errors: list[str] = []
+    pair_warnings: list[str] = []
+    pair_rows: list[dict[str, Any]] = []
+    url_checks: list[dict[str, Any]] = []
+
+    for _, row in sources.iterrows():
+        row_errors = _source_pair_errors(row)
+        row_warnings = _source_pair_warnings(row)
+        if _is_template_example(row):
+            pair_warnings.extend(row_warnings)
+        else:
+            pair_errors.extend(row_errors)
+            pair_warnings.extend(row_warnings)
+
+        pair_row = _pair_row_payload(row)
+        pair_rows.append(pair_row)
+
+        if check_urls and not pair_row["template_example"]:
+            if pair_row["transcript_url_present"]:
+                url_checks.append(
+                    {
+                        "source_id": pair_row["source_id"],
+                        "url_kind": "transcript_url",
+                        **_safe_url_status(str(row.get("transcript_url", "")).strip(), timeout_s=timeout_s),
+                    }
+                )
+            if pair_row["video_url_present"]:
+                url_checks.append(
+                    {
+                        "source_id": pair_row["source_id"],
+                        "url_kind": "video_url",
+                        **_safe_url_status(str(row.get("video_url", "")).strip(), timeout_s=timeout_s),
+                    }
+                )
+
+    complete_pairs = [row["source_id"] for row in pair_rows if row["pair_state"] in {"complete_pair", "complete_pair_with_third_party_transcript"}]
+    missing_transcript = [row["source_id"] for row in pair_rows if row["pair_state"] in {"missing_transcript", "missing_transcript_and_video"}]
+    missing_video = [row["source_id"] for row in pair_rows if row["pair_state"] in {"missing_video", "missing_transcript_and_video"}]
+    third_party_pairs = [row["source_id"] for row in pair_rows if row["likely_third_party_transcript_pair"]]
+
+    status = "ok"
+    if base_report["status"] != "ok" or pair_errors:
+        status = "error"
+
+    return {
+        "status": status,
+        "manifest_validation_status": base_report["status"],
+        "source_rows": int(len(sources)),
+        "summary": {
+            "complete_pairs": int(len(complete_pairs)),
+            "missing_transcript": int(len(missing_transcript)),
+            "missing_video": int(len(missing_video)),
+            "likely_third_party_transcript_pairs": int(len(third_party_pairs)),
+        },
+        "source_ids": {
+            "complete_pairs": complete_pairs,
+            "missing_transcript": missing_transcript,
+            "missing_video": missing_video,
+            "likely_third_party_transcript_pairs": third_party_pairs,
+        },
+        "pair_rows": pair_rows,
+        "errors": base_report["errors"] + pair_errors,
+        "warnings": pair_warnings,
+        "url_checks": url_checks,
+        "notes": [
+            "Manifest rows are the source of truth for source pairing in this repo.",
+            "Official IR transcript metadata is preferred when available.",
+            "YouTube or replay video may be paired as supporting visual metadata only; no automatic ingestion is implied.",
+        ],
     }
 
 

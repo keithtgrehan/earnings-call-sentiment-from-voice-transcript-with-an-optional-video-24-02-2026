@@ -11,6 +11,7 @@ Canonical files:
 Validation entry point:
 
 - `python scripts/validate_source_manifests.py`
+- `python scripts/validate_source_pairs.py`
 
 ## Purpose
 
@@ -20,6 +21,50 @@ Validation entry point:
 
 The template rows in these manifests are examples only. Their URLs are
 placeholders and are not treated as verified in-repo sources.
+
+## Source Pairing Workflow
+
+This repo uses a manual-entry plus validation workflow for source pairing.
+
+Principles:
+
+- the manifest is the source of truth
+- official IR transcript metadata is preferred whenever available
+- official replay video or official YouTube video can be paired as supporting
+  visual metadata
+- third-party transcript pairs must stay clearly marked as third-party
+- this repo does not try to crawl or auto-discover all investor-relations sites
+
+The source-pair helper validates and summarizes:
+
+- required pair fields
+- URL formatting
+- allowed `source_family` and `layout_type` values
+- whether transcript provenance is clearly marked as official, third-party, or
+  missing
+- whether video provenance is clearly marked as official, third-party, or
+  missing
+- pairing status summaries such as complete pair, missing transcript, and
+  missing video
+
+Optional URL reachability checks are available, but they are explicitly
+lightweight and are not a crawler.
+
+Run:
+
+```bash
+PYTHONPATH=src python scripts/validate_source_pairs.py
+```
+
+Optional lightweight URL checks for non-template rows:
+
+```bash
+PYTHONPATH=src python scripts/validate_source_pairs.py --check-urls
+```
+
+Template example rows are handled conservatively. They remain valid planning
+examples even when they use placeholder URLs or intentionally incomplete
+transcript/video status markers.
 
 ## Call-Level Fields
 
@@ -111,6 +156,29 @@ describe practical visual usefulness, not emotion or inferred intent.
   until review
 - `labeling_status` should communicate progress instead of guessing labels early
 - these manifests are planning and tracking artifacts, not evidence of collection
+
+## Example Seed Coverage
+
+The current example manifest is only a curated seed list. It does not imply
+automatic retrieval from all investor-relations sites.
+
+Recommended manual-curation seed examples include:
+
+- Microsoft FY26 Q2
+- NVIDIA quarterly results
+- Bank of America Q4 2025
+- Disney Q1 FY26
+- Disney Q4 FY25
+- HSBC results
+- AstraZeneca results
+- Starbucks investor/prepared remarks
+- Alphabet Q1 2025
+- Alphabet Q4 2025
+- Apple Q1 2025
+- Amazon Q4 2024
+- Intel Q2 2025
+- Airbnb Q2 2025
+- Oracle Q4 2025
 
 ## Intentionally Out Of Scope
 
