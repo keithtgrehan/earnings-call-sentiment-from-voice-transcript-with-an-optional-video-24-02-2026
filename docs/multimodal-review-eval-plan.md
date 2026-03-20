@@ -43,7 +43,9 @@ The sidecar condition should only add supporting evidence. It should not change 
 
 ## Smallest Scaffold In This Repo
 - Blank results sheet: `data/media_support_eval/multimodal_review_results_template.csv`
+- Current committed prototype artifact-review rows: `data/media_support_eval/multimodal_review_results_codex_proto.csv`
 - Descriptive summarizer: `python3 scripts/summarize_multimodal_review_results.py`
+- Saved descriptive summary artifact: `outputs/media_support_eval/multimodal_review_summary.json`
 
 ## Current Interpretation Boundary
 - Treat results as descriptive until enough counterbalanced observations exist.

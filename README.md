@@ -129,6 +129,8 @@ Reviewer quick check:
 - Clip-based visual runtime status lives in `data/processed/multimodal/visual/curated_clip_run_status.json`.
 - Committed source-level visual summaries live under `data/processed/multimodal/visual/<source_id>/segment_visual_features.{csv,json}` and `visual_coverage_summary.json`.
 - Rolled-up multimodal breadth lives in `data/processed/multimodal/eval/multimodal_eval_summary.json`.
+- Four committed Codex prototype artifact-review rows live in `data/media_support_eval/multimodal_review_results_codex_proto.csv`, and their saved descriptive summary lives in `outputs/media_support_eval/multimodal_review_summary.json`.
+- Those four rows are repo-artifact prototype reviews, not human-subject results, and they do not establish multimodal lift or statistical significance.
 - The merged `main` branch keeps rolled-up multimodal status artifacts and committed source-level visual summaries; supporting sidecars do not replace transcript-backed review truth.
 
 Built vs exercised vs unproven:
@@ -246,6 +248,7 @@ This benchmark is intentionally conservative. If a transcript contains explicit 
 - Active unseen holdout agreement on current labeled rows: `7/7`
 - Watchlist-derived unseen holdout agreement on current labeled rows: `7/7`
 - Behavior mini-eval agreement on current labeled rows: `58/58`
+- Prototype multimodal review evidence currently includes `4` committed Codex artifact-review rows plus a saved descriptive summary; treat them as process and traceability evidence only, not as human-study validation.
 
 These are benchmark-agreement and rule-QA results only. They do not establish predictive edge, statistical significance, or finance-specific generalization.
 

@@ -22,6 +22,8 @@ Current committed multimodal summary counts:
 - `audio_aligned_segments = 0`
 - `segments_with_nlp_support = 561`
 - Current visual slice interpretation: `1` usable clip window, `3` completed but unusable windows due to face-too-small/intermittent framing.
+- Prototype review evidence on `main` now also includes `4` committed Codex artifact-review rows in `data/media_support_eval/multimodal_review_results_codex_proto.csv` and a saved descriptive summary in `outputs/media_support_eval/multimodal_review_summary.json`.
+- These prototype artifact reviews are not human-subject results and do not establish multimodal lift or statistical significance.
 
 ## What Is Optional / Exploratory
 - Question-shift analysis (`--question-shifts`) is available but should be treated as heuristic analysis.

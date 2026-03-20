@@ -8,7 +8,7 @@ import pandas as pd
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CASES_FILE = REPO_ROOT / "data" / "media_support_eval" / "task_impact_eval_cases.csv"
-RESULTS_FILE = REPO_ROOT / "data" / "media_support_eval" / "multimodal_review_results_template.csv"
+RESULTS_FILE = REPO_ROOT / "data" / "media_support_eval" / "multimodal_review_results_codex_proto.csv"
 
 
 def _split_citations(text: str) -> list[str]:

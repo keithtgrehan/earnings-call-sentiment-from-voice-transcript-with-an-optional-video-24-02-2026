@@ -38,6 +38,8 @@ Practical status:
 - of the `4` committed clip windows, `1` is visually usable and `3` are explicitly recorded as unusable because the face is too small or intermittent
 - committed NLP support is visible through the rolled-up eval summary for one source rather than broad source-level NLP artifacts on `main`
 - alignment exists as a target area, but the current committed outputs still show zero aligned sources
+- The repo also now includes `4` committed Codex prototype artifact-review rows in `data/media_support_eval/multimodal_review_results_codex_proto.csv` plus a saved descriptive summary in `outputs/media_support_eval/multimodal_review_summary.json`.
+- Those rows are prototype artifact reviews rather than human-subject study results, so they do not establish multimodal lift or statistical significance.
 
 ## Unproven
 - No proven predictive edge from current repository artifacts.
