@@ -17,7 +17,7 @@ Retail traders trying to interpret earnings calls usually rely on a small set of
 | Institutional research workflows | Deep coverage, richer tooling, structured analyst process | Expensive, complex, and typically inaccessible for most retail users | High in capability, low in practical accessibility |
 
 ## Product Positioning
-The Earnings Call Signal Extraction Engine sits between manual review and institutional workflows: it is lighter-weight and practical for retail users, but more structured and auditable than generic summaries or recap content. It is positioned as a transcript-first decision-support tool focused on guidance shifts, tone-change moments, and evidence-backed interpretation.
+The Earnings Call Signal Extraction Engine sits between manual review and institutional workflows: it is intended to be lighter-weight and more practical for retail users, while being more structured and auditable than generic summaries or recap content. It is positioned as a transcript-first decision-support tool focused on guidance shifts, tone-change moments, and evidence-backed interpretation.
 
 ## Why This Product Is Different
 - Uses structured earnings-call signal extraction focused on guidance shifts, tone-change moments, and transcript evidence.

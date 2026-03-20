@@ -108,6 +108,52 @@ Review confidence means confidence in the tool's interpretation of the available
 
 Audio and visual layers are supporting, confidence-tagged review aids. They are not truth detectors and should not be presented as hidden-state inference.
 
+## Conservative Multimodal Status
+The repo remains transcript-first. Multimodal artifacts are supporting evidence layers and do not replace the deterministic transcript-backed outputs.
+
+Current committed multimodal summary outputs under `data/processed/multimodal/eval/` report:
+- `12` source calls
+- `5` source/layout groups
+- `28` manifest segments
+- `4` sources with visual sidecar artifacts
+- `1` source with NLP sidecar artifacts
+- `5` sources with any multimodal sidecar artifacts
+- `0` sources with alignment artifacts
+- `1` visually usable segment
+- `0` audio-aligned segments
+- `561` segments with NLP support
+
+Reviewer quick check:
+- Canonical review truth still lives in transcript-first deterministic outputs such as `transcript.json`, `transcript.txt`, `guidance.csv`, `guidance_revision.csv`, `tone_changes.csv`, and `report.md`.
+- Curated sidecar execution status lives in `data/processed/multimodal/eval/curated_slice_run_status.json`.
+- Clip-based visual runtime status lives in `data/processed/multimodal/visual/curated_clip_run_status.json`.
+- Committed source-level visual summaries live under `data/processed/multimodal/visual/<source_id>/segment_visual_features.{csv,json}` and `visual_coverage_summary.json`.
+- Rolled-up multimodal breadth lives in `data/processed/multimodal/eval/multimodal_eval_summary.json`.
+- The merged `main` branch keeps rolled-up multimodal status artifacts and committed source-level visual summaries; supporting sidecars do not replace transcript-backed review truth.
+
+Built vs exercised vs unproven:
+- Built:
+  source-level visual summary artifacts, curated slice status reporting, clip runtime status artifacts, and multimodal eval summaries are present in the repo.
+- Exercised:
+  visual support has been exercised on a small curated 4-source slice, and the committed eval summary records supporting NLP coverage for 1 source.
+- Not yet exercised in the current committed outputs:
+  alignment coverage remains `0`, so the current repo state does not show committed WhisperX-aligned source artifacts.
+
+Practical visual workflow:
+- full-webcast OpenFace runs were impractical on local hardware
+- the current practical path is short, manually chosen runtime-check clips from real local video
+- those clip runs are then rolled up into source-level visual summary artifacts
+- video support is therefore real, but still secondary to transcript evidence
+- in the current committed slice, `1` clip window is usable and `3` completed windows are explicitly marked unusable because the face is too small or intermittent
+
+## What This Does Not Prove
+- no statistical significance
+- no trading edge or alpha
+- no validated predictive lift from multimodal sidecars
+- no proof that clip-based visual summaries improve benchmark outcomes
+- no proof that current visual outputs generalize to full-call or production-scale use
+- no proof that alignment or diarization are working at meaningful scale in the current committed repo state
+
 ## Repo-Native Media Support Set
 - committed media-support labels now cover 102 segments:
   - 84 audio
@@ -117,6 +163,7 @@ Audio and visual layers are supporting, confidence-tagged review aids. They are 
 
 ## Current Review Outputs
 Artifacts currently produced by the core pipeline include:
+- The canonical review path remains transcript-first and deterministic. Optional audio, NLP, and video sidecars should be read as supporting context when present.
 - `transcript.json`, `transcript.txt`
 - `chunks_scored.jsonl`, `sentiment_segments.csv`
 - `guidance.csv`, `guidance_revision.csv`, `tone_changes.csv`

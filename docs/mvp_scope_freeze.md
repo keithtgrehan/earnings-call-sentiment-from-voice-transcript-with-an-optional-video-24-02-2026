@@ -1,6 +1,6 @@
 # MVP Scope Freeze
 
-“A deterministic earnings-call guidance-change assistant that helps a retail user review a transcript faster and more consistently than unaided manual review.”
+“A deterministic earnings-call guidance-change assistant intended to help a retail user review a transcript faster and more consistently than unaided manual review.”
 
 ## In Scope
 - Deterministic guidance-change labeling with a closed label set.
