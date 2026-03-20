@@ -1,0 +1,92 @@
+{
+  "status": "ok",
+  "inputs_root": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/cache/curated_multimodal_slice",
+  "source_manifest": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/source_manifests/earnings_call_sources.csv",
+  "segment_manifest": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/source_manifests/earnings_call_segments.csv",
+  "source_ids": [
+    "goog_q1_2025_example",
+    "msft_fy26_q2_example",
+    "bac_q4_2025_example",
+    "dis_q1_fy26_example",
+    "sbux_prepared_remarks_example"
+  ],
+  "summary_status": "ran",
+  "status_csv": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/processed/multimodal/eval/curated_slice_run_status.csv",
+  "status_json": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/processed/multimodal/eval/curated_slice_run_status.json",
+  "status_rows": [
+    {
+      "source_id": "goog_q1_2025_example",
+      "audio_found": "true",
+      "video_found": "true",
+      "transcript_found": "false",
+      "chunks_found": "false",
+      "alignment_ran": "false",
+      "visual_ran": "true",
+      "nlp_ran": "false",
+      "alignment_status": "skipped_by_flag",
+      "visual_status": "existing_outputs",
+      "nlp_status": "skipped_missing_transcript_or_chunks",
+      "skip_reason": "skipped_by_flag; existing_outputs; skipped_missing_transcript_or_chunks"
+    },
+    {
+      "source_id": "msft_fy26_q2_example",
+      "audio_found": "false",
+      "video_found": "false",
+      "transcript_found": "true",
+      "chunks_found": "true",
+      "alignment_ran": "false",
+      "visual_ran": "false",
+      "nlp_ran": "true",
+      "alignment_status": "skipped_by_flag",
+      "visual_status": "skipped_missing_video",
+      "nlp_status": "ran",
+      "skip_reason": "skipped_by_flag; skipped_missing_video"
+    },
+    {
+      "source_id": "bac_q4_2025_example",
+      "audio_found": "true",
+      "video_found": "true",
+      "transcript_found": "false",
+      "chunks_found": "false",
+      "alignment_ran": "false",
+      "visual_ran": "true",
+      "nlp_ran": "false",
+      "alignment_status": "skipped_by_flag",
+      "visual_status": "existing_outputs",
+      "nlp_status": "skipped_missing_transcript_or_chunks",
+      "skip_reason": "skipped_by_flag; existing_outputs; skipped_missing_transcript_or_chunks"
+    },
+    {
+      "source_id": "dis_q1_fy26_example",
+      "audio_found": "true",
+      "video_found": "true",
+      "transcript_found": "false",
+      "chunks_found": "false",
+      "alignment_ran": "false",
+      "visual_ran": "true",
+      "nlp_ran": "false",
+      "alignment_status": "skipped_by_flag",
+      "visual_status": "existing_outputs",
+      "nlp_status": "skipped_missing_transcript_or_chunks",
+      "skip_reason": "skipped_by_flag; existing_outputs; skipped_missing_transcript_or_chunks"
+    },
+    {
+      "source_id": "sbux_prepared_remarks_example",
+      "audio_found": "true",
+      "video_found": "true",
+      "transcript_found": "false",
+      "chunks_found": "false",
+      "alignment_ran": "false",
+      "visual_ran": "true",
+      "nlp_ran": "false",
+      "alignment_status": "skipped_by_flag",
+      "visual_status": "existing_outputs",
+      "nlp_status": "skipped_missing_transcript_or_chunks",
+      "skip_reason": "skipped_by_flag; existing_outputs; skipped_missing_transcript_or_chunks"
+    }
+  ],
+  "notes": [
+    "Missing local files skip safely per modality.",
+    "Transcript remains primary; sidecar outputs are supporting evidence only."
+  ]
+}
