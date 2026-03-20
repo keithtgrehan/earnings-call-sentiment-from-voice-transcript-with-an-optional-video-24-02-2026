@@ -1,8 +1,8 @@
 {
   "status": "ok",
-  "inputs_root": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/cache/curated_multimodal_slice",
-  "source_manifest": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/source_manifests/earnings_call_sources.csv",
-  "segment_manifest": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/source_manifests/earnings_call_segments.csv",
+  "inputs_root": "cache/curated_multimodal_slice",
+  "source_manifest": "data/source_manifests/earnings_call_sources.csv",
+  "segment_manifest": "data/source_manifests/earnings_call_segments.csv",
   "source_ids": [
     "goog_q1_2025_example",
     "msft_fy26_q2_example",
@@ -11,8 +11,8 @@
     "sbux_prepared_remarks_example"
   ],
   "summary_status": "ran",
-  "status_csv": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/processed/multimodal/eval/curated_slice_run_status.csv",
-  "status_json": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/processed/multimodal/eval/curated_slice_run_status.json",
+  "status_csv": "data/processed/multimodal/eval/curated_slice_run_status.csv",
+  "status_json": "data/processed/multimodal/eval/curated_slice_run_status.json",
   "status_rows": [
     {
       "source_id": "goog_q1_2025_example",

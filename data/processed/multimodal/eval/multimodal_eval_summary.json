@@ -1,11 +1,11 @@
 {
   "status": "ok",
   "paths": {
-    "sources_manifest": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/source_manifests/earnings_call_sources.csv",
-    "segments_manifest": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/source_manifests/earnings_call_segments.csv",
-    "alignment_root": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/processed/multimodal/alignment",
-    "visual_root": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/processed/multimodal/visual",
-    "nlp_root": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/processed/multimodal/nlp"
+    "sources_manifest": "data/source_manifests/earnings_call_sources.csv",
+    "segments_manifest": "data/source_manifests/earnings_call_segments.csv",
+    "alignment_root": "data/processed/multimodal/alignment",
+    "visual_root": "data/processed/multimodal/visual",
+    "nlp_root": "data/processed/multimodal/nlp"
   },
   "headline_counts": {
     "source_calls": 12,

@@ -27,7 +27,7 @@
       "au_intensity_mean": "0.546941",
       "au_intensity_supported": "true",
       "extraction_errors": "",
-      "notes": "Approximate manual runtime-check clip near early prepared remarks. Not transcript-aligned or timestamp-verified. | clip_id=prepared_manual_01 | clip_path=/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/cache/curated_multimodal_slice/goog_q1_2025_example/clips/prepared_manual_01.mp4 | clip_start_s=300.0 | clip_duration_s=60.0 | timing_basis=approximate_manual_runtime_check | video_provenance=official_ir_linked_youtube"
+      "notes": "Approximate manual runtime-check clip near early prepared remarks. Not transcript-aligned or timestamp-verified. | clip_id=prepared_manual_01 | clip_path=cache/curated_multimodal_slice/goog_q1_2025_example/clips/prepared_manual_01.mp4 | clip_start_s=300.0 | clip_duration_s=60.0 | timing_basis=approximate_manual_runtime_check | video_provenance=official_ir_linked_youtube"
     }
   ],
   "clip_runs": [
@@ -35,8 +35,8 @@
       "source_id": "goog_q1_2025_example",
       "clip_id": "prepared_manual_01",
       "segment_id_ref": "goog_q1_2025_seg01",
-      "clip_path": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/cache/curated_multimodal_slice/goog_q1_2025_example/clips/prepared_manual_01.mp4",
-      "video_path": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/cache/curated_multimodal_slice/goog_q1_2025_example/video.mp4",
+      "clip_path": "cache/curated_multimodal_slice/goog_q1_2025_example/clips/prepared_manual_01.mp4",
+      "video_path": "cache/curated_multimodal_slice/goog_q1_2025_example/video.mp4",
       "clip_start_s": "300.000",
       "clip_end_s": "360.000",
       "clip_duration_s": "60.000",
@@ -45,7 +45,7 @@
       "clip_built": "true",
       "openface_completed": "true",
       "openface_runtime_seconds": "401.228",
-      "openface_out_dir": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/processed/multimodal/visual/goog_q1_2025_example/clips/prepared_manual_01",
+      "openface_out_dir": "data/processed/multimodal/visual/goog_q1_2025_example/clips/prepared_manual_01",
       "status": "completed",
       "reason": "",
       "notes": "Approximate manual runtime-check clip near early prepared remarks. Not transcript-aligned or timestamp-verified. Low-FPS runtime-check clip encoded at 0.5 fps and 640px width for tractable local OpenFace extraction."
