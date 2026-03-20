@@ -1,5 +1,10 @@
 # Current Status
 
+## Reviewer Quick Links
+- [Evidence map](evidence-map.md)
+- [End-to-end demo path](demo-path.md)
+- [Evaluation summary](evaluation-summary.md)
+
 ## Implemented Now
 - Transcript-first pipeline from call input to structured artifacts, with audio/video remaining optional supporting layers.
 - Deterministic post-processing for guidance extraction, guidance revision comparison, and tone-change detection.

@@ -3,6 +3,11 @@ Transcript-first deterministic review tool for extracting structured, auditable 
 
 This project is a local decision-support system for earnings-call review. It is not a live trading system, does not execute orders, and does not claim predictive edge or statistical significance.
 
+## Start Here
+- [Evidence map](docs/evidence-map.md)
+- [End-to-end demo path](docs/demo-path.md)
+- [Current status](docs/current-status.md)
+
 ## Project Summary
 The repo converts one earnings call into structured, auditable artifacts that help a reviewer inspect:
 - guidance statements and guidance-change evidence

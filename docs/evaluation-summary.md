@@ -1,5 +1,10 @@
 # Evaluation Summary
 
+## Reviewer Quick Links
+- [Evidence map](evidence-map.md)
+- [End-to-end demo path](demo-path.md)
+- [Current status](current-status.md)
+
 ## What Is Evaluated Today
 - Functional pipeline behavior through unit/integration-style checks in `tests/`.
 - Artifact completeness/health using `scripts/verify_outputs.py`.
