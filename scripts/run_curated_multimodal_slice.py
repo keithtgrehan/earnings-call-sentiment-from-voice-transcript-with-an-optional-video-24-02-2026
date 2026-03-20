@@ -24,6 +24,7 @@ DEFAULT_SEGMENT_MANIFEST = Path("data/source_manifests/earnings_call_segments.cs
 DEFAULT_INPUTS_ROOT = Path("cache/curated_multimodal_slice")
 DEFAULT_STATUS_DIR = Path("data/processed/multimodal/eval")
 DEFAULT_STATUS_BASENAME = "curated_slice_run_status"
+DEFAULT_ALIGNMENT_OUTPUT_ROOT = Path("data/processed/multimodal/alignment")
 DEFAULT_VISUAL_OUTPUT_ROOT = Path("data/processed/multimodal/visual")
 DEFAULT_SOURCE_IDS = [
     "goog_q1_2025_example",
@@ -217,6 +218,10 @@ def _openface_is_configured(explicit_bin: str | None) -> bool:
     return bool(config.openface_bin)
 
 
+def _existing_alignment_outputs_path(repo_dir: Path, source_id: str) -> Path:
+    return (repo_dir / DEFAULT_ALIGNMENT_OUTPUT_ROOT / source_id / "alignment_summary.json").resolve()
+
+
 def _existing_visual_outputs_path(repo_dir: Path, source_id: str) -> Path:
     return (repo_dir / DEFAULT_VISUAL_OUTPUT_ROOT / source_id / "segment_visual_features.csv").resolve()
 
@@ -290,7 +295,11 @@ def main() -> int:
             chunks_found=chunks_path is not None,
         )
 
-        if args.skip_alignment:
+        existing_alignment_outputs = _existing_alignment_outputs_path(repo_dir, source_id)
+        if existing_alignment_outputs.exists():
+            row["alignment_ran"] = "true"
+            row["alignment_status"] = "existing_outputs"
+        elif args.skip_alignment:
             row["alignment_status"] = "skipped_by_flag"
         elif audio_path is None:
             row["alignment_status"] = "skipped_missing_audio"

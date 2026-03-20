@@ -1,0 +1,54 @@
+{
+  "source_id": "sbux_prepared_remarks_example",
+  "clip_mode": "approximate_manual_runtime_check",
+  "rows": [
+    {
+      "source_id": "sbux_prepared_remarks_example",
+      "segment_id": "sbux_prepared_remarks_example_prepared_manual_01",
+      "segment_type": "prepared_remarks",
+      "speaker_name": "Unknown management speaker",
+      "speaker_role": "management",
+      "start_time_s": "0.0",
+      "end_time_s": "60.0",
+      "layout_type": "single_speaker_camera",
+      "face_expected": "true",
+      "attempted": "true",
+      "extraction_succeeded": "true",
+      "missing_tool_flag": "false",
+      "segment_visual_usability": "unusable",
+      "usability_reason": "face_too_small_or_intermittent",
+      "frames_total": "30",
+      "frames_with_face": "0",
+      "face_detection_rate": "0.0",
+      "mean_face_confidence": "",
+      "mean_head_pose_change": "",
+      "gaze_variability_proxy": "",
+      "blink_or_eye_closure_proxy": "",
+      "au_intensity_mean": "",
+      "au_intensity_supported": "false",
+      "extraction_errors": "",
+      "notes": "Approximate manual runtime-check clip for prepared remarks. Not transcript-aligned or timestamp-verified. | clip_id=prepared_manual_01 | clip_path=/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/cache/curated_multimodal_slice/sbux_prepared_remarks_example/clips/prepared_manual_01.mp4 | clip_start_s=300.0 | clip_duration_s=60.0 | timing_basis=approximate_manual_runtime_check | video_provenance=approved_youtube_fallback"
+    }
+  ],
+  "clip_runs": [
+    {
+      "source_id": "sbux_prepared_remarks_example",
+      "clip_id": "prepared_manual_01",
+      "segment_id_ref": "sbux_prepared_remarks_seg02",
+      "clip_path": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/cache/curated_multimodal_slice/sbux_prepared_remarks_example/clips/prepared_manual_01.mp4",
+      "video_path": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/cache/curated_multimodal_slice/sbux_prepared_remarks_example/video.mp4",
+      "clip_start_s": "300.000",
+      "clip_end_s": "360.000",
+      "clip_duration_s": "60.000",
+      "timing_basis": "approximate_manual_runtime_check",
+      "video_provenance": "approved_youtube_fallback",
+      "clip_built": "true",
+      "openface_completed": "true",
+      "openface_runtime_seconds": "2.674",
+      "openface_out_dir": "/Users/keith/Documents/New project/earnings-call-sentiment-from-voice-transcript-with-an-optional-video-24-02-2026/data/processed/multimodal/visual/sbux_prepared_remarks_example/clips/prepared_manual_01",
+      "status": "completed",
+      "reason": "",
+      "notes": "Approximate manual runtime-check clip for prepared remarks. Not transcript-aligned or timestamp-verified. Low-FPS runtime-check clip encoded at 0.5 fps and 640px width for tractable local OpenFace extraction."
+    }
+  ]
+}

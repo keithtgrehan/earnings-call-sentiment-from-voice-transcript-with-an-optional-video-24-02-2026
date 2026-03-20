@@ -1,0 +1,16 @@
+{
+  "segments_total": 1,
+  "segments_attempted": 1,
+  "segments_usable": 0,
+  "segments_limited": 0,
+  "segments_unusable": 1,
+  "segments_skipped": 0,
+  "extraction_success_rate": 1.0,
+  "source_group_coverage": 1,
+  "reason_breakdown": {
+    "face_too_small_or_intermittent": 1
+  },
+  "source_id": "sbux_prepared_remarks_example",
+  "clip_mode": "approximate_manual_runtime_check",
+  "completed_clip_runs": 1
+}
