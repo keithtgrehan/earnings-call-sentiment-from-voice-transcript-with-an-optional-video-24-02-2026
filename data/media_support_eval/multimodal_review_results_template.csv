@@ -1,0 +1,1 @@
+participant_id,session_id,case_id,condition,order_index,predicted_guidance_label,completion_seconds,evidence_text,summary_text,clarity_rating,evidence_traceability_rating,cited_artifact_paths,notes
