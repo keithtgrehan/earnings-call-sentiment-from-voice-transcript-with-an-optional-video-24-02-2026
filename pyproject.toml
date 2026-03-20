@@ -34,10 +34,6 @@ dependencies = [
 dev = [
   "pytest>=8",
 ]
-multimodal-sidecars = [
-  "whisperx>=3.8,<4",
-  "pyannote-audio>=4,<5",
-]
 
 [project.scripts]
 earnings-call-sentiment = "earnings_call_sentiment.cli:main"
