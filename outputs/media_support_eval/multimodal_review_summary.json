@@ -1,0 +1,20 @@
+{
+  "submission_count": 4,
+  "conditions": {
+    "transcript_first_plus_supporting_sidecars": {
+      "submission_count": 4,
+      "mean_completion_seconds": 80.25,
+      "label_accuracy": 1.0,
+      "mean_clarity_rating": 3.75,
+      "mean_evidence_traceability_rating": 4.5,
+      "mean_artifact_citation_count": 6.75,
+      "sidecar_citation_rate": 0.25,
+      "comparable_case_count": 0,
+      "mean_case_modal_agreement": 0.0
+    }
+  },
+  "notes": [
+    "This summary is descriptive only until enough counterbalanced reviewer observations exist.",
+    "Use it to inspect speed, consistency, and evidence-traceability patterns rather than to claim statistical significance."
+  ]
+}

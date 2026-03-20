@@ -1,0 +1,192 @@
+{
+  "schema_version": "1.0.0",
+  "git_commit": "7f1d988",
+  "package_version": "0.1.0",
+  "generated_at": "2026-03-14T22:04:31.040440+00:00",
+  "models": {
+    "sentiment": {
+      "model": "distilbert/distilbert-base-uncased-finetuned-sst-2-english",
+      "revision": "714eb0f"
+    }
+  },
+  "num_chunks_scored": 561,
+  "sentiment_mean": 0.190229,
+  "sentiment_std": 0.9369,
+  "guidance": {
+    "row_count": 147,
+    "mean_strength": 0.279413
+  },
+  "tone_changes": {
+    "row_count": 561,
+    "change_count": 0
+  },
+  "behavioral_signals": {
+    "uncertainty": {
+      "score": 10,
+      "level": "high"
+    },
+    "reassurance": {
+      "score": 0,
+      "level": "low"
+    },
+    "analyst_skepticism": {
+      "score": 0,
+      "level": "low"
+    }
+  },
+  "guidance_revision": {
+    "prior_guidance_path": null,
+    "matched_count": 0,
+    "raised_count": 0,
+    "lowered_count": 0,
+    "reaffirmed_count": 0,
+    "unclear_count": 0,
+    "mixed_count": 0,
+    "top_revisions": []
+  },
+  "overall_review_signal": "amber",
+  "review_confidence_pct": 55,
+  "guidance_strength_score": 4,
+  "management_confidence_score": 2,
+  "uncertainty_score": 9,
+  "analyst_skepticism_score": 3,
+  "qa_pressure_shift_score": 5,
+  "answer_directness_score": 5,
+  "review_scorecard": {
+    "schema_version": "1.0.0",
+    "overall_review_signal": "amber",
+    "overall_score": 4.3,
+    "review_confidence_pct": 55,
+    "confidence_note": "Confidence reflects how clear and well-supported the deterministic interpretation is, not investment conviction.",
+    "guidance_strength_score": 4,
+    "guidance_strength_band": "amber",
+    "management_confidence_score": 2,
+    "management_confidence_band": "red",
+    "uncertainty_score": 9,
+    "uncertainty_band": "red",
+    "analyst_skepticism_score": 3,
+    "analyst_skepticism_band": "green",
+    "qa_pressure_shift_score": 5,
+    "qa_pressure_shift_band": "amber",
+    "answer_directness_score": 5,
+    "answer_directness_band": "amber",
+    "categories": [
+      {
+        "score": 4,
+        "color_band": "amber",
+        "explanation": "Guidance language is present, but its direction is not explicit enough to score strongly.",
+        "strongest_evidence": [
+          "in business processes, we expect revenue of $34.25 to $34.55 billion or growth of $14 to 15%.",
+          "Revenue from productivity and business processes was $34.1 billion and grew 16% and 14% in"
+        ],
+        "id": "guidance_strength",
+        "name": "Guidance Strength"
+      },
+      {
+        "score": 2,
+        "color_band": "red",
+        "explanation": "Management confidence blends reassurance cues (low) with uncertainty and Q&A follow-through.",
+        "strongest_evidence": [],
+        "id": "management_confidence",
+        "name": "Management Confidence"
+      },
+      {
+        "score": 9,
+        "color_band": "red",
+        "explanation": "Management language includes repeated hedging or visibility caveats, which raises uncertainty.",
+        "strongest_evidence": [
+          "[subject to] These statements are based on current expectations and assumptions that are subject to risks and",
+          "[modal uncertainty] 2025, though increased memory pricing could create additional volatility in transactional purchasing."
+        ],
+        "id": "uncertainty",
+        "name": "Uncertainty / Hedging"
+      },
+      {
+        "score": 3,
+        "color_band": "green",
+        "explanation": "Analyst questions look relatively routine, with limited skeptical pressure.",
+        "strongest_evidence": [],
+        "id": "analyst_skepticism",
+        "name": "Analyst Skepticism"
+      },
+      {
+        "score": 5,
+        "color_band": "amber",
+        "explanation": "Insufficient Q&A contrast evidence was available, so pressure shift stays neutral.",
+        "strongest_evidence": [],
+        "id": "qa_pressure_shift",
+        "name": "Q&A Pressure Shift"
+      },
+      {
+        "score": 5,
+        "color_band": "amber",
+        "explanation": "Q&A evidence is unavailable, so answer directness stays neutral by design.",
+        "strongest_evidence": [],
+        "id": "answer_directness",
+        "name": "Answer Directness"
+      }
+    ],
+    "ranked_categories": [
+      {
+        "score": 2,
+        "color_band": "red",
+        "explanation": "Management confidence blends reassurance cues (low) with uncertainty and Q&A follow-through.",
+        "strongest_evidence": [],
+        "id": "management_confidence",
+        "name": "Management Confidence",
+        "rank": 1
+      },
+      {
+        "score": 9,
+        "color_band": "red",
+        "explanation": "Management language includes repeated hedging or visibility caveats, which raises uncertainty.",
+        "strongest_evidence": [
+          "[subject to] These statements are based on current expectations and assumptions that are subject to risks and",
+          "[modal uncertainty] 2025, though increased memory pricing could create additional volatility in transactional purchasing."
+        ],
+        "id": "uncertainty",
+        "name": "Uncertainty / Hedging",
+        "rank": 2
+      },
+      {
+        "score": 3,
+        "color_band": "green",
+        "explanation": "Analyst questions look relatively routine, with limited skeptical pressure.",
+        "strongest_evidence": [],
+        "id": "analyst_skepticism",
+        "name": "Analyst Skepticism",
+        "rank": 3
+      },
+      {
+        "score": 4,
+        "color_band": "amber",
+        "explanation": "Guidance language is present, but its direction is not explicit enough to score strongly.",
+        "strongest_evidence": [
+          "in business processes, we expect revenue of $34.25 to $34.55 billion or growth of $14 to 15%.",
+          "Revenue from productivity and business processes was $34.1 billion and grew 16% and 14% in"
+        ],
+        "id": "guidance_strength",
+        "name": "Guidance Strength",
+        "rank": 4
+      },
+      {
+        "score": 5,
+        "color_band": "amber",
+        "explanation": "Insufficient Q&A contrast evidence was available, so pressure shift stays neutral.",
+        "strongest_evidence": [],
+        "id": "qa_pressure_shift",
+        "name": "Q&A Pressure Shift",
+        "rank": 5
+      },
+      {
+        "score": 5,
+        "color_band": "amber",
+        "explanation": "Q&A evidence is unavailable, so answer directness stays neutral by design.",
+        "strongest_evidence": [],
+        "id": "answer_directness",
+        "name": "Answer Directness",
+        "rank": 6
+      }
+    ]
+  }
+}

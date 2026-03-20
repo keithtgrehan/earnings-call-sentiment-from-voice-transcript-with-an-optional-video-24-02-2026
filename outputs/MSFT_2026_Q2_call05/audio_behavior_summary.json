@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.2.0",
+  "audio_available": true,
+  "audio_features_available": true,
+  "audio_quality_ok": true,
+  "quality_gate": {
+    "quality_ok": true,
+    "suppression_recommended": false,
+    "snr_proxy_db": 38.3686,
+    "snr_proxy_ok": true,
+    "management_speech_duration_s": 3202.01,
+    "enough_speech_duration_ok": true,
+    "usable_management_segments": 541,
+    "usable_answer_segments": 183,
+    "alignment_quality_ratio": 1.0,
+    "alignment_quality_ok": true
+  },
+  "audio_metadata": {
+    "path": "cache/MSFT_2026_Q2_call05/audio_normalized.wav",
+    "duration_s": 3456.174,
+    "sample_rate": 16000,
+    "frame_length_s": 0.03,
+    "hop_length_s": 0.01,
+    "silence_threshold_db": -35.0
+  },
+  "hesitation_overall": {
+    "score": 0.5464,
+    "level": "low"
+  },
+  "hesitation_level": {
+    "score": 0.5464,
+    "level": "low"
+  },
+  "pauses_before_answers": {
+    "median_ms": 0.0,
+    "level": "low"
+  },
+  "prepared_baseline_audio_stability": {
+    "score": 0.1564,
+    "level": "high"
+  },
+  "qa_hesitation_shift": {
+    "delta": 0.39,
+    "prepared_mean": 0.1564,
+    "q_and_a_mean": 0.5464,
+    "direction": "mixed",
+    "level": "low"
+  },
+  "pause_pressure_delta": {
+    "delta": 0.5754,
+    "prepared_density": 0.4534,
+    "q_and_a_density": 1.0288,
+    "level": "low",
+    "label": "more_paused_under_questions"
+  },
+  "answer_latency_pressure": {
+    "median_ms": 0.0,
+    "level": "low"
+  },
+  "audio_confidence_support": {
+    "level": "high",
+    "suppressed": false,
+    "reason": "usable answer-level audio support"
+  },
+  "support_mode": "model_backed",
+  "model_support": {
+    "available": true,
+    "mode": "model_backed",
+    "support_direction": "supportive",
+    "calibrated_support_score": -0.39,
+    "reliability_weight": 0.4991,
+    "hesitation_pressure": {
+      "predicted_label": "low",
+      "probability_means": {
+        "high": 0.2374,
+        "low": 0.6281,
+        "medium": 0.1344
+      }
+    },
+    "delivery_confidence": {
+      "predicted_label": "high",
+      "probability_means": {
+        "high": 0.6281,
+        "low": 0.2374,
+        "medium": 0.1344
+      }
+    }
+  },
+  "egemaps_v02_summary": {
+    "available": true,
+    "pitch_variability_mean": 0.1784,
+    "loudness_mean": 0.8582,
+    "loudness_variability_mean": 0.5935,
+    "spectral_flux_mean": 0.4646
+  },
+  "strongest_audio_evidence": [
+    {
+      "segment_id": 542,
+      "start_time_s": 3339.04,
+      "end_time_s": 3345.52,
+      "hesitation_label": "high",
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 6.1728,
+      "text": "kind of for the moment of thank you. Yeah, I think I did it. I was for what I had mentioned in my"
+    },
+    {
+      "segment_id": 499,
+      "start_time_s": 3071.12,
+      "end_time_s": 3079.6,
+      "hesitation_label": "high",
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 4.717,
+      "text": "and that's what you see us do. Thanks Mark. All right, the next question, please."
+    },
+    {
+      "segment_id": 557,
+      "start_time_s": 3434.16,
+      "end_time_s": 3441.2,
+      "hesitation_label": "medium",
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 7.1023,
+      "text": "Yep, okay. Thank you. Thanks Raymo. That wraps up the Q&A portion of today's earnings call."
+    }
+  ],
+  "most_hesitant_answers": [
+    {
+      "segment_id": 542,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 3339.04,
+      "end_time_s": 3345.52,
+      "hesitation_label": "high",
+      "hesitation_score": 6,
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 6.1728,
+      "articulation_rate_wpm": 277.67,
+      "confidence_note": "usable audio segment",
+      "text": "kind of for the moment of thank you. Yeah, I think I did it. I was for what I had mentioned in my"
+    },
+    {
+      "segment_id": 499,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 3071.12,
+      "end_time_s": 3079.6,
+      "hesitation_label": "high",
+      "hesitation_score": 5,
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 4.717,
+      "articulation_rate_wpm": 148.27,
+      "confidence_note": "usable audio segment",
+      "text": "and that's what you see us do. Thanks Mark. All right, the next question, please."
+    },
+    {
+      "segment_id": 557,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 3434.16,
+      "end_time_s": 3441.2,
+      "hesitation_label": "medium",
+      "hesitation_score": 4,
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 7.1023,
+      "articulation_rate_wpm": 205.23,
+      "confidence_note": "usable audio segment",
+      "text": "Yep, okay. Thank you. Thanks Raymo. That wraps up the Q&A portion of today's earnings call."
+    }
+  ],
+  "low_confidence_segments": [],
+  "limitations": [],
+  "notes": [
+    "Audio hesitation combines pause-before-answer, answer latency, within-segment pause density, filler markers, articulation rate, and loudness dynamics.",
+    "These are observational timing proxies for review support, not mental-state or deception inference."
+  ]
+}

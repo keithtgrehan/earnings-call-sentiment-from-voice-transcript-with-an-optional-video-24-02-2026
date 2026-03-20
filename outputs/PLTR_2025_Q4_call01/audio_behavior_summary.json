@@ -1,0 +1,121 @@
+{
+  "schema_version": "1.0.0",
+  "audio_available": true,
+  "audio_features_available": true,
+  "audio_metadata": {
+    "path": "cache/PLTR_2025_Q4_call01/audio_normalized.wav",
+    "duration_s": 2955.018,
+    "sample_rate": 16000,
+    "frame_length_s": 0.03,
+    "hop_length_s": 0.01,
+    "silence_threshold_db": -35.0
+  },
+  "hesitation_overall": {
+    "score": 1.4922,
+    "level": "low"
+  },
+  "pauses_before_answers": {
+    "median_ms": 0.0,
+    "level": "low"
+  },
+  "prepared_baseline_audio_stability": {
+    "score": 3.0,
+    "level": "low"
+  },
+  "qa_hesitation_shift": {
+    "delta": -1.5078,
+    "prepared_mean": 3.0,
+    "q_and_a_mean": 1.4922,
+    "direction": "less_hesitant",
+    "level": "high"
+  },
+  "most_hesitant_answers": [
+    {
+      "segment_id": 785,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 2161.0,
+      "end_time_s": 2163.0,
+      "hesitation_label": "high",
+      "hesitation_score": 6,
+      "pause_before_answer_ms": null,
+      "filler_density": 14.2857,
+      "confidence_note": "usable audio segment",
+      "text": "and you know the bar at Palantir"
+    },
+    {
+      "segment_id": 901,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 2399.0,
+      "end_time_s": 2401.0,
+      "hesitation_label": "high",
+      "hesitation_score": 6,
+      "pause_before_answer_ms": null,
+      "filler_density": 10.0,
+      "confidence_note": "usable audio segment",
+      "text": "you know like Ryan is sitting on one of the"
+    },
+    {
+      "segment_id": 877,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 2351.0,
+      "end_time_s": 2353.0,
+      "hesitation_label": "medium",
+      "hesitation_score": 4,
+      "pause_before_answer_ms": null,
+      "filler_density": 7.1429,
+      "confidence_note": "usable audio segment",
+      "text": "you're kind of this weird thing that might be able to make it work"
+    }
+  ],
+  "low_confidence_segments": [
+    {
+      "segment_id": 1074,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 2755.0,
+      "end_time_s": 2757.0,
+      "hesitation_label": "high",
+      "hesitation_score": 7,
+      "pause_before_answer_ms": 300.0,
+      "filler_density": 16.6667,
+      "confidence_note": "low transcript word count limits audio confidence",
+      "text": "no one's you know it's like"
+    },
+    {
+      "segment_id": 1029,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 2665.0,
+      "end_time_s": 2667.0,
+      "hesitation_label": "high",
+      "hesitation_score": 6,
+      "pause_before_answer_ms": null,
+      "filler_density": 25.0,
+      "confidence_note": "low transcript word count limits audio confidence",
+      "text": "you know it's like"
+    },
+    {
+      "segment_id": 1030,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 2667.0,
+      "end_time_s": 2669.0,
+      "hesitation_label": "high",
+      "hesitation_score": 6,
+      "pause_before_answer_ms": null,
+      "filler_density": 25.0,
+      "confidence_note": "low transcript word count limits audio confidence",
+      "text": "you know I'm constantly"
+    }
+  ],
+  "limitations": [
+    "Some segments are short or have sparse sampled frames, which lowers confidence."
+  ],
+  "notes": [
+    "Audio hesitation combines pause-before-answer, within-segment silence, filler markers, and a lightweight speech-rate proxy.",
+    "These are observational timing proxies for review support, not mental-state or deception inference."
+  ]
+}

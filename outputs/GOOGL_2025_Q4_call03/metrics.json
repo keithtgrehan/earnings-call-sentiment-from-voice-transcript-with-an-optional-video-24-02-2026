@@ -1,0 +1,204 @@
+{
+  "schema_version": "1.0.0",
+  "git_commit": "7a1d3b4",
+  "package_version": "0.1.0",
+  "generated_at": "2026-03-12T16:57:38.518581+00:00",
+  "models": {
+    "sentiment": {
+      "model": "distilbert/distilbert-base-uncased-finetuned-sst-2-english",
+      "revision": "714eb0f"
+    }
+  },
+  "num_chunks_scored": 1668,
+  "sentiment_mean": 0.579954,
+  "sentiment_std": 0.763961,
+  "guidance": {
+    "row_count": 164,
+    "mean_strength": 0.214001
+  },
+  "tone_changes": {
+    "row_count": 1668,
+    "change_count": 0
+  },
+  "behavioral_signals": {
+    "uncertainty": {
+      "score": 16,
+      "level": "high"
+    },
+    "reassurance": {
+      "score": 6,
+      "level": "high"
+    },
+    "analyst_skepticism": {
+      "score": 3,
+      "level": "medium"
+    }
+  },
+  "guidance_revision": {
+    "prior_guidance_path": null,
+    "matched_count": 0,
+    "raised_count": 0,
+    "lowered_count": 0,
+    "reaffirmed_count": 0,
+    "unclear_count": 0,
+    "mixed_count": 0,
+    "top_revisions": []
+  },
+  "overall_review_signal": "amber",
+  "review_confidence_pct": 65,
+  "guidance_strength_score": 4,
+  "management_confidence_score": 6,
+  "uncertainty_score": 9,
+  "analyst_skepticism_score": 7,
+  "qa_pressure_shift_score": 5,
+  "answer_directness_score": 5,
+  "review_scorecard": {
+    "schema_version": "1.0.0",
+    "overall_review_signal": "amber",
+    "overall_score": 4.5,
+    "review_confidence_pct": 65,
+    "confidence_note": "Confidence reflects how clear and well-supported the deterministic interpretation is, not investment conviction.",
+    "guidance_strength_score": 4,
+    "guidance_strength_band": "amber",
+    "management_confidence_score": 6,
+    "management_confidence_band": "amber",
+    "uncertainty_score": 9,
+    "uncertainty_band": "red",
+    "analyst_skepticism_score": 7,
+    "analyst_skepticism_band": "red",
+    "qa_pressure_shift_score": 5,
+    "qa_pressure_shift_band": "amber",
+    "answer_directness_score": 5,
+    "answer_directness_band": "amber",
+    "categories": [
+      {
+        "score": 4,
+        "color_band": "amber",
+        "explanation": "Guidance language is present, but its direction is not explicit enough to score strongly.",
+        "strongest_evidence": [
+          "in Q4, growing 65% year over year for",
+          "$70 billion. Backlog grew by 55% quarter over quarter to $240"
+        ],
+        "id": "guidance_strength",
+        "name": "Guidance Strength"
+      },
+      {
+        "score": 6,
+        "color_band": "amber",
+        "explanation": "Management confidence blends reassurance cues (high) with uncertainty and Q&A follow-through.",
+        "strongest_evidence": [
+          "[well positioned] We are really well positioned going",
+          "[well positioned] round to date and is well positioned"
+        ],
+        "id": "management_confidence",
+        "name": "Management Confidence"
+      },
+      {
+        "score": 9,
+        "color_band": "red",
+        "explanation": "Management language includes repeated hedging or visibility caveats, which raises uncertainty.",
+        "strongest_evidence": [
+          "[subject to] based on current expectations and assumptions that are subject to a",
+          "[modal uncertainty] Actual results could differ materially."
+        ],
+        "id": "uncertainty",
+        "name": "Uncertainty / Hedging"
+      },
+      {
+        "score": 7,
+        "color_band": "red",
+        "explanation": "Analyst questions show some pushback or follow-up pressure, but not a full escalation.",
+        "strongest_evidence": [
+          "[where are you on that] And then second, on monetization, where are you on that?",
+          "[could you just talk about] Could you just talk a little bit about how you align"
+        ],
+        "id": "analyst_skepticism",
+        "name": "Analyst Skepticism"
+      },
+      {
+        "score": 5,
+        "color_band": "amber",
+        "explanation": "Insufficient Q&A contrast evidence was available, so pressure shift stays neutral.",
+        "strongest_evidence": [],
+        "id": "qa_pressure_shift",
+        "name": "Q&A Pressure Shift"
+      },
+      {
+        "score": 5,
+        "color_band": "amber",
+        "explanation": "Q&A evidence is unavailable, so answer directness stays neutral by design.",
+        "strongest_evidence": [],
+        "id": "answer_directness",
+        "name": "Answer Directness"
+      }
+    ],
+    "ranked_categories": [
+      {
+        "score": 9,
+        "color_band": "red",
+        "explanation": "Management language includes repeated hedging or visibility caveats, which raises uncertainty.",
+        "strongest_evidence": [
+          "[subject to] based on current expectations and assumptions that are subject to a",
+          "[modal uncertainty] Actual results could differ materially."
+        ],
+        "id": "uncertainty",
+        "name": "Uncertainty / Hedging",
+        "rank": 1
+      },
+      {
+        "score": 4,
+        "color_band": "amber",
+        "explanation": "Guidance language is present, but its direction is not explicit enough to score strongly.",
+        "strongest_evidence": [
+          "in Q4, growing 65% year over year for",
+          "$70 billion. Backlog grew by 55% quarter over quarter to $240"
+        ],
+        "id": "guidance_strength",
+        "name": "Guidance Strength",
+        "rank": 2
+      },
+      {
+        "score": 7,
+        "color_band": "red",
+        "explanation": "Analyst questions show some pushback or follow-up pressure, but not a full escalation.",
+        "strongest_evidence": [
+          "[where are you on that] And then second, on monetization, where are you on that?",
+          "[could you just talk about] Could you just talk a little bit about how you align"
+        ],
+        "id": "analyst_skepticism",
+        "name": "Analyst Skepticism",
+        "rank": 3
+      },
+      {
+        "score": 6,
+        "color_band": "amber",
+        "explanation": "Management confidence blends reassurance cues (high) with uncertainty and Q&A follow-through.",
+        "strongest_evidence": [
+          "[well positioned] We are really well positioned going",
+          "[well positioned] round to date and is well positioned"
+        ],
+        "id": "management_confidence",
+        "name": "Management Confidence",
+        "rank": 4
+      },
+      {
+        "score": 5,
+        "color_band": "amber",
+        "explanation": "Insufficient Q&A contrast evidence was available, so pressure shift stays neutral.",
+        "strongest_evidence": [],
+        "id": "qa_pressure_shift",
+        "name": "Q&A Pressure Shift",
+        "rank": 5
+      },
+      {
+        "score": 5,
+        "color_band": "amber",
+        "explanation": "Q&A evidence is unavailable, so answer directness stays neutral by design.",
+        "strongest_evidence": [],
+        "id": "answer_directness",
+        "name": "Answer Directness",
+        "rank": 6
+      }
+    ]
+  }
+}

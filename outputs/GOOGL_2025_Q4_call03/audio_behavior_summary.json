@@ -1,0 +1,229 @@
+{
+  "schema_version": "1.2.0",
+  "audio_available": true,
+  "audio_features_available": true,
+  "audio_quality_ok": false,
+  "quality_gate": {
+    "quality_ok": false,
+    "suppression_recommended": true,
+    "snr_proxy_db": 38.1237,
+    "snr_proxy_ok": true,
+    "management_speech_duration_s": 3248.41,
+    "enough_speech_duration_ok": true,
+    "usable_management_segments": 355,
+    "usable_answer_segments": 184,
+    "alignment_quality_ratio": 0.2169,
+    "alignment_quality_ok": false
+  },
+  "audio_metadata": {
+    "path": "cache/GOOGL_2025_Q4_call03/audio_normalized.wav",
+    "duration_s": 3646.977,
+    "sample_rate": 16000,
+    "frame_length_s": 0.03,
+    "hop_length_s": 0.01,
+    "silence_threshold_db": -35.0
+  },
+  "hesitation_overall": {
+    "score": 0.5855,
+    "level": "low"
+  },
+  "hesitation_level": {
+    "score": 0.5855,
+    "level": "low"
+  },
+  "pauses_before_answers": {
+    "median_ms": 0.0,
+    "level": "low"
+  },
+  "prepared_baseline_audio_stability": {
+    "score": 0.5886,
+    "level": "high"
+  },
+  "qa_hesitation_shift": {
+    "delta": -0.0031,
+    "prepared_mean": 0.5886,
+    "q_and_a_mean": 0.5855,
+    "direction": "mixed",
+    "level": "low"
+  },
+  "pause_pressure_delta": {
+    "delta": -0.1864,
+    "prepared_density": 1.3788,
+    "q_and_a_density": 1.1924,
+    "level": "low",
+    "label": "mixed"
+  },
+  "answer_latency_pressure": {
+    "median_ms": 0.0,
+    "level": "low"
+  },
+  "audio_confidence_support": {
+    "level": "medium",
+    "suppressed": true,
+    "reason": "quality gate suppressed confidence uplift"
+  },
+  "support_mode": "model_backed",
+  "model_support": {
+    "available": true,
+    "mode": "model_backed",
+    "support_direction": "supportive",
+    "calibrated_support_score": -0.5264,
+    "reliability_weight": 0.3492,
+    "hesitation_pressure": {
+      "predicted_label": "low",
+      "probability_means": {
+        "high": 0.0566,
+        "low": 0.8103,
+        "medium": 0.1331
+      }
+    },
+    "delivery_confidence": {
+      "predicted_label": "high",
+      "probability_means": {
+        "high": 0.8103,
+        "low": 0.0566,
+        "medium": 0.1331
+      }
+    }
+  },
+  "egemaps_v02_summary": {
+    "available": true,
+    "pitch_variability_mean": 0.1272,
+    "loudness_mean": 0.8746,
+    "loudness_variability_mean": 0.5899,
+    "spectral_flux_mean": 0.444
+  },
+  "strongest_audio_evidence": [
+    {
+      "segment_id": 1662,
+      "start_time_s": 3615.24,
+      "end_time_s": 3625.96,
+      "hesitation_label": "high",
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 6.5299,
+      "text": "rushing anything here. Thank you. And that concludes our question and answer session for today."
+    },
+    {
+      "segment_id": 1666,
+      "start_time_s": 3638.2,
+      "end_time_s": 3644.84,
+      "hesitation_label": "high",
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 4.5181,
+      "text": "Thank you, everyone. This concludes today's conference call. Thank you for participating."
+    },
+    {
+      "segment_id": 1664,
+      "start_time_s": 3630.68,
+      "end_time_s": 3634.68,
+      "hesitation_label": "medium",
+      "pause_before_answer_ms": 1110.0,
+      "answer_onset_delay_ms": 1360.0,
+      "pause_density_per_10s": 5.0,
+      "text": "Thanks everyone for joining us today. We look forward to speaking with you again on our first"
+    }
+  ],
+  "most_hesitant_answers": [
+    {
+      "segment_id": 1662,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 3615.24,
+      "end_time_s": 3625.96,
+      "hesitation_label": "high",
+      "hesitation_score": 6,
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 6.5299,
+      "articulation_rate_wpm": 120.16,
+      "confidence_note": "usable audio segment",
+      "text": "rushing anything here. Thank you. And that concludes our question and answer session for today."
+    },
+    {
+      "segment_id": 1666,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 3638.2,
+      "end_time_s": 3644.84,
+      "hesitation_label": "high",
+      "hesitation_score": 5,
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 4.5181,
+      "articulation_rate_wpm": 173.08,
+      "confidence_note": "usable audio segment",
+      "text": "Thank you, everyone. This concludes today's conference call. Thank you for participating."
+    },
+    {
+      "segment_id": 1664,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 3630.68,
+      "end_time_s": 3634.68,
+      "hesitation_label": "medium",
+      "hesitation_score": 4,
+      "pause_before_answer_ms": 1110.0,
+      "answer_onset_delay_ms": 1360.0,
+      "pause_density_per_10s": 5.0,
+      "articulation_rate_wpm": 280.99,
+      "confidence_note": "usable audio segment",
+      "text": "Thanks everyone for joining us today. We look forward to speaking with you again on our first"
+    }
+  ],
+  "low_confidence_segments": [
+    {
+      "segment_id": 1012,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 2146.28,
+      "end_time_s": 2147.84,
+      "hesitation_label": "high",
+      "hesitation_score": 7,
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 6.4103,
+      "articulation_rate_wpm": 555.56,
+      "confidence_note": "low transcript word count limits audio confidence",
+      "text": "You know, you are right."
+    },
+    {
+      "segment_id": 941,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 2029.2,
+      "end_time_s": 2031.44,
+      "hesitation_label": "high",
+      "hesitation_score": 5,
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 4.4643,
+      "articulation_rate_wpm": 144.23,
+      "confidence_note": "low transcript word count limits audio confidence",
+      "text": "away by, you know, spent"
+    },
+    {
+      "segment_id": 1034,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 2184.96,
+      "end_time_s": 2186.96,
+      "hesitation_label": "high",
+      "hesitation_score": 5,
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 5.0,
+      "articulation_rate_wpm": 161.29,
+      "confidence_note": "low transcript word count limits audio confidence",
+      "text": "I expect, you know, the"
+    }
+  ],
+  "limitations": [
+    "Transcript/audio alignment is sparse or short for several segments."
+  ],
+  "notes": [
+    "Audio hesitation combines pause-before-answer, answer latency, within-segment pause density, filler markers, articulation rate, and loudness dynamics.",
+    "These are observational timing proxies for review support, not mental-state or deception inference."
+  ]
+}

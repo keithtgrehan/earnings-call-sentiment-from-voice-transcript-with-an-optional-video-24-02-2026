@@ -1,0 +1,227 @@
+{
+  "schema_version": "1.2.0",
+  "audio_available": true,
+  "audio_features_available": true,
+  "audio_quality_ok": true,
+  "quality_gate": {
+    "quality_ok": true,
+    "suppression_recommended": false,
+    "snr_proxy_db": 42.1362,
+    "snr_proxy_ok": true,
+    "management_speech_duration_s": 3296.44,
+    "enough_speech_duration_ok": true,
+    "usable_management_segments": 604,
+    "usable_answer_segments": 600,
+    "alignment_quality_ratio": 0.9869,
+    "alignment_quality_ok": true
+  },
+  "audio_metadata": {
+    "path": "cache/IBM_2025_Q4_call04/audio_normalized.wav",
+    "duration_s": 4214.059,
+    "sample_rate": 16000,
+    "frame_length_s": 0.03,
+    "hop_length_s": 0.01,
+    "silence_threshold_db": -35.0
+  },
+  "hesitation_overall": {
+    "score": 2.603,
+    "level": "medium"
+  },
+  "hesitation_level": {
+    "score": 2.603,
+    "level": "medium"
+  },
+  "pauses_before_answers": {
+    "median_ms": 0.0,
+    "level": "low"
+  },
+  "prepared_baseline_audio_stability": {
+    "score": 4.4,
+    "level": "low"
+  },
+  "qa_hesitation_shift": {
+    "delta": -1.797,
+    "prepared_mean": 4.4,
+    "q_and_a_mean": 2.603,
+    "direction": "less_hesitant",
+    "level": "medium"
+  },
+  "pause_pressure_delta": {
+    "delta": -1.746,
+    "prepared_density": 5.735,
+    "q_and_a_density": 3.989,
+    "level": "medium",
+    "label": "less_paused_under_questions"
+  },
+  "answer_latency_pressure": {
+    "median_ms": 0.0,
+    "level": "low"
+  },
+  "audio_confidence_support": {
+    "level": "high",
+    "suppressed": false,
+    "reason": "usable answer-level audio support"
+  },
+  "support_mode": "model_backed",
+  "model_support": {
+    "available": true,
+    "mode": "model_backed",
+    "support_direction": "supportive",
+    "calibrated_support_score": -0.2289,
+    "reliability_weight": 0.3492,
+    "hesitation_pressure": {
+      "predicted_label": "low",
+      "probability_means": {
+        "high": 0.1185,
+        "low": 0.4462,
+        "medium": 0.4353
+      }
+    },
+    "delivery_confidence": {
+      "predicted_label": "high",
+      "probability_means": {
+        "high": 0.4462,
+        "low": 0.1185,
+        "medium": 0.4353
+      }
+    }
+  },
+  "egemaps_v02_summary": {
+    "available": true,
+    "pitch_variability_mean": 0.1558,
+    "loudness_mean": 0.3156,
+    "loudness_variability_mean": 0.8134,
+    "spectral_flux_mean": 0.1004
+  },
+  "strongest_audio_evidence": [
+    {
+      "segment_id": 334,
+      "start_time_s": 2292.2,
+      "end_time_s": 2297.56,
+      "hesitation_label": "high",
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 5.597,
+      "text": "which is sort of baked into our expectations right now. Now, of course we're going to"
+    },
+    {
+      "segment_id": 307,
+      "start_time_s": 2105.88,
+      "end_time_s": 2112.68,
+      "hesitation_label": "high",
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 8.8235,
+      "text": "in software, and we are pleased with the inorganic contribution. If I sort of feel it first from"
+    },
+    {
+      "segment_id": 601,
+      "start_time_s": 4008.52,
+      "end_time_s": 4014.92,
+      "hesitation_label": "high",
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 4.6875,
+      "text": "transformation for Gen AI, maybe today and, you know, heading into 26? Matt, thanks."
+    }
+  ],
+  "most_hesitant_answers": [
+    {
+      "segment_id": 334,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 2292.2,
+      "end_time_s": 2297.56,
+      "hesitation_label": "high",
+      "hesitation_score": 7,
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 5.597,
+      "articulation_rate_wpm": 228.03,
+      "confidence_note": "usable audio segment",
+      "text": "which is sort of baked into our expectations right now. Now, of course we're going to"
+    },
+    {
+      "segment_id": 307,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 2105.88,
+      "end_time_s": 2112.68,
+      "hesitation_label": "high",
+      "hesitation_score": 6,
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 8.8235,
+      "articulation_rate_wpm": 220.41,
+      "confidence_note": "usable audio segment",
+      "text": "in software, and we are pleased with the inorganic contribution. If I sort of feel it first from"
+    },
+    {
+      "segment_id": 601,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 4008.52,
+      "end_time_s": 4014.92,
+      "hesitation_label": "high",
+      "hesitation_score": 6,
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 4.6875,
+      "articulation_rate_wpm": 158.19,
+      "confidence_note": "usable audio segment",
+      "text": "transformation for Gen AI, maybe today and, you know, heading into 26? Matt, thanks."
+    }
+  ],
+  "low_confidence_segments": [
+    {
+      "segment_id": 7,
+      "section": "q_and_a",
+      "speaker_role": "management",
+      "start_time_s": 27.32,
+      "end_time_s": 28.12,
+      "hesitation_label": "high",
+      "hesitation_score": 6,
+      "pause_before_answer_ms": 1640.0,
+      "answer_onset_delay_ms": 2000.0,
+      "pause_density_per_10s": 12.5,
+      "articulation_rate_wpm": 190.48,
+      "confidence_note": "short segment limits audio confidence",
+      "text": "Thank you."
+    },
+    {
+      "segment_id": 2,
+      "section": "prepared_remarks",
+      "speaker_role": "management",
+      "start_time_s": 11.2,
+      "end_time_s": 13.6,
+      "hesitation_label": "medium",
+      "hesitation_score": 4,
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 4.1667,
+      "articulation_rate_wpm": 185.19,
+      "confidence_note": "low transcript word count limits audio confidence",
+      "text": "Today's conference is being recorded."
+    },
+    {
+      "segment_id": 6,
+      "section": "q_and_a",
+      "speaker_role": "operator",
+      "start_time_s": 25.32,
+      "end_time_s": 26.32,
+      "hesitation_label": "medium",
+      "hesitation_score": 4,
+      "pause_before_answer_ms": null,
+      "answer_onset_delay_ms": null,
+      "pause_density_per_10s": 10.0,
+      "articulation_rate_wpm": 545.45,
+      "confidence_note": "low transcript word count limits audio confidence",
+      "text": "You may begin."
+    }
+  ],
+  "limitations": [],
+  "notes": [
+    "Audio hesitation combines pause-before-answer, answer latency, within-segment pause density, filler markers, articulation rate, and loudness dynamics.",
+    "These are observational timing proxies for review support, not mental-state or deception inference."
+  ]
+}

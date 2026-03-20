@@ -1,0 +1,19 @@
+{
+  "transcript_primary_assessment": "amber",
+  "audio_support_direction": "supportive",
+  "video_support_direction": "unavailable",
+  "fusion_mode": "hybrid",
+  "calibrated_support_score": -0.1946,
+  "multimodal_alignment": "medium",
+  "multimodal_confidence_adjustment": -1,
+  "modality_weights": {
+    "audio": 0.4991,
+    "video": 0.0
+  },
+  "notes": [
+    "Transcript-first signal remains amber with interpretation confidence 0.55.",
+    "Audio support used model-backed scoring (supportive, score -0.39, reliability 0.50).",
+    "Video support was suppressed because quality gates were not met.",
+    "Q&A transcript shift stayed mixed."
+  ]
+}
