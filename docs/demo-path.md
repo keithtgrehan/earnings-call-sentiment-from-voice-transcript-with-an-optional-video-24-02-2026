@@ -4,6 +4,8 @@
 
 Use [outputs/MSFT_2026_Q2_call05/report.md](../outputs/MSFT_2026_Q2_call05/report.md) as the main reviewer walk-through.
 
+For a slide-ready version of this same case, see [april-2-demo-side-by-side.md](april-2-demo-side-by-side.md).
+
 Why this case:
 
 - it has a complete committed deterministic bundle on `main`
