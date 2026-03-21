@@ -2,7 +2,7 @@
 
 This note maps the exact heavier rerun path that would be required to extend NLP sidecar support beyond `msft_fy26_q2_example`.
 
-No reruns were executed as part of this planning pass.
+One bounded GOOGL rerun attempt was executed on 2026-03-21 after this plan was first written. It confirmed that the existing frozen CLI can start real transcription work from the cached `audio.wav`, but it did not emit `transcript.json`, `transcript.txt`, or `chunks_scored.csv` within the bounded watch window used for that pass.
 
 ## Current Truth
 
@@ -105,6 +105,14 @@ Effort: heavy
 Dependency scope: feature-worktree cache plus existing frozen CLI and current scorer  
 Commit-worthiness: yes, if the rerun finishes cleanly and the new NLP outputs are accompanied by stable repo-relative transcript/chunk staging outputs  
 Recommendation: go first if a heavier rerun is approved
+
+Observed bounded attempt on 2026-03-21:
+
+- command used the existing frozen `--transcribe-only` path against a temp copy of `audio.wav`
+- early useful output included `cache/tmp_nlp_restore/goog_q1_2025_example/audio_normalized.wav`
+- the run reached `113.9s / 3278.6s` of source audio after about `93s` of wall time
+- no `transcript.json` or `transcript.txt` appeared before the attempt was stopped
+- practical takeaway: the path is real, but on current hardware it is still too heavy for a short bounded pass unless a longer run window is explicitly approved
 
 ### `dis_q1_fy26_example`
 
