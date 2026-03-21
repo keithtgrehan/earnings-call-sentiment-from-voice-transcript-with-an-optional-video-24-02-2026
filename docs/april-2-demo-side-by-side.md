@@ -4,6 +4,8 @@
 
 Use [outputs/MSFT_2026_Q2_call05/report.md](../outputs/MSFT_2026_Q2_call05/report.md) as the strongest current reviewer/demo case on `main`.
 
+For a deeper defense of why this case still lands on the frozen `unclear` label, see [msft-ambiguity-explainer.md](msft-ambiguity-explainer.md).
+
 Why this case:
 
 - Microsoft is recognizable to reviewers without extra context
